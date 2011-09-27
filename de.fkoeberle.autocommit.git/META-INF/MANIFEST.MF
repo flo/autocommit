@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: autocommit.git
+Bundle-SymbolicName: de.fkoeberle.autocommit.git;singleton:=true
+Bundle-Version: 0.0.1.alpha
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: de.fkoeberle.autocommit,
+ org.eclipse.core.resources
