@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="de.fkoeberle.autocommit.vcs" name="Version Control System For Automatic Commits" schema="schema/de.fkoeberle.autocommit.vcs.exsd"/>
+</plugin>

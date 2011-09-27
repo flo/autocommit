@@ -6,3 +6,4 @@ Bundle-Version: 0.0.1.alpha
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fkoeberle.autocommit,
  org.eclipse.core.resources
+Require-Bundle: de.fkoeberle.autocommit;bundle-version="0.0.1"
