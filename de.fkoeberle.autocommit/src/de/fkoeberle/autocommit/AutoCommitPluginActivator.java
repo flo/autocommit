@@ -55,10 +55,14 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 	}
 	
 	public void commitIfPossible(String message) {
-		logInfo(format("Fake commit '%s'"));
+		logInfo(format("Fake commit '%s'", message));
 	}
 
 	private void logInfo(String message) {
 		getLog().log(new Status(Status.INFO, PLUGIN_ID, Status.OK, message, null));
+	}
+	
+	public boolean noUncommittedChangesExists() {
+		return true;
 	}
 }
