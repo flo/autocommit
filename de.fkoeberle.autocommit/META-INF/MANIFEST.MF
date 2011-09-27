@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: autocommit
+Bundle-SymbolicName: de.fkoeberle.autocommit
+Bundle-Version: 0.0.1.alpha
+Bundle-Activator: de.fkoeberle.autocommit.AutoCommitPluginActivator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.eclipse.core.resources
