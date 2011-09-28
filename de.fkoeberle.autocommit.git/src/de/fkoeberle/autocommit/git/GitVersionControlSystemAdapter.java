@@ -26,7 +26,6 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.treewalk.WorkingTreeIterator;
-import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
 import de.fkoeberle.autocommit.IVersionControlSystem;
 
@@ -38,6 +37,9 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 
 	@Override
 	public void commit(String message) {
+		if (message == null) {
+			message = "Automatically committed change";
+		}
 		Map<Repository,Set<IProject>> repositoryToProjectsMap = getRepositoryToProjectSetMap();
 		for (Repository repository: repositoryToProjectsMap.keySet()) {
 			WorkingTreeIterator workingTreeIterator = IteratorService.createInitialIterator(repository);

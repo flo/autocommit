@@ -1,6 +1,10 @@
 package de.fkoeberle.autocommit;
 
 public interface IVersionControlSystem {
+	/**
+	 * 
+	 * @param message the message the commit should get or null if the message should be chosen automatically.
+	 */
 	void commit(String message);
 	/**
 	 * 

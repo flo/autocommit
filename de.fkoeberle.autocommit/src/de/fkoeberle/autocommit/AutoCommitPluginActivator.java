@@ -104,6 +104,10 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
+	/**
+	 * 
+	 * @param message the message the commit should get or null if the message should be choosen automatically.
+	 */
 	public synchronized void commitIfPossible(final String message) {
 		UIJob job = new UIJob("Auto Commit") {
 			
@@ -165,7 +169,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 
 	/**
 	 * 
-	 * @return true, if it could be verified that there are no uncomitted changes. If it fails to determine if there are changes it returns true.
+	 * @return true, if it could be verified that there are no uncommitted changes. If it fails to determine if there are changes it returns true.
 	 */
 	public synchronized boolean noUncommittedChangesExists() {
 		for (IVersionControlSystem vcs : versionControlSystems) {
