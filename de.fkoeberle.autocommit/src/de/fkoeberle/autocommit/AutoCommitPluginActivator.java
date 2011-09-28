@@ -102,7 +102,8 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 	}
 
 	public synchronized void commitIfPossible(String message) {
-		// TODO ensure that it runs on UI thread if that is necessary
+		// TODO ensure that it runs on UI thread: 
+		// example when it's necessary: extracting a variable
 		IWorkbenchWindow window = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow();
 		IWorkbenchPage page = window.getActivePage();
@@ -148,6 +149,10 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 				new Status(Status.INFO, PLUGIN_ID, Status.OK, message, null));
 	}
 
+	/**
+	 * 
+	 * @return true, if it could be verified that there are no uncomitted changes. If it fails to determine if there are changes it returns true.
+	 */
 	public synchronized boolean noUncommittedChangesExists() {
 		for (IVersionControlSystem vcs : versionControlSystems) {
 			if (!vcs.noUncommittedChangesExist()) {
