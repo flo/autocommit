@@ -22,16 +22,14 @@ public class RefactoringListener implements IUndoManagerListener {
 	}
 	@Override
 	public void aboutToPerformChange(IUndoManager manager, Change change) {
-		if (getAutoCommitPlugion().noUncommittedChangesExists()) {
-			canCommit = true;
-		}
+		canCommit = getAutoCommitPlugion().noUncommittedChangesExists();
 	}
 
 	@Override
 	public void changePerformed(IUndoManager manager, Change change) {
 		if (canCommit) {
-			getAutoCommitPlugion().commitIfPossible(change.getName());
 			canCommit = false;
+			getAutoCommitPlugion().commitIfPossible(change.getName());
 		}
 	}
 
