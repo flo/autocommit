@@ -10,6 +10,9 @@ Import-Package: de.fkoeberle.autocommit,
  org.eclipse.egit.core;version="1.2.0",
  org.eclipse.egit.core.op;version="1.2.0",
  org.eclipse.egit.core.project;version="1.2.0",
+ org.eclipse.jgit.api;version="1.2.0",
+ org.eclipse.jgit.api.errors;version="1.2.0",
  org.eclipse.jgit.lib;version="1.2.0",
- org.eclipse.jgit.treewalk;version="1.2.0"
+ org.eclipse.jgit.treewalk;version="1.2.0",
+ org.eclipse.jgit.treewalk.filter;version="1.2.0"
 Require-Bundle: de.fkoeberle.autocommit;bundle-version="0.0.1"

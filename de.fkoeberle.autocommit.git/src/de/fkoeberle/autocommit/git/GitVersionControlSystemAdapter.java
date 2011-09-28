@@ -10,15 +10,23 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.egit.core.IteratorService;
-import org.eclipse.egit.core.op.CommitOperation;
 import org.eclipse.egit.core.project.RepositoryMapping;
+import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.CommitCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.RmCommand;
+import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.api.errors.NoFilepatternException;
+import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.api.errors.NoMessageException;
+import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.treewalk.WorkingTreeIterator;
+import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
 import de.fkoeberle.autocommit.IVersionControlSystem;
 
@@ -30,8 +38,6 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 
 	@Override
 	public void commit(String message) {
-		final String author = "autocommit <test@example.org>";
-		final String committer = "autocommit <test@example.org>";
 		Map<Repository,Set<IProject>> repositoryToProjectsMap = getRepositoryToProjectSetMap();
 		for (Repository repository: repositoryToProjectsMap.keySet()) {
 			WorkingTreeIterator workingTreeIterator = IteratorService.createInitialIterator(repository);
@@ -39,23 +45,70 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 				IndexDiff indexDiff = new IndexDiff(repository, Constants.HEAD, workingTreeIterator);
 				boolean differencesFound = indexDiff.diff(); // TODO use version with progress monitor
 				if (differencesFound) {
+					Git git = new Git(repository);
 					Collection<String> filesToCommit = new HashSet<String>(indexDiff.getChanged());
 					filesToCommit.addAll(indexDiff.getUntracked());
 					filesToCommit.addAll(indexDiff.getModified());
 					filesToCommit.addAll(indexDiff.getAdded());
-					Collection<String> notIndexed = null;
-					Collection<String> notTracked = indexDiff.getUntracked();
-					CommitOperation commitOperation = new CommitOperation(
-							repository, filesToCommit, notIndexed, notTracked, author, committer, message);
-					IProgressMonitor commitExecuteMonitior = null;
-					commitOperation.execute(commitExecuteMonitior);
+					if (filesToCommit.size() > 0) {
+						AddCommand addCommand = git.add();
+						for (String path: filesToCommit) {
+							addCommand.addFilepattern(path);
+						}
+						try {
+							addCommand.call();
+						} catch (NoFilepatternException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							return;
+						}
+					}
+					Set<String> filesToRemove = indexDiff.getMissing();
+					if (filesToRemove.size() > 0) {
+						RmCommand rmCommand = git.rm();
+						for (String path: indexDiff.getMissing()) {
+							rmCommand.addFilepattern(path);
+						}
+						try {
+							rmCommand.call();
+						} catch (NoFilepatternException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							return;
+						}
+					}
+					
+					CommitCommand commitCommand = git.commit();
+					commitCommand.setMessage(message);
+
+					try {
+						commitCommand.call();
+					} catch (NoHeadException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return;
+					} catch (NoMessageException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return;
+					} catch (ConcurrentRefUpdateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return;
+					} catch (JGitInternalException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return;
+					} catch (WrongRepositoryStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return;
+					}
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return;
 			}
 
 		}
