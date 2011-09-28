@@ -12,7 +12,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IRegistryEventListener;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -21,6 +23,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -101,42 +104,53 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
-	public synchronized void commitIfPossible(String message) {
-		// TODO ensure that it runs on UI thread: 
-		// example when it's necessary: extracting a variable
-		IWorkbenchWindow window = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow();
-		IWorkbenchPage page = window.getActivePage();
-		IEditorPart[] dirtyEditors = page.getDirtyEditors();
-		if (dirtyEditors.length > 0) {
-			logInfo(String.format(
-					"Not committing as '%s' since there unsaved changes",
-					message));
-			return;
-		}
+	public synchronized void commitIfPossible(final String message) {
+		UIJob job = new UIJob("Auto Commit") {
+			
+			@Override
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				// TODO ensure that it runs on UI thread: 
+				// example when it's necessary: extracting a variable
+				IWorkbenchWindow window = PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow();
+				IWorkbenchPage page = window.getActivePage();
+				IEditorPart[] dirtyEditors = page.getDirtyEditors();
+				if (dirtyEditors.length > 0) {
+					logInfo(String.format(
+							"Not committing as '%s' since there unsaved changes",
+							message));
+					return Status.OK_STATUS;
+				}
 
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-		int maxProblemServity;
-		try {
-			maxProblemServity = root.findMaxProblemSeverity(IMarker.PROBLEM,
-					true, IResource.DEPTH_INFINITE);
-		} catch (CoreException e) {
-			logException(
-					"An exception occured while determining if there are problems for an auto commit.",
-					e);
-			return;
-		}
-		if (maxProblemServity == IMarker.SEVERITY_ERROR) {
-			logInfo(String.format(
-					"Not committing as '%s' since there are problem markers",
-					message));
-			return;
-		}
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();
+				IWorkspaceRoot root = workspace.getRoot();
+				int maxProblemServity;
+				try {
+					maxProblemServity = root.findMaxProblemSeverity(IMarker.PROBLEM,
+							true, IResource.DEPTH_INFINITE);
+				} catch (CoreException e) {
+					logException(
+							"An exception occured while determining if there are problems for an auto commit.",
+							e);
+					return new Status(IStatus.ERROR,AutoCommitPluginActivator.PLUGIN_ID,"An exception occured while determining if there are problems for an auto commit.",
+							e);
+				}
+				if (maxProblemServity == IMarker.SEVERITY_ERROR) {
+					logInfo(String.format(
+							"Not committing as '%s' since there are problem markers",
+							message));
+					return Status.OK_STATUS;
+				}
 
-		for (IVersionControlSystem vcs : versionControlSystems) {
-			vcs.commit(message);
-		}
+				for (IVersionControlSystem vcs : versionControlSystems) {
+					vcs.commit(message);
+				}
+				return Status.OK_STATUS;
+			}
+		};
+		job.setRule(ResourcesPlugin.getWorkspace().getRoot());
+		job.schedule();
+		
 	}
 
 	private void logException(String message, Exception e) {
