@@ -1,16 +1,19 @@
 package de.fkoeberle.autocommit.message;
 
+import java.util.Collection;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.eclipse.core.resources.IProject;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class CommitMessageBuilderPluginActivator extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "de.fkoeberle.autocommit.message"; //$NON-NLS-1$
-	private static Activator plugin;
+	private static CommitMessageBuilderPluginActivator plugin;
 	
-	public Activator() {
+	public CommitMessageBuilderPluginActivator() {
 	}
 
 	@Override
@@ -30,8 +33,13 @@ public class Activator extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static CommitMessageBuilderPluginActivator getDefault() {
 		return plugin;
+	}
+	
+	public ICommitMessageBuilder createCommitMessageBuilder(Collection<IProject> project) {
+		// TODO implement method createCommitMessageBuilder
+		return null;
 	}
 
 }
