@@ -1,7 +1,6 @@
 package de.fkoeberle.autocommit.git;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,12 +21,25 @@ import org.eclipse.jgit.api.errors.NoFilepatternException;
 import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.api.errors.NoMessageException;
 import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
+import org.eclipse.jgit.dircache.DirCache;
+import org.eclipse.jgit.dircache.DirCacheIterator;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.IndexDiff;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevTree;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.AbstractTreeIterator;
+import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.WorkingTreeIterator;
+import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
+import org.eclipse.jgit.treewalk.filter.SkipWorkTreeFilter;
+import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
 import de.fkoeberle.autocommit.IVersionControlSystem;
+import de.fkoeberle.autocommit.message.CompleteContentCommitMessageBuilder;
+import de.fkoeberle.autocommit.message.ICommitMessageBuilder;
 
 public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 
@@ -37,9 +49,6 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 
 	@Override
 	public void commit(String message) {
-		if (message == null) {
-			message = "Automatically committed change";
-		}
 		Map<Repository,Set<IProject>> repositoryToProjectsMap = getRepositoryToProjectSetMap();
 		for (Repository repository: repositoryToProjectsMap.keySet()) {
 			WorkingTreeIterator workingTreeIterator = IteratorService.createInitialIterator(repository);
@@ -52,6 +61,9 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 					filesToCommit.addAll(indexDiff.getUntracked());
 					filesToCommit.addAll(indexDiff.getModified());
 					filesToCommit.addAll(indexDiff.getAdded());
+					
+					
+					
 					if (filesToCommit.size() > 0) {
 						AddCommand addCommand = git.add();
 						for (String path: filesToCommit) {
@@ -74,6 +86,15 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 						try {
 							rmCommand.call();
 						} catch (NoFilepatternException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							return;
+						}
+					}
+					if (message == null) {
+						try {
+							message = buildCommitMessage(repository);
+						} catch (NoHeadException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 							return;
@@ -116,17 +137,53 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 		}
 	}
 	
-	private void printIndexDiff(PrintStream out, IndexDiff indexDiff) {
-		out.println("Added " + indexDiff.getAdded());
-		out.println("Assume Unchanged " + indexDiff.getAssumeUnchanged());
-		out.println("Changed " + indexDiff.getChanged());
-		out.println("Conflicting " + indexDiff.getConflicting());
-		out.println("Missing " + indexDiff.getMissing());
-		out.println("Modified " + indexDiff.getModified());
-		out.println("Removed " + indexDiff.getRemoved());
-		out.println("Untracked " + indexDiff.getUntracked());
+	private String buildCommitMessage(Repository repository) throws IOException, NoHeadException {
+		TreeWalk treeWalk = new TreeWalk(repository);
+		treeWalk.setRecursive(true);
+		ObjectId headTreeId = repository.resolve(Constants.HEAD);
+		if (headTreeId == null) {
+			throw new NoHeadException("Failed to resolve HEAD");
+		}
+		RevWalk revWalk = new RevWalk(repository);
+		RevTree revTree = revWalk.parseTree(headTreeId);
+		DirCache dirCache = repository.readDirCache();
+		DirCacheIterator dirCacheTree = new DirCacheIterator(dirCache);
+		int revTreeIndex = treeWalk.addTree(revTree);
+		int dirCacheTreeIndex = treeWalk.addTree(dirCacheTree);
+		TreeFilter filter = AndTreeFilter.create(TreeFilter.ANY_DIFF, new SkipWorkTreeFilter(dirCacheTreeIndex));
+		treeWalk.setFilter(filter);
+		//TODO pass project array
+		ICommitMessageBuilder messageBuilder = new CompleteContentCommitMessageBuilder();
+		ObjectReader reader = repository.newObjectReader();
+		while (treeWalk.next()) {
+			AbstractTreeIterator headMatch = treeWalk.getTree(revTreeIndex,
+					AbstractTreeIterator.class);
+			DirCacheIterator dirCacheMatch = treeWalk.getTree(dirCacheTreeIndex,
+					DirCacheIterator.class);
+			IProject project = null; //TODO
+			final String path = treeWalk.getPathString();
+			FileContent oldContent = null;
+			if (headMatch != null) {
+				ObjectId objectId = headMatch.getEntryObjectId();;
+				oldContent = new FileContent(objectId,reader);
+			} 
+			FileContent newContent = null;
+			if (dirCacheMatch != null) {
+				ObjectId objectId = dirCacheMatch.getEntryObjectId();;
+				newContent = new FileContent(objectId,reader);
+			}
+			
+			if (newContent == null) {
+				messageBuilder.addDeletedFile(project, path, newContent);
+			} else if (oldContent == null) {
+				messageBuilder.addAddedFile(project, path, oldContent);
+			} else {
+				messageBuilder.addChangedFile(project, path, oldContent, newContent);
+			}
+		}
+		return messageBuilder.buildMessage();
 	}
-
+	
 	@Override
 	public boolean noUncommittedChangesExist() {
 		Map<Repository,Set<IProject>> repositoryToProjectsMap = getRepositoryToProjectSetMap();
