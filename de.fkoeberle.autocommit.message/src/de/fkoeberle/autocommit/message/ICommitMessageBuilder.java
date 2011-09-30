@@ -1,23 +1,18 @@
 package de.fkoeberle.autocommit.message;
 
+import java.io.IOException;
+
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 
 public interface ICommitMessageBuilder {
 
-	void addChangedTextFile(IProject project, IPath path, String oldContent,
-			String newContent);
+	void addChangedFile(IProject project, String path, IFileContent oldContent,
+			IFileContent newContent) throws IOException;
 
-	void addDeletedTextFile(IProject project, IPath path, String oldContent);
+	void addDeletedFile(IProject project, String path, IFileContent oldContent) throws IOException;
 
-	void addAddedTextFile(IProject project, IPath path, String newContent);
+	void addAddedFile(IProject project, String path, IFileContent newContent) throws IOException;
 
-	void addAddedBinaryFile(IProject project, IPath path);
-
-	void addChangedBinaryFile(IProject project, IPath path);
-
-	void addDeletedBinaryFile(IProject project, IPath path);
-
-	String buildMessage();
+	String buildMessage() throws IOException;
 
 }
