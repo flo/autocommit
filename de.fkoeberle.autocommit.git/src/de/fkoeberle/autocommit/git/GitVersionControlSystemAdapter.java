@@ -38,7 +38,7 @@ import org.eclipse.jgit.treewalk.filter.SkipWorkTreeFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
 import de.fkoeberle.autocommit.IVersionControlSystem;
-import de.fkoeberle.autocommit.message.CompleteContentCommitMessageBuilder;
+import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
 import de.fkoeberle.autocommit.message.ICommitMessageBuilder;
 
 public class GitVersionControlSystemAdapter implements IVersionControlSystem {
@@ -152,8 +152,7 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 		int dirCacheTreeIndex = treeWalk.addTree(dirCacheTree);
 		TreeFilter filter = AndTreeFilter.create(TreeFilter.ANY_DIFF, new SkipWorkTreeFilter(dirCacheTreeIndex));
 		treeWalk.setFilter(filter);
-		//TODO pass project array
-		ICommitMessageBuilder messageBuilder = new CompleteContentCommitMessageBuilder();
+		ICommitMessageBuilder messageBuilder = CommitMessageBuilderPluginActivator.getDefault().createBuilder();
 		ObjectReader reader = repository.newObjectReader();
 		while (treeWalk.next()) {
 			AbstractTreeIterator headMatch = treeWalk.getTree(revTreeIndex,

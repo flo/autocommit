@@ -34,9 +34,8 @@ public class CommitMessageBuilderPluginActivator extends Plugin {
 		return plugin;
 	}
 	
-	public ICommitMessageBuilder createCommitMessageBuilder(Collection<IProject> project) {
-		// TODO implement method createCommitMessageBuilder
-		return null;
+	public ICommitMessageBuilder createBuilder() {
+		return new CompleteContentCommitMessageBuilder();
 	}
 
 }
