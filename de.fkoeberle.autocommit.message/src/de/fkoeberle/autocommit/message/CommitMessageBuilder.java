@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 
 public class CommitMessageBuilder implements ICommitMessageBuilder {
 	private CommitMessageEnhancerManager enhancerManager;
@@ -23,21 +22,19 @@ public class CommitMessageBuilder implements ICommitMessageBuilder {
 	}
 
 	@Override
-	public void addChangedFile(IProject project, String path,
-			IFileContent oldContent, IFileContent newContent)
+	public void addChangedFile(String path, IFileContent oldContent,
+			IFileContent newContent)
 			throws IOException {
 		changedFiles.add(new ChangedFile(path, oldContent, newContent));
 	}
 
 	@Override
-	public void addDeletedFile(IProject project, String path,
-			IFileContent oldContent) throws IOException {
+	public void addDeletedFile(String path, IFileContent oldContent) throws IOException {
 		removedFiles.add(new RemovedFile(path, oldContent));
 	}
 
 	@Override
-	public void addAddedFile(IProject project, String path,
-			IFileContent newContent) throws IOException {
+	public void addAddedFile(String path, IFileContent newContent) throws IOException {
 		addedFiles.add(new AddedFile(path, newContent));
 	}
 

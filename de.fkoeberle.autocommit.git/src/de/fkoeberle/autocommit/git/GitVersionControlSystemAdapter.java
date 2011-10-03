@@ -173,11 +173,11 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 			}
 			
 			if (newContent == null) {
-				messageBuilder.addDeletedFile(project, path, newContent);
+				messageBuilder.addDeletedFile(path, newContent);
 			} else if (oldContent == null) {
-				messageBuilder.addAddedFile(project, path, oldContent);
+				messageBuilder.addAddedFile(path, oldContent);
 			} else {
-				messageBuilder.addChangedFile(project, path, oldContent, newContent);
+				messageBuilder.addChangedFile(path, oldContent, newContent);
 			}
 		}
 		return messageBuilder.buildMessage();

@@ -3,7 +3,6 @@ package de.fkoeberle.autocommit.message;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.eclipse.core.resources.IProject;
 
 
 public final class CompleteContentCommitMessageBuilder implements
@@ -16,8 +15,7 @@ public final class CompleteContentCommitMessageBuilder implements
 	}
 
 	@Override
-	public void addDeletedFile(IProject project, String path,
-			IFileContent oldContent) throws IOException {
+	public void addDeletedFile(String path, IFileContent oldContent) throws IOException {
 		stringBuilder.append("Deleted ");
 		stringBuilder.append(path);
 		stringBuilder.append(":\n");
@@ -26,8 +24,8 @@ public final class CompleteContentCommitMessageBuilder implements
 	}
 
 	@Override
-	public void addChangedFile(IProject project, String path,
-			IFileContent oldContent, IFileContent newContent) throws IOException {
+	public void addChangedFile(String path, IFileContent oldContent,
+			IFileContent newContent) throws IOException {
 		stringBuilder.append("Modified ");
 		stringBuilder.append(path);
 		stringBuilder.append("\n");
@@ -45,8 +43,7 @@ public final class CompleteContentCommitMessageBuilder implements
 	}
 
 	@Override
-	public void addAddedFile(IProject project, String path,
-			IFileContent newContent) throws IOException {
+	public void addAddedFile(String path, IFileContent newContent) throws IOException {
 		stringBuilder.append("Added ");
 		stringBuilder.append(path);
 		stringBuilder.append(":\n");
