@@ -1,10 +1,7 @@
 package de.fkoeberle.autocommit.message;
 
-import java.util.Collection;
-
-import org.osgi.framework.BundleContext;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Plugin;
+import org.osgi.framework.BundleContext;
 
 public class CommitMessageBuilderPluginActivator extends Plugin {
 	public static final String PLUGIN_ID = "de.fkoeberle.autocommit.message"; //$NON-NLS-1$
