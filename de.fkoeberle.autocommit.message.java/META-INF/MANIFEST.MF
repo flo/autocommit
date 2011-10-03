@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Java
+Bundle-SymbolicName: de.fkoeberle.autocommit.message.java;singleton:=true
+Bundle-Version: 0.0.1.alpha
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: de.fkoeberle.autocommit.message;bundle-version="0.0.1"
