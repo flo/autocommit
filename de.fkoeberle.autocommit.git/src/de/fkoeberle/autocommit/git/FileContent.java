@@ -10,8 +10,8 @@ import org.eclipse.jgit.lib.ObjectReader;
 import de.fkoeberle.autocommit.message.IFileContent;
 
 class FileContent implements IFileContent{
-	private ObjectId objectId;
-	private ObjectReader reader;
+	private final ObjectId objectId;
+	private final ObjectReader reader;
 	private ObjectLoader loader;
 	
 	public FileContent(ObjectId objectId, ObjectReader reader) {
@@ -26,12 +26,19 @@ class FileContent implements IFileContent{
 		return loader;
 	}
 
+	@Override
 	public long getSize() throws IOException {
 		return getLoader().getSize();
 	}
 	
+	@Override
 	public void copyTo(OutputStream outputStream) throws IOException {
 		getLoader().copyTo(outputStream);
+	}
+
+	@Override
+	public byte[] getBytesForReadOnlyPurposes() {
+		return loader.getCachedBytes();
 	}
 	
 }
