@@ -8,7 +8,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import de.fkoeberle.autocommit.message.IFileContent;
 public class JavaFileContent {
-	private SoftReference<AST> cachedAST;
+	private SoftReference<CompilationUnit> cachedCompilationUnit;
 	private SoftReference<String> cachedContentString;
 	private final IFileContent fileContent;
 
@@ -16,29 +16,29 @@ public class JavaFileContent {
 		this.fileContent = fileContent;
 	}
 
-	private AST createSyntaxTree(char[] fileContent) {
+	private CompilationUnit createCompilationUnit(char[] fileContent) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource(fileContent);
 		CompilationUnit unit = (CompilationUnit) parser.createAST(null);
-		return unit.getAST();
+		return unit;
 	}
 
 	/**
 	 * 
-	 * @return an {@link AST} which must not be modified.
+	 * @return an {@link CompilationUnit} which must not be modified.
 	 */
-	public AST getASTForReadOnlyPurposes() {
-		AST ast;
-		if (cachedAST != null) {
-			ast = cachedAST.get();
-			if (ast != null) {
-				return ast;
+	public CompilationUnit getCompilationUnitForReadOnlyPurposes() {
+		CompilationUnit compilationUnit;
+		if (cachedCompilationUnit != null) {
+			compilationUnit = cachedCompilationUnit.get();
+			if (compilationUnit != null) {
+				return compilationUnit;
 			}
 		}
 		char[] chars = getContentAsString().toCharArray();
-		ast = createSyntaxTree(chars);
-		cachedAST = new SoftReference<AST>(ast);
-		return ast;
+		compilationUnit = createCompilationUnit(chars);
+		cachedCompilationUnit = new SoftReference<CompilationUnit>(compilationUnit);
+		return compilationUnit;
 	}
 
 	public String getContentAsString() {
