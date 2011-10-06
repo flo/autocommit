@@ -47,9 +47,13 @@ public class CommitMessageBuilder implements ICommitMessageBuilder {
 				changedFiles, addedFiles, removedFiles);
 		
 		for (ICommitMessageFactory factory : factoryManager) {
-			return factory.build(delta);
+			String message = factory.build(delta);
+			if (message != null) {
+				return message;
+			}
 		}
-		throw new IOException("No commit message factory specified");
+		throw new IOException(
+				"There was no commit message factory which could provide a commit message");
 	}
 
 }
