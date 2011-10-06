@@ -11,8 +11,8 @@ public abstract class AbstractAdaptableWithCache {
 	public final <T> T getAdapter(Class<T> adapterClass) {
 		Object object = cache.get(adapterClass);
 		if (object == null) {
-			object = Platform.getAdapterManager()
-					.getAdapter(this, adapterClass);
+			object = Platform.getAdapterManager().loadAdapter(this,
+					adapterClass.getCanonicalName());
 			cache.put(adapterClass, object);
 		}
 		return adapterClass.cast(object);
