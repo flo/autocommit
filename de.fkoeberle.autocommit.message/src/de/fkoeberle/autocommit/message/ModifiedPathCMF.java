@@ -14,7 +14,7 @@ public final class ModifiedPathCMF implements
 
 	private String findCommonPrefix(FileSetDelta delta) {
 		CommonPrefixFinder finder = new CommonPrefixFinder();
-		for (ChangedFile file : delta.getChangedFiles()) {
+		for (ModifiedFile file : delta.getChangedFiles()) {
 			finder.checkForShorterPrefix(file.getPath());
 		}
 		for (AddedFile file : delta.getAddedFiles()) {

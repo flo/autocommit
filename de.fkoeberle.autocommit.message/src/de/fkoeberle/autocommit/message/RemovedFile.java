@@ -1,8 +1,8 @@
 package de.fkoeberle.autocommit.message;
 
-public class RemovedFile {
-	private String path;
-	private IFileContent oldContent;
+public class RemovedFile extends AbstractAdaptableWithCache {
+	private final String path;
+	private final IFileContent oldContent;
 
 	public RemovedFile(String path, IFileContent oldContent) {
 		this.path = path;

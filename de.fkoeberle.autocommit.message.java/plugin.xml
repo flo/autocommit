@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="de.fkoeberle.autocommit.message.ModifiedFile"
+            class="de.fkoeberle.autocommit.message.java.ModifiedJavaFileFactory">
+         <adapter
+               type="de.fkoeberle.autocommit.message.java.ModifiedJavaFile">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="de.fkoeberle.autocommit.message.AddedFile"
+            class="de.fkoeberle.autocommit.message.java.AddedJavaFileFactory">
+         <adapter
+               type="de.fkoeberle.autocommit.message.java.AddedJavaFile">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="de.fkoeberle.autocommit.message.RemovedFile"
+            class="de.fkoeberle.autocommit.message.java.RemovedJavaFileFactory">
+         <adapter
+               type="de.fkoeberle.autocommit.message.java.RemovedJavaFile">
+         </adapter>
+      </factory>
+   </extension>
 
 </plugin>

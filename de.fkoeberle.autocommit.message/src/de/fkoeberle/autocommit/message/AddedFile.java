@@ -1,8 +1,8 @@
 package de.fkoeberle.autocommit.message;
 
-public class AddedFile {
-	private String path;
-	private IFileContent newContent;
+public class AddedFile extends AbstractAdaptableWithCache {
+	private final String path;
+	private final IFileContent newContent;
 
 	public AddedFile(String path, IFileContent newContent) {
 		this.path = path;
