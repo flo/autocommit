@@ -159,7 +159,6 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 					AbstractTreeIterator.class);
 			DirCacheIterator dirCacheMatch = treeWalk.getTree(dirCacheTreeIndex,
 					DirCacheIterator.class);
-			IProject project = null; //TODO
 			final String path = treeWalk.getPathString();
 			FileContent oldContent = null;
 			if (headMatch != null) {
@@ -173,9 +172,9 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 			}
 			
 			if (newContent == null) {
-				messageBuilder.addDeletedFile(path, newContent);
+				messageBuilder.addDeletedFile(path, oldContent);
 			} else if (oldContent == null) {
-				messageBuilder.addAddedFile(path, oldContent);
+				messageBuilder.addAddedFile(path, newContent);
 			} else {
 				messageBuilder.addChangedFile(path, oldContent, newContent);
 			}
