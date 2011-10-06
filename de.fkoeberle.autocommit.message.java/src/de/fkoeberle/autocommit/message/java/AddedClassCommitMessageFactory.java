@@ -2,12 +2,14 @@ package de.fkoeberle.autocommit.message.java;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.EnumDeclaration;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import de.fkoeberle.autocommit.message.AddedFile;
 import de.fkoeberle.autocommit.message.FileSetDelta;
@@ -46,14 +48,31 @@ public class AddedClassCommitMessageFactory implements ICommitMessageFactory {
 			return null;
 		}
 
-		IJavaElement javaElement = compilationUnit.getJavaElement();
-		if (!(javaElement instanceof ICompilationUnit)) {
+		List<?> topLevelTypes = compilationUnit.types();
+		if (topLevelTypes.size() != 1) {
+			// no support for:
+			// 1. empty java files because they don't contain a class obviously
+			// 2. java files with more then 1 top level type
+			//  since it's bad practice
 			return null;
 		}
-		ICompilationUnit javaData = ((ICompilationUnit) javaElement);
-		IType primaryType = javaData.findPrimaryType();
-		String primaryTypeName = primaryType.getTypeQualifiedName();
-		return "Added " + primaryTypeName;
-	}
+		AbstractTypeDeclaration topLevelType = (AbstractTypeDeclaration)(topLevelTypes.get(0));
+		String name = topLevelType.getName().getIdentifier();
+		if (topLevelType instanceof TypeDeclaration) {
+			TypeDeclaration type = (TypeDeclaration) topLevelType;
+			if (type.isInterface()) {
+				return "Added an interface called " + name;
+			} else {
+				return "Added a class called " + name;
+			}
+		} else if (topLevelType instanceof EnumDeclaration) {
+			return "Added an enum called " + name;
+		} else if (topLevelType instanceof AnnotationTypeDeclaration) {
+			return "Added an annotation type called " + name;
+		} else {
+			// New unknown top level type can't be handled
+			return null;
+		}
 
+	}
 }
