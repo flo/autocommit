@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="de.fkoeberle.autocommit.message.enhancer" name="Commit Message Enhancer" schema="schema/autocommit.message.enhancer.exsd"/>
+   <extension-point id="de.fkoeberle.autocommit.message.factory" name="Commit Message Factory" schema="schema/de.fkoeberle.autocommit.message.factory.exsd"/>
+   <extension
+         point="de.fkoeberle.autocommit.message.factory">
+      <factory
+            class="de.fkoeberle.autocommit.message.ModifiedPathCMF"
+            id="de.fkoeberle.autocommit.message.FileDeltaCMF">
+      </factory>
+   </extension>
 
 </plugin>

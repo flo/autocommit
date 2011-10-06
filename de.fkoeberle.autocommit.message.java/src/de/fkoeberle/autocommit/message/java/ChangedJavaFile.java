@@ -1,15 +1,12 @@
 package de.fkoeberle.autocommit.message.java;
 
-import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.IFileContent;
 
-public class ChangedJavaFile extends ChangedFile {
+public class ChangedJavaFile {
 	private final JavaFileContent oldJavaContent;
 	private final JavaFileContent newJavaContent;
 
-	public ChangedJavaFile(String path, IFileContent oldContent,
-			IFileContent newContent) {
-		super(path, oldContent, newContent);
+	public ChangedJavaFile(IFileContent oldContent, IFileContent newContent) {
 		this.oldJavaContent = new JavaFileContent(oldContent);
 		this.newJavaContent = new JavaFileContent(newContent);
 	}

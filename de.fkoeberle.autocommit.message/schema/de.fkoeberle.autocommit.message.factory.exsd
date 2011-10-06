@@ -3,7 +3,7 @@
 <schema targetNamespace="de.fkoeberle.autocommit.message" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="de.fkoeberle.autocommit.message" id="autocommit.message.enhancer" name="Commit Message Enhancer"/>
+         <meta.schema plugin="de.fkoeberle.autocommit.message" id="de.fkoeberle.autocommit.message.factory" name="Commit Message Factory"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="enhancer"/>
+            <element ref="factory" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="enhancer">
+   <element name="factory">
       <complexType>
          <attribute name="id" type="string" use="required">
             <annotation>
@@ -59,23 +59,13 @@
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="enhancer" type="string" use="required">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":de.fkoeberle.autocommit.message.ICommitMessageEnhancer"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="input" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":de.fkoeberle.autocommit.message.ICommitDescription"/>
+                  <meta.attribute kind="java" basedOn=":de.fkoeberle.autocommit.message.ICommitMessageFactory"/>
                </appinfo>
             </annotation>
          </attribute>

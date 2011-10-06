@@ -2,20 +2,18 @@ package de.fkoeberle.autocommit.message;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 
 public class CommitMessageBuilder implements ICommitMessageBuilder {
-	private CommitMessageEnhancerManager enhancerManager;
+	private final CommitMessageFactoryManager factoryManager;
 	private boolean dirty;
-	private List<ChangedFile> changedFiles;
-	private List<AddedFile> addedFiles;
-	private List<RemovedFile> removedFiles;
+	private final List<ChangedFile> changedFiles;
+	private final List<AddedFile> addedFiles;
+	private final List<RemovedFile> removedFiles;
 
-	CommitMessageBuilder(CommitMessageEnhancerManager enhancerManager) {
-		this.enhancerManager = enhancerManager;
+	CommitMessageBuilder(CommitMessageFactoryManager factoryManager) {
+		this.factoryManager = factoryManager;
 		this.changedFiles = new ArrayList<ChangedFile>();
 		this.addedFiles = new ArrayList<AddedFile>();
 		this.removedFiles = new ArrayList<RemovedFile>();
@@ -45,25 +43,13 @@ public class CommitMessageBuilder implements ICommitMessageBuilder {
 		}
 		dirty = true;
 		
-		ICommitDescription description = new FileSetDeltaDescription(
+		FileSetDelta delta = new FileSetDelta(
 				changedFiles, addedFiles, removedFiles);
 		
-		boolean enhanced;
-		do {
-			enhanced = false;
-			Collection<ICommitMessageEnhancer> enhancers = enhancerManager.getEnhancersFor(description);
-			Iterator<ICommitMessageEnhancer> enhancersIterator = enhancers.iterator();
-			while (!enhanced && enhancersIterator.hasNext()) {
-				ICommitMessageEnhancer enhancer = enhancersIterator.next();
-				ICommitDescription newDescription = enhancer.enhance(description);
-				if (newDescription != null) {
-					enhanced = true;
-					description = newDescription;
-				}
-			}
-		} while (enhanced);
-		
-		return description.buildMessage();
+		for (ICommitMessageFactory factory : factoryManager) {
+			return factory.build(delta);
+		}
+		throw new IOException("No commit message factory specified");
 	}
 
 }

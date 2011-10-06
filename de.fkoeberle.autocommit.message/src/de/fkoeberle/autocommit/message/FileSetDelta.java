@@ -4,22 +4,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class FileSetDeltaDescription implements ICommitDescription {
-	private List<ChangedFile> changedFiles;
-	private List<AddedFile> addedFiles;
-	private List<RemovedFile> removedFiles;
+public final class FileSetDelta {
+	private final List<ChangedFile> changedFiles;
+	private final List<AddedFile> addedFiles;
+	private final List<RemovedFile> removedFiles;
 	private Set<String> fileExtensions;
 	
-	public FileSetDeltaDescription(List<ChangedFile> changedFiles,
+	public FileSetDelta(List<ChangedFile> changedFiles,
 			List<AddedFile> addedFiles, List<RemovedFile> removedFiles) {
 		this.changedFiles = changedFiles;
 		this.addedFiles = addedFiles;
 		this.removedFiles = removedFiles;
-	}
-	
-	@Override
-	public String buildMessage() {
-		return "Worked on " + findCommonPrefix();
 	}
 
 	public List<ChangedFile> getChangedFiles() {
@@ -34,20 +29,6 @@ public class FileSetDeltaDescription implements ICommitDescription {
 		return removedFiles;
 	}
 	
-	public String findCommonPrefix() {
-		CommonPrefixFinder finder = new CommonPrefixFinder();
-		for (ChangedFile file: changedFiles) {
-			finder.checkForShorterPrefix(file.getPath());
-		}
-		for (AddedFile file: addedFiles) {
-			finder.checkForShorterPrefix(file.getPath());
-		}
-		for (RemovedFile file: removedFiles) {
-			finder.checkForShorterPrefix(file.getPath());
-		}
-		return finder.getPrefix();
-	}
-
 	private static String fileExtensionOf(String path) {
 		int lastDot = path.lastIndexOf(".");
 		int lastSlash = path.lastIndexOf("/");

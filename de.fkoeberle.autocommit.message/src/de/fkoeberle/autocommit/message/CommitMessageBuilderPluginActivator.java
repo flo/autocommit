@@ -6,7 +6,7 @@ import org.osgi.framework.BundleContext;
 public class CommitMessageBuilderPluginActivator extends Plugin {
 	public static final String PLUGIN_ID = "de.fkoeberle.autocommit.message"; //$NON-NLS-1$
 	private static CommitMessageBuilderPluginActivator plugin;
-	private CommitMessageEnhancerManager enhancerManager;
+	private CommitMessageFactoryManager enhancerManager;
 	
 	public CommitMessageBuilderPluginActivator() {
 	}
@@ -15,7 +15,7 @@ public class CommitMessageBuilderPluginActivator extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		enhancerManager = new CommitMessageEnhancerManager();
+		enhancerManager = new CommitMessageFactoryManager();
 	}
 
 	@Override
