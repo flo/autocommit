@@ -1,5 +1,6 @@
 package de.fkoeberle.autocommit.message.java;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 
@@ -36,8 +37,14 @@ public class AddedClassCommitMessageFactory implements ICommitMessageFactory {
 		AddedFile addedFile = delta.getAddedFiles().get(0);
 		AddedJavaFile addedJavaFile = addedFile.getAdapter(AddedJavaFile.class);
 		JavaFileContent content = addedJavaFile.getNewJavaContent();
-		CompilationUnit compilationUnit = content
-				.getCompilationUnitForReadOnlyPurposes();
+		CompilationUnit compilationUnit;
+		try {
+			compilationUnit = content.getCompilationUnitForReadOnlyPurposes();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 
 		IJavaElement javaElement = compilationUnit.getJavaElement();
 		if (!(javaElement instanceof ICompilationUnit)) {

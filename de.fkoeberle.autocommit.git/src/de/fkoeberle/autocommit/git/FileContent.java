@@ -3,6 +3,7 @@ package de.fkoeberle.autocommit.git;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.eclipse.jgit.errors.LargeObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectReader;
@@ -37,8 +38,12 @@ class FileContent implements IFileContent{
 	}
 
 	@Override
-	public byte[] getBytesForReadOnlyPurposes() {
-		return loader.getCachedBytes();
+	public byte[] getBytesForReadOnlyPurposes() throws IOException {
+		try {
+			return getLoader().getCachedBytes();
+		} catch (LargeObjectException e) {
+			throw new IOException(e);
+		}
 	}
 	
 }

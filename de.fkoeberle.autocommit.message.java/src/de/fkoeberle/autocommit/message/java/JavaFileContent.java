@@ -1,5 +1,6 @@
 package de.fkoeberle.autocommit.message.java;
 
+import java.io.IOException;
 import java.lang.ref.SoftReference;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -26,8 +27,10 @@ public class JavaFileContent {
 	/**
 	 * 
 	 * @return an {@link CompilationUnit} which must not be modified.
+	 * @throws IOException
 	 */
-	public CompilationUnit getCompilationUnitForReadOnlyPurposes() {
+	public CompilationUnit getCompilationUnitForReadOnlyPurposes()
+			throws IOException {
 		CompilationUnit compilationUnit;
 		if (cachedCompilationUnit != null) {
 			compilationUnit = cachedCompilationUnit.get();
@@ -41,7 +44,7 @@ public class JavaFileContent {
 		return compilationUnit;
 	}
 
-	public String getContentAsString() {
+	public String getContentAsString() throws IOException {
 		String chars;
 		if (cachedContentString != null) {
 			chars = cachedContentString.get();

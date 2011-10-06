@@ -9,5 +9,5 @@ public interface IFileContent {
 
 	void copyTo(OutputStream outputStream) throws IOException;
 
-	byte[] getBytesForReadOnlyPurposes();
+	byte[] getBytesForReadOnlyPurposes() throws IOException;
 }
