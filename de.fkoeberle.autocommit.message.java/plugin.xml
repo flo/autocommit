@@ -25,5 +25,12 @@
          </adapter>
       </factory>
    </extension>
+   <extension
+         point="de.fkoeberle.autocommit.message.factory">
+      <factory
+            class="de.fkoeberle.autocommit.message.java.AddedClassCommitMessageFactory"
+            id="de.fkoeberle.autocommit.message.java.AddedClassCommitMessageFactory">
+      </factory>
+   </extension>
 
 </plugin>
