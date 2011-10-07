@@ -18,7 +18,7 @@ public class CommonPrefixFinder {
 		}
 	}
 	
-	String getPrefix() {
+	public String getPrefix() {
 		if (first == null)
 			return null;
 		return first.substring(0, lengthOfPrefix);
