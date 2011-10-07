@@ -14,6 +14,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import de.fkoeberle.autocommit.message.AddedFile;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.IFileContent;
 
 public class AddedClassCommitMessageFactory implements ICommitMessageFactory {
 	private static final Set<String> DOT_JAVA = Collections.singleton("java");
@@ -37,8 +38,9 @@ public class AddedClassCommitMessageFactory implements ICommitMessageFactory {
 		}
 
 		AddedFile addedFile = delta.getAddedFiles().get(0);
-		AddedJavaFile addedJavaFile = addedFile.getAdapter(AddedJavaFile.class);
-		JavaFileContent content = addedJavaFile.getNewJavaContent();
+		IFileContent genericContent = addedFile.getNewContent();
+		JavaFileContent content = genericContent
+				.getAdapter(JavaFileContent.class);
 		CompilationUnit compilationUnit;
 		try {
 			compilationUnit = content.getCompilationUnitForReadOnlyPurposes();

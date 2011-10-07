@@ -4,24 +4,10 @@
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
-            adaptableType="de.fkoeberle.autocommit.message.ModifiedFile"
-            class="de.fkoeberle.autocommit.message.java.ModifiedJavaFileFactory">
+            adaptableType="de.fkoeberle.autocommit.message.IFileContent"
+            class="de.fkoeberle.autocommit.message.java.JavaFileContentFactory">
          <adapter
-               type="de.fkoeberle.autocommit.message.java.ModifiedJavaFile">
-         </adapter>
-      </factory>
-      <factory
-            adaptableType="de.fkoeberle.autocommit.message.AddedFile"
-            class="de.fkoeberle.autocommit.message.java.AddedJavaFileFactory">
-         <adapter
-               type="de.fkoeberle.autocommit.message.java.AddedJavaFile">
-         </adapter>
-      </factory>
-      <factory
-            adaptableType="de.fkoeberle.autocommit.message.RemovedFile"
-            class="de.fkoeberle.autocommit.message.java.RemovedJavaFileFactory">
-         <adapter
-               type="de.fkoeberle.autocommit.message.java.RemovedJavaFile">
+               type="de.fkoeberle.autocommit.message.java.JavaFileContent">
          </adapter>
       </factory>
    </extension>

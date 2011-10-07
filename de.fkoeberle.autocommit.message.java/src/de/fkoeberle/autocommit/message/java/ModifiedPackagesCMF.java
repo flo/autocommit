@@ -14,6 +14,7 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 import de.fkoeberle.autocommit.message.CommonPrefixFinder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.IFileContent;
 import de.fkoeberle.autocommit.message.ModifiedFile;
 
 public class ModifiedPackagesCMF implements ICommitMessageFactory {
@@ -28,6 +29,7 @@ public class ModifiedPackagesCMF implements ICommitMessageFactory {
 		List<String> sourceFolders = new ArrayList<String>();
 		for (ModifiedFile file : delta.getChangedFiles()) {
 			String filePath = file.getPath();
+			IFileContent fileContent = file.getNewContent();
 			int lastSlash = filePath.lastIndexOf('/');
 			final String directoryPath;
 			if (lastSlash == -1) {
@@ -45,8 +47,8 @@ public class ModifiedPackagesCMF implements ICommitMessageFactory {
 			}
 			
 			if (packageName == null) {
-				ModifiedJavaFile modifiedJavaFile = file.getAdapter(ModifiedJavaFile.class);
-				JavaFileContent javaFileContent = modifiedJavaFile.getNewJavaContent();
+				JavaFileContent javaFileContent = fileContent
+						.getAdapter(JavaFileContent.class);
 				try {
 					packageName = extractPackage(javaFileContent);
 				} catch (IOException e) {

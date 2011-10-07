@@ -8,9 +8,10 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectReader;
 
+import de.fkoeberle.autocommit.message.AbstractAdaptableWithCache;
 import de.fkoeberle.autocommit.message.IFileContent;
 
-class FileContent implements IFileContent{
+class FileContent extends AbstractAdaptableWithCache implements IFileContent {
 	private final ObjectId objectId;
 	private final ObjectReader reader;
 	private ObjectLoader loader;
