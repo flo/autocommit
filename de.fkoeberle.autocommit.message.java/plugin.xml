@@ -32,5 +32,18 @@
             id="de.fkoeberle.autocommit.message.java.AddedClassCommitMessageFactory">
       </factory>
    </extension>
+   <extension
+         point="de.fkoeberle.autocommit.message.profile">
+      <profile
+            id="de.fkoeberle.autocommit.message.profile.java.default"
+            name="Default Java Profile">
+         <factory
+               id="de.fkoeberle.autocommit.message.java.AddedClassCommitMessageFactory">
+         </factory>
+         <factory
+               id="de.fkoeberle.autocommit.message.FileDeltaCMF">
+         </factory>
+      </profile>
+   </extension>
 
 </plugin>
