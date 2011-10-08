@@ -18,8 +18,8 @@
             id="de.fkoeberle.autocommit.message.java.AddedClassCommitMessageFactory">
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.ModifiedPackagesCMF"
-            id="de.fkoeberle.autocommit.message.java.ModifiedPackagesCMF">
+            class="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF"
+            id="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF">
       </factory>
    </extension>
    <extension
@@ -31,7 +31,7 @@
                id="de.fkoeberle.autocommit.message.java.AddedClassCommitMessageFactory">
          </factory>
          <factory
-               id="de.fkoeberle.autocommit.message.java.ModifiedPackagesCMF"></factory>
+               id="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF"></factory>
          <factory
                id="de.fkoeberle.autocommit.message.FileDeltaCMF">
          </factory>

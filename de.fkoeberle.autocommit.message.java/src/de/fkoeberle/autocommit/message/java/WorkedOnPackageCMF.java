@@ -6,7 +6,7 @@ import java.util.Set;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 
-public class ModifiedPackagesCMF implements ICommitMessageFactory {
+public class WorkedOnPackageCMF implements ICommitMessageFactory {
 	private static final Set<String> DOT_JAVA = Collections.singleton("java");
 
 	@Override
