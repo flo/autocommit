@@ -30,21 +30,9 @@ public class ModifiedPackagesCMF implements ICommitMessageFactory {
 		for (ModifiedFile file : delta.getChangedFiles()) {
 			String filePath = file.getPath();
 			IFileContent fileContent = file.getNewContent();
-			int lastSlash = filePath.lastIndexOf('/');
-			final String directoryPath;
-			if (lastSlash == -1) {
-				directoryPath = "/";
-			} else {
-				directoryPath = filePath.substring(0,lastSlash);
-			}
-			String packageName = null;
-			for (String sourceFolder:sourceFolders) {
-				if (directoryPath.startsWith(sourceFolder)) {
-					String packagePath = directoryPath.substring(sourceFolder.length());
-					packageName = packagePath.replace('/', '.');
-					break;
-				}
-			}
+			final String directoryPath = directoryOf(filePath);
+			String packageName = determinePackageFromDirectory(sourceFolders,
+					directoryPath);
 			
 			if (packageName == null) {
 				JavaFileContent javaFileContent = fileContent
@@ -99,6 +87,31 @@ public class ModifiedPackagesCMF implements ICommitMessageFactory {
 
 		// TODO rename getChangedFiles()
 		// TODO iterate added and removed files
+	}
+
+	private String directoryOf(String filePath) {
+		int lastSlash = filePath.lastIndexOf('/');
+		final String directoryPath;
+		if (lastSlash == -1) {
+			directoryPath = "/";
+		} else {
+			directoryPath = filePath.substring(0,lastSlash);
+		}
+		return directoryPath;
+	}
+
+	private String determinePackageFromDirectory(List<String> sourceFolders,
+			final String directoryPath) {
+		String packageName = null;
+		for (String sourceFolder:sourceFolders) {
+			if (directoryPath.startsWith(sourceFolder)) {
+				String packagePath = directoryPath.substring(sourceFolder.length());
+				packageName = packagePath.replace('/', '.');
+				break;
+			}
+		}
+		// TODO check and document: returns "" if default package
+		return packageName;
 	}
 
 	private String extractPackage(JavaFileContent javaFileContent)
