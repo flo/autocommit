@@ -16,10 +16,10 @@ import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.IFileContent;
 
-public class AddedClassCommitMessageFactory implements ICommitMessageFactory {
+public class AddedClassCMF implements ICommitMessageFactory {
 	private static final Set<String> DOT_JAVA = Collections.singleton("java");
 
-	public AddedClassCommitMessageFactory() {
+	public AddedClassCMF() {
 	}
 
 	@Override

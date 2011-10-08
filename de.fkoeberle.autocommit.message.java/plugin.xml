@@ -14,8 +14,8 @@
    <extension
          point="de.fkoeberle.autocommit.message.factory">
       <factory
-            class="de.fkoeberle.autocommit.message.java.AddedClassCommitMessageFactory"
-            id="de.fkoeberle.autocommit.message.java.AddedClassCommitMessageFactory">
+            class="de.fkoeberle.autocommit.message.java.AddedClassCMF"
+            id="de.fkoeberle.autocommit.message.java.AddedClassCMF">
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF"
@@ -28,7 +28,7 @@
             id="de.fkoeberle.autocommit.message.profile.java.default"
             name="Default Java Profile">
          <factory
-               id="de.fkoeberle.autocommit.message.java.AddedClassCommitMessageFactory">
+               id="de.fkoeberle.autocommit.message.java.AddedClassCMF">
          </factory>
          <factory
                id="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF"></factory>
