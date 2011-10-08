@@ -21,7 +21,7 @@ class PackageSetBuilder {
 	List<String> sourceFolders = new ArrayList<String>();
 
 	private boolean addPackageOfFile(String filePath,
-			IFileContent fileContent) throws IOException {
+ IFileContent fileContent) {
 		final String directoryPath = directoryOf(filePath);
 		String packageName = determinePackageFromDirectory(directoryPath);
 
@@ -107,8 +107,7 @@ class PackageSetBuilder {
 		return packageNames;
 	}
 
-	public boolean addPackagesOf(FileSetDelta delta)
-			throws IOException {
+	public boolean addPackagesOf(FileSetDelta delta) {
 		for (ModifiedFile file : delta.getChangedFiles()) {
 			boolean success = addPackageOfFile(file.getPath(),
 					file.getNewContent());
