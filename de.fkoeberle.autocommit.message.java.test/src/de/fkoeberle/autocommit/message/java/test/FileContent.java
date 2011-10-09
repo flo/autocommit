@@ -1,0 +1,31 @@
+package de.fkoeberle.autocommit.message.java.test;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+import de.fkoeberle.autocommit.message.AbstractAdaptableWithCache;
+import de.fkoeberle.autocommit.message.IFileContent;
+
+public class FileContent extends AbstractAdaptableWithCache implements
+		IFileContent {
+	private final byte[] buffer;
+
+	public FileContent(String content) {
+		buffer = content.getBytes();
+	}
+
+	@Override
+	public byte[] getBytesForReadOnlyPurposes() throws IOException {
+		return buffer;
+	}
+
+	@Override
+	public long getSize() throws IOException {
+		return buffer.length;
+	}
+
+	@Override
+	public void copyTo(OutputStream outputStream) throws IOException {
+		outputStream.write(buffer);
+	}
+}
