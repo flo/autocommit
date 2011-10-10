@@ -29,7 +29,7 @@ public class AddedClassCMF implements ICommitMessageFactory {
 	}
 
 	@Override
-	public String build(FileSetDelta delta) {
+	public String createMessageFor(FileSetDelta delta) {
 		if (!delta.getFileExtensions().equals(DOT_JAVA)) {
 			return null;
 		}

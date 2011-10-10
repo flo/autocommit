@@ -8,7 +8,7 @@ public final class ModifiedPathCMF implements
 	StringBuilder stringBuilder = new StringBuilder();
 
 	@Override
-	public String build(FileSetDelta delta) {
+	public String createMessageFor(FileSetDelta delta) {
 		return "Worked on " + findCommonPrefix(delta);
 	}
 

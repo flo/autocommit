@@ -51,7 +51,7 @@ public class CommitMessageBuilder implements ICommitMessageBuilder {
 				.getFirstProfileFactories();
 
 		for (ICommitMessageFactory factory : factories) {
-			String message = factory.build(delta);
+			String message = factory.createMessageFor(delta);
 			if (message != null) {
 				return message;
 			}

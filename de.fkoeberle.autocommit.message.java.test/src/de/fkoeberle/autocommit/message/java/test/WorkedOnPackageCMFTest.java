@@ -17,7 +17,7 @@ public class WorkedOnPackageCMFTest {
 				"package org.example;\n\nclass Test {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.build(delta);
+		String message = factory.createMessageFor(delta);
 		assertEquals("Worked on package org.example", message);
 	}
 
