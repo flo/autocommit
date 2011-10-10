@@ -3,9 +3,14 @@ import org.eclipse.osgi.util.NLS;
 
 public class Translations extends NLS {
 	private static final String BASE_NAME = "de.fkoeberle.autocommit.message.java.translations";
-	public static String WorkedOnPackageCMF_WorkedOnDefaultPackage;
-	public static String WorkedOnPackageCMF_WorkedOnPackage;
-	public static String WorkedOnPackageCMF_WorkedOnSubPackages;
+	public static String AddedClassCMF_addedAnotationMessage;
+	public static String AddedClassCMF_addedClassMessage;
+	public static String AddedClassCMF_addedEnumMessage;
+	public static String AddedClassCMF_addedInterfaceMessage;
+	public static String AddedClassCMF_addedStubClassMessage;
+	public static String WorkedOnPackageCMF_workedOnDefaultPackage;
+	public static String WorkedOnPackageCMF_workedOnPackage;
+	public static String WorkedOnPackageCMF_workedOnSubPackages;
 	static {
 		initializeMessages(BASE_NAME, Translations.class);
 	}

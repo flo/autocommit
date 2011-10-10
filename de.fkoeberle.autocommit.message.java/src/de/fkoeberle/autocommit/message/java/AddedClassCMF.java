@@ -16,14 +16,31 @@ import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.osgi.util.NLS;
 
 import de.fkoeberle.autocommit.message.AddedFile;
+import de.fkoeberle.autocommit.message.CommitMessage;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.IFileContent;
 
 public class AddedClassCMF implements ICommitMessageFactory {
-	private static final Set<String> DOT_JAVA = Collections.singleton("java");
+	private static final Set<String> DOT_JAVA = Collections.singleton("java"); //$NON-NLS-1$
+
+	@CommitMessage
+	public String addedInterfaceMessage = Translations.AddedClassCMF_addedInterfaceMessage;
+
+	@CommitMessage
+	public String addedStubClassMessage = Translations.AddedClassCMF_addedStubClassMessage;
+
+	@CommitMessage
+	public String addedClassMessage = Translations.AddedClassCMF_addedClassMessage;
+
+	@CommitMessage
+	public String addedEnumMessage = Translations.AddedClassCMF_addedEnumMessage;
+
+	@CommitMessage
+	public String addedAnotationMessage = Translations.AddedClassCMF_addedAnotationMessage;
 
 	public AddedClassCMF() {
 	}
@@ -70,19 +87,20 @@ public class AddedClassCMF implements ICommitMessageFactory {
 		if (topLevelType instanceof TypeDeclaration) {
 			TypeDeclaration type = (TypeDeclaration) topLevelType;
 			if (type.isInterface()) {
-				return "Added an interface called " + name;
+				return NLS.bind(addedInterfaceMessage, name);
 			} else {
 				boolean stub = isClassAStub(compilationUnit, type);
 				if (stub) {
-					return "Added a stub version of the class " + name;
+					return NLS.bind(addedStubClassMessage,
+							name);
 				} else {
-					return "Added a class called " + name;
+					return NLS.bind(addedClassMessage, name);
 				}
 			}
 		} else if (topLevelType instanceof EnumDeclaration) {
-			return "Added an enum called " + name;
+			return NLS.bind(addedEnumMessage, name);
 		} else if (topLevelType instanceof AnnotationTypeDeclaration) {
-			return "Added an annotation type called " + name;
+			return NLS.bind(addedAnotationMessage, name);
 		} else {
 			// New unknown top level type can't be handled
 			return null;

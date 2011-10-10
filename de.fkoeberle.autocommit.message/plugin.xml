@@ -7,8 +7,8 @@
          name="test"
          point="de.fkoeberle.autocommit.message.factory">
       <factory
-            class="de.fkoeberle.autocommit.message.ModifiedPathCMF"
-            id="de.fkoeberle.autocommit.message.FileDeltaCMF">
+            class="de.fkoeberle.autocommit.message.WorkedOnPathCMF"
+            id="de.fkoeberle.autocommit.message.WorkedOnPathCMF">
       </factory>
    </extension>
    <extension

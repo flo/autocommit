@@ -5,11 +5,21 @@ import java.util.Set;
 
 import org.eclipse.osgi.util.NLS;
 
+import de.fkoeberle.autocommit.message.CommitMessage;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 
 public class WorkedOnPackageCMF implements ICommitMessageFactory {
 	private static final Set<String> DOT_JAVA = Collections.singleton("java"); //$NON-NLS-1$
+
+	@CommitMessage
+	public String workedOnDefaultPackage = Translations.WorkedOnPackageCMF_workedOnDefaultPackage;
+
+	@CommitMessage
+	public String workedOnPackage = Translations.WorkedOnPackageCMF_workedOnPackage;
+
+	@CommitMessage
+	public String workedOnSubPackages = Translations.WorkedOnPackageCMF_workedOnSubPackages;
 
 	@Override
 	public String createMessageFor(FileSetDelta delta) {
@@ -31,9 +41,9 @@ public class WorkedOnPackageCMF implements ICommitMessageFactory {
 		if (packageNames.size() == 1) {
 			String p = packageNames.iterator().next();
 			if (p.equals("")) { //$NON-NLS-1$
-				return Translations.WorkedOnPackageCMF_WorkedOnDefaultPackage;
+				return workedOnDefaultPackage;
 			} else {
-				return NLS.bind(Translations.WorkedOnPackageCMF_WorkedOnPackage, p);
+				return NLS.bind(workedOnPackage, p);
 			}
 		}
 		CommonParentPackageFinder commonParentFinder = new CommonParentPackageFinder();
@@ -44,7 +54,7 @@ public class WorkedOnPackageCMF implements ICommitMessageFactory {
 		if (commonParent == null) {
 			return null;
 		}
-		return NLS.bind(Translations.WorkedOnPackageCMF_WorkedOnSubPackages,
+		return NLS.bind(Translations.WorkedOnPackageCMF_workedOnSubPackages,
 				commonParent);
 	}
 }

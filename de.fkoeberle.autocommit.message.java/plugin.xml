@@ -33,7 +33,7 @@
          <factory
                id="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF"></factory>
          <factory
-               id="de.fkoeberle.autocommit.message.FileDeltaCMF">
+               id="de.fkoeberle.autocommit.message.WorkedOnPathCMF">
          </factory>
       </profile>
    </extension>
