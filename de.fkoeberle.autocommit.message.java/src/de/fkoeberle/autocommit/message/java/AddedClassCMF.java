@@ -16,10 +16,10 @@ import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.osgi.util.NLS;
 
 import de.fkoeberle.autocommit.message.AddedFile;
 import de.fkoeberle.autocommit.message.CommitMessage;
+import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.IFileContent;
@@ -28,19 +28,24 @@ public class AddedClassCMF implements ICommitMessageFactory {
 	private static final Set<String> DOT_JAVA = Collections.singleton("java"); //$NON-NLS-1$
 
 	@CommitMessage
-	public String addedInterfaceMessage = Translations.AddedClassCMF_addedInterfaceMessage;
+	public final CommitMessageTemplate addedInterfaceMessage = new CommitMessageTemplate(
+			Translations.AddedClassCMF_addedInterfaceMessage);
 
 	@CommitMessage
-	public String addedStubClassMessage = Translations.AddedClassCMF_addedStubClassMessage;
+	public final CommitMessageTemplate addedStubClassMessage = new CommitMessageTemplate(
+			Translations.AddedClassCMF_addedStubClassMessage);
 
 	@CommitMessage
-	public String addedClassMessage = Translations.AddedClassCMF_addedClassMessage;
+	public final CommitMessageTemplate addedClassMessage = new CommitMessageTemplate(
+			Translations.AddedClassCMF_addedClassMessage);
 
 	@CommitMessage
-	public String addedEnumMessage = Translations.AddedClassCMF_addedEnumMessage;
+	public final CommitMessageTemplate addedEnumMessage = new CommitMessageTemplate(
+			Translations.AddedClassCMF_addedEnumMessage);
 
 	@CommitMessage
-	public String addedAnotationMessage = Translations.AddedClassCMF_addedAnotationMessage;
+	public final CommitMessageTemplate addedAnotationMessage = new CommitMessageTemplate(
+			Translations.AddedClassCMF_addedAnotationMessage);
 
 	public AddedClassCMF() {
 	}
@@ -87,20 +92,19 @@ public class AddedClassCMF implements ICommitMessageFactory {
 		if (topLevelType instanceof TypeDeclaration) {
 			TypeDeclaration type = (TypeDeclaration) topLevelType;
 			if (type.isInterface()) {
-				return NLS.bind(addedInterfaceMessage, name);
+				return addedInterfaceMessage.createMessageWithArgs(name);
 			} else {
 				boolean stub = isClassAStub(compilationUnit, type);
 				if (stub) {
-					return NLS.bind(addedStubClassMessage,
-							name);
+					return addedStubClassMessage.createMessageWithArgs(name);
 				} else {
-					return NLS.bind(addedClassMessage, name);
+					return addedClassMessage.createMessageWithArgs(name);
 				}
 			}
 		} else if (topLevelType instanceof EnumDeclaration) {
-			return NLS.bind(addedEnumMessage, name);
+			return addedEnumMessage.createMessageWithArgs(name);
 		} else if (topLevelType instanceof AnnotationTypeDeclaration) {
-			return NLS.bind(addedAnotationMessage, name);
+			return addedAnotationMessage.createMessageWithArgs(name);
 		} else {
 			// New unknown top level type can't be handled
 			return null;

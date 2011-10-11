@@ -1,21 +1,17 @@
 package de.fkoeberle.autocommit.message;
 
-import org.eclipse.osgi.util.NLS;
 
-
-
-
-public final class WorkedOnPathCMF implements
- ICommitMessageFactory {
+public final class WorkedOnPathCMF implements ICommitMessageFactory {
 	StringBuilder stringBuilder = new StringBuilder();
 
 	@CommitMessage
-	public String workedOn = Translations.WorkedOnPathCMF_workedOnPathCMF;
+	public CommitMessageTemplate workedOn = new CommitMessageTemplate(
+			Translations.WorkedOnPathCMF_workedOnPathCMF);
 
 	@Override
 	public String createMessageFor(FileSetDelta delta) {
 		String prefix = findCommonPrefix(delta);
-		return NLS.bind(workedOn, prefix);
+		return workedOn.createMessageWithArgs(prefix);
 	}
 
 	private String findCommonPrefix(FileSetDelta delta) {
