@@ -1,10 +1,9 @@
 package de.fkoeberle.autocommit.message;
 
 import java.io.IOException;
-import java.lang.ref.SoftReference;
 
 public class TextFileContent implements ITextFileContent {
-	private SoftReference<String> cachedContentString;
+	private String cachedString;
 	private final IFileContent fileContent;
 
 	public TextFileContent(IFileContent fileContent) {
@@ -13,16 +12,10 @@ public class TextFileContent implements ITextFileContent {
 
 	@Override
 	public String getContentAsString() throws IOException {
-		String chars;
-		if (cachedContentString != null) {
-			chars = cachedContentString.get();
-			if (chars != null) {
-				return chars;
-			}
+		if (cachedString == null) {
+			byte[] bytes = fileContent.getBytesForReadOnlyPurposes();
+			cachedString = new String(bytes);
 		}
-		byte[] bytes = fileContent.getBytesForReadOnlyPurposes();
-		String string = new String(bytes);
-		cachedContentString = new SoftReference<String>(string);
-		return string;
+		return cachedString;
 	}
 }

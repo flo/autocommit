@@ -1,7 +1,6 @@
 package de.fkoeberle.autocommit.message.java;
 
 import java.io.IOException;
-import java.lang.ref.SoftReference;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -10,7 +9,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import de.fkoeberle.autocommit.message.IFileContent;
 import de.fkoeberle.autocommit.message.ITextFileContent;
 public class JavaFileContent {
-	private SoftReference<CompilationUnit> cachedCompilationUnit;
+	private CompilationUnit cachedCompilationUnit;
 	private final IFileContent fileContent;
 
 	public JavaFileContent(IFileContent fileContent) {
@@ -31,19 +30,13 @@ public class JavaFileContent {
 	 */
 	public CompilationUnit getCompilationUnitForReadOnlyPurposes()
 			throws IOException {
-		CompilationUnit compilationUnit;
-		if (cachedCompilationUnit != null) {
-			compilationUnit = cachedCompilationUnit.get();
-			if (compilationUnit != null) {
-				return compilationUnit;
-			}
+		if (cachedCompilationUnit == null) {
+			ITextFileContent textFileContent = fileContent
+					.getAdapter(ITextFileContent.class);
+			char[] chars = textFileContent.getContentAsString().toCharArray();
+			cachedCompilationUnit = createCompilationUnit(chars);
 		}
-		ITextFileContent textFileContent = fileContent
-				.getAdapter(ITextFileContent.class);
-		char[] chars = textFileContent.getContentAsString().toCharArray();
-		compilationUnit = createCompilationUnit(chars);
-		cachedCompilationUnit = new SoftReference<CompilationUnit>(compilationUnit);
-		return compilationUnit;
+		return cachedCompilationUnit;
 	}
 
 
