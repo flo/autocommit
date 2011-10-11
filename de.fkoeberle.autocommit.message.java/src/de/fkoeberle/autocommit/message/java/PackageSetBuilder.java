@@ -37,17 +37,8 @@ class PackageSetBuilder {
 				return false;
 			}
 			if (packageName == null) {
-				if (directoryPath.equals("/")) {
-					sourceFolders.add("/");
-					packageName = "";
-				} else {
-					// path contains no directories
-					// => path contains not the existing package
-					// directories
-					// => can't be handled
-					// => packageName stays at null
-					return false;
-				}
+				sourceFolders.add("/");
+				packageName = "";
 			} else {
 				String packagePath = packageName.replace(".", "/");
 				if (directoryPath.endsWith(packagePath)) {
@@ -90,6 +81,11 @@ class PackageSetBuilder {
 		return packageName;
 	}
 
+	/**
+	 * 
+	 * @return the extracted package or "" if there is no package declaration
+	 *         but the file is otherwise valid.
+	 */
 	private static String extractPackage(JavaFileContent javaFileContent)
 			throws IOException {
 		CompilationUnit compilationUnit = javaFileContent

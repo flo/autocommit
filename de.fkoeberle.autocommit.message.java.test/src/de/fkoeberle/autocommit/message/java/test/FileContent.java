@@ -9,9 +9,11 @@ import de.fkoeberle.autocommit.message.IFileContent;
 public class FileContent extends AbstractAdaptableWithCache implements
 		IFileContent {
 	private final byte[] buffer;
+	private final String content;
 
 	public FileContent(String content) {
-		buffer = content.getBytes();
+		this.buffer = content.getBytes();
+		this.content = content;
 	}
 
 	@Override
@@ -27,5 +29,10 @@ public class FileContent extends AbstractAdaptableWithCache implements
 	@Override
 	public void copyTo(OutputStream outputStream) throws IOException {
 		outputStream.write(buffer);
+	}
+
+	@Override
+	public String toString() {
+		return content;
 	}
 }
