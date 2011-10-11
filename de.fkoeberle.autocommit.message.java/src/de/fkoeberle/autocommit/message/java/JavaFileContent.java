@@ -1,7 +1,9 @@
 package de.fkoeberle.autocommit.message.java;
 
 import java.io.IOException;
+import java.util.Map;
 
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -19,6 +21,9 @@ public class JavaFileContent {
 	private CompilationUnit createCompilationUnit(char[] fileContent) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource(fileContent);
+		Map<?, ?> options = JavaCore.getOptions();
+		JavaCore.setComplianceOptions(JavaCore.VERSION_1_7, options);
+		parser.setCompilerOptions(options);
 		CompilationUnit unit = (CompilationUnit) parser.createAST(null);
 		return unit;
 	}
