@@ -27,7 +27,7 @@ class PackageSetBuilder {
 
 		if (packageName == null) {
 			JavaFileContent javaFileContent = fileContent
-					.getAdapter(JavaFileContent.class);
+					.getSharedAdapter(JavaFileContent.class);
 
 			try {
 				packageName = extractPackage(javaFileContent);

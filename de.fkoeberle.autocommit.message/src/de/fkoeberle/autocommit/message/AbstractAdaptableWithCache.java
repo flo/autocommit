@@ -10,7 +10,7 @@ public abstract class AbstractAdaptableWithCache implements IAdaptableWithCache 
 	private final Map<Class<?>, SoftReference<Object>> cache = new HashMap<Class<?>, SoftReference<Object>>();
 
 	@Override
-	public final <T> T getAdapter(Class<T> adapterClass) {
+	public final <T> T getSharedAdapter(Class<T> adapterClass) {
 		SoftReference<Object> softReference = cache.get(adapterClass);
 		Object object = null;
 		if (softReference != null) {

@@ -68,7 +68,7 @@ public class AddedClassCMF implements ICommitMessageFactory {
 		AddedFile addedFile = delta.getAddedFiles().get(0);
 		IFileContent genericContent = addedFile.getNewContent();
 		JavaFileContent content = genericContent
-				.getAdapter(JavaFileContent.class);
+				.getSharedAdapter(JavaFileContent.class);
 		CompilationUnit compilationUnit;
 		try {
 			compilationUnit = content.getCompilationUnitForReadOnlyPurposes();

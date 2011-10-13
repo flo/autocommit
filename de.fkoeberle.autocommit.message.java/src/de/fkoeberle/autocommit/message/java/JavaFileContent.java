@@ -37,7 +37,7 @@ public class JavaFileContent {
 			throws IOException {
 		if (cachedCompilationUnit == null) {
 			ITextFileContent textFileContent = fileContent
-					.getAdapter(ITextFileContent.class);
+					.getSharedAdapter(ITextFileContent.class);
 			char[] chars = textFileContent.getContentAsString().toCharArray();
 			cachedCompilationUnit = createCompilationUnit(chars);
 		}
