@@ -50,7 +50,7 @@ public class DeclarationListDelta {
 		}
 
 		for (Object typeObject : newTypes) {
-			BodyDeclaration newDeclaration = (AbstractTypeDeclaration) typeObject;
+			BodyDeclaration newDeclaration = (BodyDeclaration) typeObject;
 			DeclarationId id = declarationIdOf(newDeclaration);
 			BodyDeclaration oldDeclaration = idToOldVersion.remove(id);
 			if (oldDeclaration == null) {

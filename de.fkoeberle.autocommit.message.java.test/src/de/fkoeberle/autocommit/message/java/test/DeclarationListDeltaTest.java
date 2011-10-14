@@ -5,8 +5,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.junit.Test;
 
@@ -21,7 +23,8 @@ public class DeclarationListDeltaTest {
 		try {
 			CompilationUnit oldCompilationUnit = createCompilationUnit(oldContent);
 			CompilationUnit newCompilationUnit = createCompilationUnit(newContent);
-			return new DeclarationListDelta(oldCompilationUnit, newCompilationUnit);
+			return new DeclarationListDelta(oldCompilationUnit,
+					newCompilationUnit);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -47,8 +50,7 @@ public class DeclarationListDeltaTest {
 		BodyDeclaration addedDeclaration = delta.getAddedDeclarations().get(0);
 		assertTrue(addedDeclaration instanceof TypeDeclaration);
 		assertEquals("OtherClass", ((TypeDeclaration) addedDeclaration)
-				.getName()
-				.getIdentifier());
+				.getName().getIdentifier());
 	}
 
 	@Test
@@ -65,9 +67,9 @@ public class DeclarationListDeltaTest {
 				.get(0);
 
 		assertTrue(removedDeclaration instanceof TypeDeclaration);
-		assertEquals("OtherClass", ((TypeDeclaration) removedDeclaration).getName()
-				.getIdentifier());
-		
+		assertEquals("OtherClass", ((TypeDeclaration) removedDeclaration)
+				.getName().getIdentifier());
+
 	}
 
 	@Test
@@ -128,5 +130,39 @@ public class DeclarationListDeltaTest {
 				.getIdentifier());
 	}
 
+	@Test
+	public void testAddFirstMethod() {
+		DeclarationListDelta fileDelta = createDelta(
+				"package org.example;\n\nclass MainClass {}",
+				"package org.example;\n\nclass MainClass { String test() { return \"new value\";}\n}");
+
+		assertEquals(0, fileDelta.getAddedDeclarations().size());
+		assertEquals(1, fileDelta.getChangedDeclarations().size());
+		assertEquals(0, fileDelta.getRemovedDeclarations().size());
+
+		DeclarationDelta modifiedType = fileDelta.getChangedDeclarations().get(
+				0);
+
+		BodyDeclaration oldDeclaration = modifiedType.getOldDeclaration();
+		assertTrue(oldDeclaration instanceof TypeDeclaration);
+		AbstractTypeDeclaration oldType = (AbstractTypeDeclaration) oldDeclaration;
+
+		BodyDeclaration newDeclaration = modifiedType.getNewDeclaration();
+		assertTrue(newDeclaration instanceof TypeDeclaration);
+		AbstractTypeDeclaration newType = (AbstractTypeDeclaration) newDeclaration;
+
+		DeclarationListDelta typeDelta = new DeclarationListDelta(oldType,
+				newType);
+		assertEquals(1, typeDelta.getAddedDeclarations().size());
+		assertEquals(0, typeDelta.getChangedDeclarations().size());
+		assertEquals(0, typeDelta.getRemovedDeclarations().size());
+
+		BodyDeclaration addedBodyDeclaration = typeDelta.getAddedDeclarations()
+				.get(0);
+		assertTrue(addedBodyDeclaration instanceof MethodDeclaration);
+		MethodDeclaration addedMethod = (MethodDeclaration) addedBodyDeclaration;
+		assertEquals("test", addedMethod.getName().getIdentifier());
+
+	}
 	// TODO test class, enum, interface and annotation body declaration changes
 }
