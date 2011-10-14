@@ -130,11 +130,15 @@ public class DeclarationListDeltaTest {
 				.getIdentifier());
 	}
 
-	@Test
-	public void testAddFirstMethod() {
-		DeclarationListDelta fileDelta = createDelta(
-				"package org.example;\n\nclass MainClass {}",
-				"package org.example;\n\nclass MainClass { String test() { return \"new value\";}\n}");
+	private static DeclarationListDelta createClassDelta(String oldBodyContent,
+			String newBodyContent) {
+		String oldSource = String.format(
+				"package org.example;\n\nclass MainClass {\n%s\n}",
+				oldBodyContent);
+		String newSource = String.format(
+				"package org.example;\n\nclass MainClass {\n%s\n}",
+				newBodyContent);
+		DeclarationListDelta fileDelta = createDelta(oldSource, newSource);
 
 		assertEquals(0, fileDelta.getAddedDeclarations().size());
 		assertEquals(1, fileDelta.getChangedDeclarations().size());
@@ -153,11 +157,20 @@ public class DeclarationListDeltaTest {
 
 		DeclarationListDelta typeDelta = new DeclarationListDelta(oldType,
 				newType);
-		assertEquals(1, typeDelta.getAddedDeclarations().size());
-		assertEquals(0, typeDelta.getChangedDeclarations().size());
-		assertEquals(0, typeDelta.getRemovedDeclarations().size());
 
-		BodyDeclaration addedBodyDeclaration = typeDelta.getAddedDeclarations()
+		return typeDelta;
+	}
+
+	@Test
+	public void testAddFirstMethod() {
+		DeclarationListDelta delta = createClassDelta("",
+				"String test() { return \"new value\";}");
+
+		assertEquals(1, delta.getAddedDeclarations().size());
+		assertEquals(0, delta.getChangedDeclarations().size());
+		assertEquals(0, delta.getRemovedDeclarations().size());
+
+		BodyDeclaration addedBodyDeclaration = delta.getAddedDeclarations()
 				.get(0);
 		assertTrue(addedBodyDeclaration instanceof MethodDeclaration);
 		MethodDeclaration addedMethod = (MethodDeclaration) addedBodyDeclaration;
