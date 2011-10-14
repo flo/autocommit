@@ -26,8 +26,8 @@ class PackageSetBuilder {
 		String packageName = determinePackageFromDirectory(directoryPath);
 
 		if (packageName == null) {
-			JavaFileContent javaFileContent = fileContent
-					.getSharedAdapter(JavaFileContent.class);
+			IJavaFileContent javaFileContent = fileContent
+					.getSharedAdapter(IJavaFileContent.class);
 
 			try {
 				packageName = extractPackage(javaFileContent);
@@ -86,7 +86,7 @@ class PackageSetBuilder {
 	 * @return the extracted package or "" if there is no package declaration
 	 *         but the file is otherwise valid.
 	 */
-	private static String extractPackage(JavaFileContent javaFileContent)
+	private static String extractPackage(IJavaFileContent javaFileContent)
 			throws IOException {
 		CompilationUnit compilationUnit = javaFileContent
 				.getCompilationUnitForReadOnlyPurposes();

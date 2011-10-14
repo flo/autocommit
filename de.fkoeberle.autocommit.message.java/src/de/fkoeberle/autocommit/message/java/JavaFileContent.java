@@ -10,7 +10,8 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import de.fkoeberle.autocommit.message.IFileContent;
 import de.fkoeberle.autocommit.message.ITextFileContent;
-public class JavaFileContent {
+
+public class JavaFileContent implements IJavaFileContent {
 	private CompilationUnit cachedCompilationUnit;
 	private final IFileContent fileContent;
 
@@ -28,11 +29,8 @@ public class JavaFileContent {
 		return unit;
 	}
 
-	/**
-	 * 
-	 * @return an {@link CompilationUnit} which must not be modified.
-	 * @throws IOException
-	 */
+
+	@Override
 	public CompilationUnit getCompilationUnitForReadOnlyPurposes()
 			throws IOException {
 		if (cachedCompilationUnit == null) {
