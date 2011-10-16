@@ -11,6 +11,10 @@ public class Translations extends NLS {
 	public static String WorkedOnPackageCMF_workedOnDefaultPackage;
 	public static String WorkedOnPackageCMF_workedOnPackage;
 	public static String WorkedOnPackageCMF_workedOnSubPackages;
+	public static String WorkedOnTypeCMF_workedOnClass;
+	public static String WorkedOnTypeCMF_workedOnInterface;
+	public static String WorkedOnTypeCMF_workedOnEnum;
+	public static String WorkedOnTypeCMF_workedOnAnnotation;
 	static {
 		initializeMessages(BASE_NAME, Translations.class);
 	}
