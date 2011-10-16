@@ -3,7 +3,7 @@ package de.fkoeberle.autocommit.message;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public interface IFileContent extends IAdaptableWithCache {
+public interface IFileContent {
 
 	long getSize() throws IOException;
 

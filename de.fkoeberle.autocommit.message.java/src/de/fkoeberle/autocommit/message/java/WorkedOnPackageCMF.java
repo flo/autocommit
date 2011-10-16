@@ -9,6 +9,7 @@ import de.fkoeberle.autocommit.message.CommitMessage;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.ISession;
 
 public class WorkedOnPackageCMF implements ICommitMessageFactory {
 	private static final Set<String> DOT_JAVA = Collections.singleton("java"); //$NON-NLS-1$
@@ -26,12 +27,12 @@ public class WorkedOnPackageCMF implements ICommitMessageFactory {
 			Translations.WorkedOnPackageCMF_workedOnSubPackages);
 
 	@Override
-	public String createMessageFor(FileSetDelta delta) {
+	public String createMessageFor(FileSetDelta delta, ISession session) {
 		if (!delta.getFileExtensions().equals(DOT_JAVA)) {
 			return null;
 		}
 
-		PackageSetBuilder builder = new PackageSetBuilder();
+		PackageSetBuilder builder = new PackageSetBuilder(session);
 		boolean success = builder.addPackagesOf(delta);
 		if (!success) {
 			return null;

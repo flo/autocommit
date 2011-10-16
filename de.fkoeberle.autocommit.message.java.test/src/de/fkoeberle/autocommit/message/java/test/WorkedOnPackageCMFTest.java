@@ -2,12 +2,20 @@ package de.fkoeberle.autocommit.message.java.test;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import de.fkoeberle.autocommit.message.FileSetDelta;
+import de.fkoeberle.autocommit.message.ISession;
 import de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF;
 
 public class WorkedOnPackageCMFTest {
+	private ISession session;
+
+	@Before
+	public void initialize() {
+		session = new TestSession();
+	}
 
 	@Test
 	public void testSingleAddedFile() {
@@ -17,7 +25,7 @@ public class WorkedOnPackageCMFTest {
 				"package org.example;\n\nclass Test {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.workedOnPackage
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -31,7 +39,7 @@ public class WorkedOnPackageCMFTest {
 				"package org.example;\n\nclass Test {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.workedOnPackage
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -46,7 +54,7 @@ public class WorkedOnPackageCMFTest {
 				"package org.example;\n\nclass Test {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.workedOnPackage
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -63,7 +71,7 @@ public class WorkedOnPackageCMFTest {
 				"package org.example;\n\nclass Mod {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.workedOnPackage
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -79,7 +87,7 @@ public class WorkedOnPackageCMFTest {
 				"package org.example.newpackage;\n\nclass Test {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.workedOnSubPackages
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -95,7 +103,7 @@ public class WorkedOnPackageCMFTest {
 				"package org.example;\n\nclass Test {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.workedOnPackage
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -108,7 +116,7 @@ public class WorkedOnPackageCMFTest {
 		builder.addAddedFile("/project1/Test.java", "class Test {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.workedOnDefaultPackage
 				.createMessageWithArgs();
 		assertEquals(expected, message);
@@ -122,7 +130,7 @@ public class WorkedOnPackageCMFTest {
 				"package org.example;\n\nclass Test {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = null;
 		assertEquals(expected, message);
 	}
@@ -143,7 +151,7 @@ public class WorkedOnPackageCMFTest {
 				"package org.example;\n\nclass Two {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.workedOnSubPackages
 				.createMessageWithArgs("org");
 		assertEquals(expected, message);
@@ -159,7 +167,7 @@ public class WorkedOnPackageCMFTest {
 				"package org.example;\n\nclass Two {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = null;
 		assertEquals(expected, message);
 	}

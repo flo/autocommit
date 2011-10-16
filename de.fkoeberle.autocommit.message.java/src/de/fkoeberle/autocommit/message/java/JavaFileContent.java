@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import de.fkoeberle.autocommit.message.IFileContent;
+import de.fkoeberle.autocommit.message.ISession;
 import de.fkoeberle.autocommit.message.ITextFileContent;
 
 public class JavaFileContent implements IJavaFileContent {
@@ -31,11 +32,11 @@ public class JavaFileContent implements IJavaFileContent {
 
 
 	@Override
-	public CompilationUnit getCompilationUnitForReadOnlyPurposes()
+	public CompilationUnit getCompilationUnitForReadOnlyPurposes(ISession session)
 			throws IOException {
 		if (cachedCompilationUnit == null) {
-			ITextFileContent textFileContent = fileContent
-					.getSharedAdapter(ITextFileContent.class);
+			ITextFileContent textFileContent = session.getSharedAdapter(
+					fileContent, ITextFileContent.class);
 			char[] chars = textFileContent.getContentAsString().toCharArray();
 			cachedCompilationUnit = createCompilationUnit(chars);
 		}

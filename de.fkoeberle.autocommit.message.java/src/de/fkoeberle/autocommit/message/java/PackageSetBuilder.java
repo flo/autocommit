@@ -13,12 +13,19 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 import de.fkoeberle.autocommit.message.AddedFile;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.IFileContent;
+import de.fkoeberle.autocommit.message.ISession;
 import de.fkoeberle.autocommit.message.ModifiedFile;
 import de.fkoeberle.autocommit.message.RemovedFile;
 
-class PackageSetBuilder {
-	Set<String> packageNames = new HashSet<String>();
-	List<String> sourceFolders = new ArrayList<String>();
+final class PackageSetBuilder {
+	private final ISession session;
+	private final Set<String> packageNames = new HashSet<String>();
+	private final List<String> sourceFolders = new ArrayList<String>();
+
+
+	public PackageSetBuilder(ISession session) {
+		this.session = session;
+	}
 
 	private boolean addPackageOfFile(String filePath,
  IFileContent fileContent) {
@@ -26,8 +33,8 @@ class PackageSetBuilder {
 		String packageName = determinePackageFromDirectory(directoryPath);
 
 		if (packageName == null) {
-			IJavaFileContent javaFileContent = fileContent
-					.getSharedAdapter(IJavaFileContent.class);
+			IJavaFileContent javaFileContent = session.getSharedAdapter(
+					fileContent, IJavaFileContent.class);
 
 			try {
 				packageName = extractPackage(javaFileContent);
@@ -86,10 +93,10 @@ class PackageSetBuilder {
 	 * @return the extracted package or "" if there is no package declaration
 	 *         but the file is otherwise valid.
 	 */
-	private static String extractPackage(IJavaFileContent javaFileContent)
+	private String extractPackage(IJavaFileContent javaFileContent)
 			throws IOException {
 		CompilationUnit compilationUnit = javaFileContent
-				.getCompilationUnitForReadOnlyPurposes();
+				.getCompilationUnitForReadOnlyPurposes(session);
 		PackageDeclaration packageDeclaration = compilationUnit
 				.getPackage();
 		if (packageDeclaration == null) {

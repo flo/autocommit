@@ -2,12 +2,20 @@ package de.fkoeberle.autocommit.message.java.test;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import de.fkoeberle.autocommit.message.FileSetDelta;
+import de.fkoeberle.autocommit.message.ISession;
 import de.fkoeberle.autocommit.message.java.AddedClassCMF;
 
 public class AddedClassCMFTest {
+	private ISession session;
+
+	@Before
+	public void initialize() {
+		session = new TestSession();
+	}
 
 	@Test
 	public void testAddedStubClass() {
@@ -17,7 +25,7 @@ public class AddedClassCMFTest {
 				"package org.example;\n\nclass Test {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.addedStubClassMessage
 				.createMessageWithArgs("Test");
 		assertEquals(expected, message);
@@ -32,7 +40,7 @@ public class AddedClassCMFTest {
 				"package org.example;\n\nclass AddedClass { String test() { return \"real value\";}}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.addedClassMessage
 				.createMessageWithArgs("AddedClass");
 		assertEquals(expected, message);
@@ -46,7 +54,7 @@ public class AddedClassCMFTest {
 				"package org.example;\n\ninterface MyInterface {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.addedInterfaceMessage
 				.createMessageWithArgs("MyInterface");
 		assertEquals(expected, message);
@@ -60,7 +68,7 @@ public class AddedClassCMFTest {
 				"package org.example;\n\npublic enum MyEnum {\n\n}\n");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.addedEnumMessage
 				.createMessageWithArgs("MyEnum");
 		assertEquals(expected, message);
@@ -75,7 +83,7 @@ public class AddedClassCMFTest {
 				"pacakge org.example\n\n@Target(ElementType.FIELD)\npublic @interface MyFieldAnnotation {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = factory.addedAnotationMessage
 				.createMessageWithArgs("MyFieldAnnotation");
 		assertEquals(expected, message);
@@ -92,7 +100,7 @@ public class AddedClassCMFTest {
 				"package org.example;\n\ninterface MyInterface {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = null;
 		assertEquals(expected, message);
 	}
@@ -108,7 +116,7 @@ public class AddedClassCMFTest {
 				"package org.example;\n\ninterface MyInterface {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = null;
 		assertEquals(expected, message);
 	}
@@ -121,7 +129,7 @@ public class AddedClassCMFTest {
 				"package org.example;\n\ninterface MyInterface {}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = null;
 		assertEquals(expected, message);
 	}
@@ -138,7 +146,7 @@ public class AddedClassCMFTest {
 				"package org.example;\n\ninterface MyInterface {int m();}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = null;
 		assertEquals(expected, message);
 	}
@@ -152,7 +160,7 @@ public class AddedClassCMFTest {
 				"package org.example;\n\ninterface MyInterface {int m();}");
 
 		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta);
+		String message = factory.createMessageFor(delta, session);
 		final String expected = null;
 		assertEquals(expected, message);
 	}

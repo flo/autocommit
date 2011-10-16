@@ -1,7 +1,7 @@
 package de.fkoeberle.autocommit.message.java;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 public class DeclarationListDelta {
 	List<BodyDeclaration> addedDeclarations;
 	List<BodyDeclaration> removedDeclarations;
-	List<DeclarationDelta> changedDesclarations;
+	List<DeclarationDelta> changedDeclarations;
 
 
 
@@ -39,10 +39,12 @@ public class DeclarationListDelta {
 	}
 
 	public DeclarationListDelta(List<?> oldTypes, List<?> newTypes) {
-		Map<DeclarationId, BodyDeclaration> idToOldVersion = new HashMap<DeclarationId, BodyDeclaration>(
+		// Use a linked hash map so that the list of
+		// removed declaration is in declaration order.
+		Map<DeclarationId, BodyDeclaration> idToOldVersion = new LinkedHashMap<DeclarationId, BodyDeclaration>(
 				oldTypes.size());
 		this.addedDeclarations = new ArrayList<BodyDeclaration>();
-		this.changedDesclarations = new ArrayList<DeclarationDelta>();
+		this.changedDeclarations = new ArrayList<DeclarationDelta>();
 		for (Object declarationObject : oldTypes) {
 			BodyDeclaration declaration = (BodyDeclaration) declarationObject;
 			DeclarationId id = declarationIdOf(declaration);
@@ -58,7 +60,7 @@ public class DeclarationListDelta {
 			} else {
 				if (!oldDeclaration.subtreeMatch(new ASTMatcher(true),
 						newDeclaration)) {
-					changedDesclarations.add(new DeclarationDelta(
+					changedDeclarations.add(new DeclarationDelta(
 							oldDeclaration, newDeclaration));
 				}
 			}
@@ -100,7 +102,7 @@ public class DeclarationListDelta {
 	}
 
 	public List<DeclarationDelta> getChangedDeclarations() {
-		return changedDesclarations;
+		return changedDeclarations;
 	}
 
 	public List<BodyDeclaration> getRemovedDeclarations() {
@@ -228,7 +230,8 @@ public class DeclarationListDelta {
 			}
 			ASTMatcher matcher = new ASTMatcher(true);
 			for (int i = 0; i < parameters.size(); i++) {
-				if (!(parameters.get(i).subtreeMatch(matcher, otherParameters))) {
+				if (!(parameters.get(i).subtreeMatch(matcher,
+						otherParameters.get(i)))) {
 					return false;
 				}
 			}
