@@ -6,7 +6,7 @@ public final class WorkedOnPathCMF implements ICommitMessageFactory {
 
 	@CommitMessage
 	public CommitMessageTemplate workedOn = new CommitMessageTemplate(
-			Translations.WorkedOnPathCMF_workedOnPathCMF);
+			Translations.WorkedOnPathCMF_workedOn);
 
 	@Override
 	public String createMessageFor(FileSetDelta delta, ISession session) {
