@@ -23,7 +23,7 @@ import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.IFileContent;
-import de.fkoeberle.autocommit.message.ISession;
+import de.fkoeberle.autocommit.message.Session;
 
 public class AddedClassCMF implements ICommitMessageFactory {
 	private static final Set<String> DOT_JAVA = Collections.singleton("java"); //$NON-NLS-1$
@@ -52,7 +52,7 @@ public class AddedClassCMF implements ICommitMessageFactory {
 	}
 
 	@Override
-	public String createMessageFor(FileSetDelta delta, ISession session) {
+	public String createMessageFor(FileSetDelta delta, Session session) {
 		if (!delta.getFileExtensions().equals(DOT_JAVA)) {
 			return null;
 		}
@@ -68,11 +68,11 @@ public class AddedClassCMF implements ICommitMessageFactory {
 
 		AddedFile addedFile = delta.getAddedFiles().get(0);
 		IFileContent genericContent = addedFile.getNewContent();
-		IJavaFileContent content = session.getSharedAdapter(genericContent,
-				IJavaFileContent.class);
+		CachingJavaFileContentParser compilationUnitProvider = session.getInstanceOf(CachingJavaFileContentParser.class);
 		CompilationUnit compilationUnit;
 		try {
-			compilationUnit = content.getCompilationUnitForReadOnlyPurposes(session);
+			compilationUnit = compilationUnitProvider.getInstanceFor(
+					genericContent, session);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

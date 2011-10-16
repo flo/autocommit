@@ -6,15 +6,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.fkoeberle.autocommit.message.FileSetDelta;
-import de.fkoeberle.autocommit.message.ISession;
+import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.AddedClassCMF;
 
 public class AddedClassCMFTest {
-	private ISession session;
+	private Session session;
 
 	@Before
 	public void initialize() {
-		session = new TestSession();
+		session = new Session();
 	}
 
 	@Test

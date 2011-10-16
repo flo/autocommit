@@ -9,7 +9,7 @@ public final class WorkedOnPathCMF implements ICommitMessageFactory {
 			Translations.WorkedOnPathCMF_workedOn);
 
 	@Override
-	public String createMessageFor(FileSetDelta delta, ISession session) {
+	public String createMessageFor(FileSetDelta delta, Session session) {
 		String prefix = findCommonPrefix(delta);
 		return workedOn.createMessageWithArgs(prefix);
 	}

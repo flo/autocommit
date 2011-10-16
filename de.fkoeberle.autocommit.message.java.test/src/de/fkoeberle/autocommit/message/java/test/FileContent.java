@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import de.fkoeberle.autocommit.message.IFileContent;
-import de.fkoeberle.autocommit.message.ITextFileContent;
 
-public class FileContent implements IFileContent, ITextFileContent {
+public class FileContent implements IFileContent {
 	private final byte[] buffer;
 	private final String content;
 
@@ -32,11 +31,6 @@ public class FileContent implements IFileContent, ITextFileContent {
 
 	@Override
 	public String toString() {
-		return content;
-	}
-
-	@Override
-	public String getContentAsString() throws IOException {
 		return content;
 	}
 

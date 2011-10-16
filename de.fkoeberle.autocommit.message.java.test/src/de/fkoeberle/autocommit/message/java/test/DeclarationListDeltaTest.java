@@ -18,17 +18,17 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.fkoeberle.autocommit.message.ISession;
+import de.fkoeberle.autocommit.message.Session;
+import de.fkoeberle.autocommit.message.java.CachingJavaFileContentParser;
 import de.fkoeberle.autocommit.message.java.DeclarationDelta;
 import de.fkoeberle.autocommit.message.java.DeclarationListDelta;
-import de.fkoeberle.autocommit.message.java.IJavaFileContent;
 
 public class DeclarationListDeltaTest {
-	private ISession session;
+	private Session session;
 
 	@Before
 	public void initialize() {
-		session = new TestSession();
+		session = new Session();
 	}
 
 	private DeclarationListDelta createDelta(String oldContent,
@@ -46,9 +46,9 @@ public class DeclarationListDeltaTest {
 	private CompilationUnit createCompilationUnit(String content)
 			throws IOException {
 		FileContent fileContent = new FileContent(content);
-		IJavaFileContent javaFileContent = session.getSharedAdapter(
-				fileContent, IJavaFileContent.class);
-		return javaFileContent.getCompilationUnitForReadOnlyPurposes(session);
+		CachingJavaFileContentParser parser = session
+				.getInstanceOf(CachingJavaFileContentParser.class);
+		return parser.getInstanceFor(fileContent, session);
 	}
 
 	/**

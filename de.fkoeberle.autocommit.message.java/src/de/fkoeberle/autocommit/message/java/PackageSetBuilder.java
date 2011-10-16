@@ -13,36 +13,36 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 import de.fkoeberle.autocommit.message.AddedFile;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.IFileContent;
-import de.fkoeberle.autocommit.message.ISession;
+import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.ModifiedFile;
 import de.fkoeberle.autocommit.message.RemovedFile;
 
 final class PackageSetBuilder {
-	private final ISession session;
+	private final Session session;
 	private final Set<String> packageNames = new HashSet<String>();
 	private final List<String> sourceFolders = new ArrayList<String>();
 
-
-	public PackageSetBuilder(ISession session) {
+	public PackageSetBuilder(Session session) {
 		this.session = session;
 	}
 
-	private boolean addPackageOfFile(String filePath,
- IFileContent fileContent) {
+	private boolean addPackageOfFile(String filePath, IFileContent fileContent) {
 		final String directoryPath = directoryOf(filePath);
 		String packageName = determinePackageFromDirectory(directoryPath);
 
 		if (packageName == null) {
-			IJavaFileContent javaFileContent = session.getSharedAdapter(
-					fileContent, IJavaFileContent.class);
-
+			CachingJavaFileContentParser parser = session
+					.getInstanceOf(CachingJavaFileContentParser.class);
+			CompilationUnit compilationUnit;
 			try {
-				packageName = extractPackage(javaFileContent);
-			} catch (Exception e) {
+				compilationUnit = parser.getInstanceFor(fileContent, session);
+			} catch (IOException e) {
 				// TODO better logging
 				e.printStackTrace();
 				return false;
 			}
+			packageName = extractPackage(compilationUnit);
+
 			if (packageName == null) {
 				sourceFolders.add("/");
 				packageName = "";
@@ -93,12 +93,8 @@ final class PackageSetBuilder {
 	 * @return the extracted package or "" if there is no package declaration
 	 *         but the file is otherwise valid.
 	 */
-	private String extractPackage(IJavaFileContent javaFileContent)
-			throws IOException {
-		CompilationUnit compilationUnit = javaFileContent
-				.getCompilationUnitForReadOnlyPurposes(session);
-		PackageDeclaration packageDeclaration = compilationUnit
-				.getPackage();
+	private String extractPackage(CompilationUnit compilationUnit) {
+		PackageDeclaration packageDeclaration = compilationUnit.getPackage();
 		if (packageDeclaration == null) {
 			return null;
 		}

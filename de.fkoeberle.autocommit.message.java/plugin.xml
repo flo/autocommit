@@ -2,16 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.core.runtime.adapters">
-      <factory
-            adaptableType="de.fkoeberle.autocommit.message.IFileContent"
-            class="de.fkoeberle.autocommit.message.java.JavaFileContentFactory">
-         <adapter
-               type="de.fkoeberle.autocommit.message.java.IJavaFileContent">
-         </adapter>
-      </factory>
-   </extension>
-   <extension
          point="de.fkoeberle.autocommit.message.factory">
       <factory
             class="de.fkoeberle.autocommit.message.java.AddedClassCMF"
