@@ -13,24 +13,13 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import de.fkoeberle.autocommit.message.FileContentReader;
 import de.fkoeberle.autocommit.message.IFileContent;
 import de.fkoeberle.autocommit.message.Session;
+import de.fkoeberle.autocommit.message.SoftReferenceOrNull;
 
 public class CachingJavaFileContentParser {
 	private final WeakHashMap<IFileContent, SoftReferenceOrNull<CompilationUnit>> cache;
 
 	public CachingJavaFileContentParser() {
 		this.cache = new WeakHashMap<IFileContent, SoftReferenceOrNull<CompilationUnit>>();
-	}
-
-	private final static class SoftReferenceOrNull<T> {
-		private final SoftReference<T> softReference;
-
-		public SoftReferenceOrNull(T t) {
-			this.softReference = t == null ? null : new SoftReference<T>(t);
-		}
-
-		public SoftReference<T> getSoftReference() {
-			return softReference;
-		}
 	}
 
 	private static CompilationUnit createCompilationUnit(char[] fileContent) {
