@@ -1,6 +1,7 @@
 package de.fkoeberle.autocommit.message;
 
 
+
 public final class WorkedOnPathCMF implements ICommitMessageFactory {
 	StringBuilder stringBuilder = new StringBuilder();
 
@@ -15,17 +16,18 @@ public final class WorkedOnPathCMF implements ICommitMessageFactory {
 	}
 
 	private String findCommonPrefix(FileSetDelta delta) {
-		CommonPrefixFinder finder = new CommonPrefixFinder();
+		CommonParentPathFinder finder = new CommonParentPathFinder();
 		for (ModifiedFile file : delta.getChangedFiles()) {
-			finder.checkForShorterPrefix(file.getPath());
+			finder.checkPath(file.getPath());
 		}
 		for (AddedFile file : delta.getAddedFiles()) {
-			finder.checkForShorterPrefix(file.getPath());
+			finder.checkPath(file.getPath());
 		}
 		for (RemovedFile file : delta.getRemovedFiles()) {
-			finder.checkForShorterPrefix(file.getPath());
+			finder.checkPath(file.getPath());
 		}
-		return finder.getPrefix();
+		return finder.getCommonPath();
 	}
+
 
 }
