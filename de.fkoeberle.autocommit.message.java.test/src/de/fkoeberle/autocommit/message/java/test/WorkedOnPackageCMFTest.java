@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF;

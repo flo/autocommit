@@ -7,5 +7,6 @@ Fragment-Host: de.fkoeberle.autocommit;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit,
  de.fkoeberle.autocommit.message.java;bundle-version="0.0.1",
- de.fkoeberle.autocommit.message;bundle-version="0.0.1"
+ de.fkoeberle.autocommit.message;bundle-version="0.0.1",
+ de.fkoeberle.autocommit.message.test;bundle-version="0.0.1"
 Import-Package: org.eclipse.jdt.core.dom

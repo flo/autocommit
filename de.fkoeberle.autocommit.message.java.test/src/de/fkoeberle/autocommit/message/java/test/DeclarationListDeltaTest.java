@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.FileContent;
 import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.CachingJavaFileContentParser;
 import de.fkoeberle.autocommit.message.java.DeclarationDelta;

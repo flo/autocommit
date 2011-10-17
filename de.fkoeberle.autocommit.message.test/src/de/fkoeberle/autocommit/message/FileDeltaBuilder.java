@@ -1,17 +1,12 @@
-package de.fkoeberle.autocommit.message.java.test;
+package de.fkoeberle.autocommit.message;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.fkoeberle.autocommit.message.AddedFile;
-import de.fkoeberle.autocommit.message.FileSetDelta;
-import de.fkoeberle.autocommit.message.ModifiedFile;
-import de.fkoeberle.autocommit.message.RemovedFile;
-
 public class FileDeltaBuilder {
-	List<ModifiedFile> modifiedFiles = new ArrayList<ModifiedFile>();
-	List<AddedFile> addedFiles = new ArrayList<AddedFile>();
-	List<RemovedFile> removedFiles = new ArrayList<RemovedFile>();
+	private final List<ModifiedFile> modifiedFiles = new ArrayList<ModifiedFile>();
+	private final List<AddedFile> addedFiles = new ArrayList<AddedFile>();
+	private final List<RemovedFile> removedFiles = new ArrayList<RemovedFile>();
 
 	public void addAddedFile(String path, String content) {
 		addedFiles.add(new AddedFile(path, new FileContent(content)));
