@@ -27,7 +27,7 @@ public class CommonParentPackageFinder {
 				}
 			}
 			if (lengthOfPrefix < r.length()) {
-				lengthOfPrefix = r.lastIndexOf('.', lengthOfPrefix + 1);
+				lengthOfPrefix = r.lastIndexOf('.', lengthOfPrefix);
 			}
 		}
 	}

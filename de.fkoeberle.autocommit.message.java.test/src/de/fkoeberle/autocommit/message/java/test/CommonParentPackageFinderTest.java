@@ -134,4 +134,20 @@ public class CommonParentPackageFinderTest {
 		assertEquals(null, finder.getCommonPackage());
 	}
 
+	@Test
+	public void testSamePrefixButNotAPackage1() {
+		CommonParentPackageFinder finder = new CommonParentPackageFinder();
+		finder.checkPackage("org.exampl");
+		finder.checkPackage("org.example.test");
+		assertEquals("org", finder.getCommonPackage());
+	}
+
+	@Test
+	public void testSamePrefixButNotAPackage2() {
+		CommonParentPackageFinder finder = new CommonParentPackageFinder();
+		finder.checkPackage("org.example.test");
+		finder.checkPackage("org.exampl");
+		assertEquals("org", finder.getCommonPackage());
+	}
+
 }
