@@ -15,7 +15,6 @@ import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.junit.Before;
 import org.junit.Test;
 
 import de.fkoeberle.autocommit.message.FileContent;
@@ -25,18 +24,16 @@ import de.fkoeberle.autocommit.message.java.DeclarationDelta;
 import de.fkoeberle.autocommit.message.java.DeclarationListDelta;
 
 public class DeclarationListDeltaTest {
-	private Session session;
 
-	@Before
-	public void initialize() {
-		session = new Session();
-	}
 
 	private DeclarationListDelta createDelta(String oldContent,
 			String newContent) {
 		try {
-			CompilationUnit oldCompilationUnit = createCompilationUnit(oldContent);
-			CompilationUnit newCompilationUnit = createCompilationUnit(newContent);
+			Session session = new Session();
+			CompilationUnit oldCompilationUnit = createCompilationUnit(session,
+					oldContent);
+			CompilationUnit newCompilationUnit = createCompilationUnit(session,
+					newContent);
 			return new DeclarationListDelta(oldCompilationUnit,
 					newCompilationUnit);
 		} catch (IOException e) {
@@ -44,12 +41,13 @@ public class DeclarationListDeltaTest {
 		}
 	}
 
-	private CompilationUnit createCompilationUnit(String content)
+	private CompilationUnit createCompilationUnit(Session session,
+			String content)
 			throws IOException {
 		FileContent fileContent = new FileContent(content);
 		CachingJavaFileContentParser parser = session
 				.getInstanceOf(CachingJavaFileContentParser.class);
-		return parser.getInstanceFor(fileContent, session);
+		return parser.getInstanceFor(fileContent);
 	}
 
 	/**

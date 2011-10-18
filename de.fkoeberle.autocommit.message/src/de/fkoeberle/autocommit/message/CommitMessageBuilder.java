@@ -50,9 +50,10 @@ public class CommitMessageBuilder implements ICommitMessageBuilder {
 		List<ICommitMessageFactory> factories = profileManager
 				.getFirstProfileFactories();
 
-		Session session = new Session();
+		Session session = new Session(delta);
 		for (ICommitMessageFactory factory : factories) {
-			String message = factory.createMessageFor(delta, session);
+			session.injectSessionData(factory);
+			String message = factory.createMessage();
 			if (message != null) {
 				return message;
 			}

@@ -12,11 +12,14 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import de.fkoeberle.autocommit.message.FileContentReader;
 import de.fkoeberle.autocommit.message.IFileContent;
-import de.fkoeberle.autocommit.message.Session;
+import de.fkoeberle.autocommit.message.InjectedBySession;
 import de.fkoeberle.autocommit.message.SoftReferenceOrNull;
 
 public class CachingJavaFileContentParser {
 	private final WeakHashMap<IFileContent, SoftReferenceOrNull<CompilationUnit>> cache;
+
+	@InjectedBySession
+	private FileContentReader reader;
 
 	public CachingJavaFileContentParser() {
 		this.cache = new WeakHashMap<IFileContent, SoftReferenceOrNull<CompilationUnit>>();
@@ -32,8 +35,8 @@ public class CachingJavaFileContentParser {
 		return unit;
 	}
 
-	public CompilationUnit getInstanceFor(IFileContent fileContent,
-			Session session) throws IOException {
+	public CompilationUnit getInstanceFor(IFileContent fileContent)
+			throws IOException {
 		SoftReferenceOrNull<CompilationUnit> softReferenceOrNull = cache
 				.get(fileContent);
 		CompilationUnit compUnit = null;
@@ -48,8 +51,7 @@ public class CachingJavaFileContentParser {
 
 		}
 		if (compUnit == null) {
-			FileContentReader stringProvider = session.getInstanceOf(FileContentReader.class);
-			String s = stringProvider.getStringFor(fileContent);
+			String s = reader.getStringFor(fileContent);
 			char[] chars = s.toCharArray();
 			compUnit = createCompilationUnit(chars);
 			cache.put(fileContent, new SoftReferenceOrNull<CompilationUnit>(

@@ -10,9 +10,8 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import de.fkoeberle.autocommit.message.CommitMessage;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
-import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
-import de.fkoeberle.autocommit.message.Session;
+import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class WorkedOnTypeCMF implements ICommitMessageFactory {
 
@@ -32,17 +31,17 @@ public class WorkedOnTypeCMF implements ICommitMessageFactory {
 	public final CommitMessageTemplate workedOnAnnotation = new CommitMessageTemplate(
 			Translations.WorkedOnTypeCMF_workedOnAnnotation);
 
+	@InjectedBySession
+	private SingleChangedJavaFileView view;
+
 	@Override
-	public String createMessageFor(FileSetDelta fileSetDelta, Session session) {
-		SingleChangedJavaFileView view = session
-				.getInstanceOf(SingleChangedJavaFileView.class);
-		if (!view.isValid(fileSetDelta)) {
+	public String createMessage() {
+		if (!view.isValid()) {
 			return null;
 		}
 		DeclarationListDelta declationListDelta;
 		try {
-			declationListDelta = view.getDeclarationListDelta(session,
-					fileSetDelta);
+			declationListDelta = view.getDeclarationListDelta();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

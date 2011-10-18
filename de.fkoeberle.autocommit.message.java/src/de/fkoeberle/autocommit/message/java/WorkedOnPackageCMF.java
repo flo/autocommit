@@ -3,13 +3,11 @@ package de.fkoeberle.autocommit.message.java;
 import java.util.Collections;
 import java.util.Set;
 
-import org.eclipse.osgi.util.NLS;
-
 import de.fkoeberle.autocommit.message.CommitMessage;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
-import de.fkoeberle.autocommit.message.Session;
+import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class WorkedOnPackageCMF implements ICommitMessageFactory {
 	private static final Set<String> DOT_JAVA = Collections.singleton("java"); //$NON-NLS-1$
@@ -26,13 +24,19 @@ public class WorkedOnPackageCMF implements ICommitMessageFactory {
 	public final CommitMessageTemplate workedOnSubPackages = new CommitMessageTemplate(
 			Translations.WorkedOnPackageCMF_workedOnSubPackages);
 
+	@InjectedBySession
+	private FileSetDelta delta;
+
+	@InjectedBySession
+	private CachingJavaFileContentParser parser;
+
 	@Override
-	public String createMessageFor(FileSetDelta delta, Session session) {
+	public String createMessage() {
 		if (!delta.getFileExtensions().equals(DOT_JAVA)) {
 			return null;
 		}
 
-		PackageSetBuilder builder = new PackageSetBuilder(session);
+		PackageSetBuilder builder = new PackageSetBuilder(parser);
 		boolean success = builder.addPackagesOf(delta);
 		if (!success) {
 			return null;
@@ -59,7 +63,6 @@ public class WorkedOnPackageCMF implements ICommitMessageFactory {
 		if (commonParent == null) {
 			return null;
 		}
-		return NLS.bind(Translations.WorkedOnPackageCMF_workedOnSubPackages,
-				commonParent);
+		return workedOnSubPackages.createMessageWithArgs(commonParent);
 	}
 }

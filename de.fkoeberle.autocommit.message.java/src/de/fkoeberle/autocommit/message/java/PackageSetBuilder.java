@@ -13,17 +13,17 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 import de.fkoeberle.autocommit.message.AddedFile;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.IFileContent;
-import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.ModifiedFile;
 import de.fkoeberle.autocommit.message.RemovedFile;
 
 final class PackageSetBuilder {
-	private final Session session;
 	private final Set<String> packageNames = new HashSet<String>();
 	private final List<String> sourceFolders = new ArrayList<String>();
 
-	public PackageSetBuilder(Session session) {
-		this.session = session;
+	private final CachingJavaFileContentParser parser;
+
+	PackageSetBuilder(CachingJavaFileContentParser parser) {
+		this.parser = parser;
 	}
 
 	private boolean addPackageOfFile(String filePath, IFileContent fileContent) {
@@ -31,11 +31,9 @@ final class PackageSetBuilder {
 		String packageName = determinePackageFromDirectory(directoryPath);
 
 		if (packageName == null) {
-			CachingJavaFileContentParser parser = session
-					.getInstanceOf(CachingJavaFileContentParser.class);
 			CompilationUnit compilationUnit;
 			try {
-				compilationUnit = parser.getInstanceFor(fileContent, session);
+				compilationUnit = parser.getInstanceFor(fileContent);
 			} catch (IOException e) {
 				// TODO better logging
 				e.printStackTrace();

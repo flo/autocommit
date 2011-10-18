@@ -8,8 +8,8 @@ import java.util.Set;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import de.fkoeberle.autocommit.message.FileSetDelta;
+import de.fkoeberle.autocommit.message.InjectedBySession;
 import de.fkoeberle.autocommit.message.ModifiedFile;
-import de.fkoeberle.autocommit.message.Session;
 
 public class SingleChangedJavaFileView {
 	private boolean changedFileDetermined;
@@ -19,6 +19,12 @@ public class SingleChangedJavaFileView {
 	private static final Set<String> DOT_JAVA = Collections.singleton("java"); //$NON-NLS-1$
 	private SoftReference<DeclarationListDelta> declarationListDeltaRef;
 
+	@InjectedBySession
+	private CachingJavaFileContentParser parser;
+
+	@InjectedBySession
+	private FileSetDelta delta;
+
 	/**
 	 * 
 	 * @return the compilation unit of the new version of the file or null if
@@ -27,22 +33,18 @@ public class SingleChangedJavaFileView {
 	 *             if the compilation unit got parsed and an IOException
 	 *             occured.
 	 */
-	public CompilationUnit getNewCompilationUnit(Session session,
-			FileSetDelta delta)
+	public CompilationUnit getNewCompilationUnit()
 			throws IOException {
 		CompilationUnit compilationUnit = null;
 		if (newCompilationUnitRef != null) {
 			compilationUnit = newCompilationUnitRef.get();
 		}
 		if (compilationUnit == null) {
-			ModifiedFile file = getChangedFile(delta);
+			ModifiedFile file = getChangedFile();
 			if (file == null) {
 				return null;
 			}
-			CachingJavaFileContentParser parser = session
-					.getInstanceOf(CachingJavaFileContentParser.class);
-			compilationUnit = parser.getInstanceFor(file.getNewContent(),
-					session);
+			compilationUnit = parser.getInstanceFor(file.getNewContent());
 			newCompilationUnitRef = new SoftReference<CompilationUnit>(
 					compilationUnit);
 		}
@@ -55,44 +57,37 @@ public class SingleChangedJavaFileView {
 	 *         {@link #isValid(FileSetDelta)} returns false.
 	 * @throws IOException
 	 *             if the compilation unit got parsed and an IOException
-	 *             occured.
+	 *             occurred.
 	 */
-	public CompilationUnit getOldCompilationUnit(Session session,
-			FileSetDelta delta)
+	public CompilationUnit getOldCompilationUnit()
 			throws IOException {
 		CompilationUnit compilationUnit = null;
 		if (oldCompilationUnitRef != null) {
 			compilationUnit = oldCompilationUnitRef.get();
 		}
 		if (compilationUnit == null) {
-			ModifiedFile file = getChangedFile(delta);
+			ModifiedFile file = getChangedFile();
 			if (file == null) {
 				return null;
 			}
-			CachingJavaFileContentParser parser = session
-					.getInstanceOf(CachingJavaFileContentParser.class);
-			compilationUnit = parser.getInstanceFor(file.getOldContent(),
-					session);
+			compilationUnit = parser.getInstanceFor(file.getOldContent());
 			oldCompilationUnitRef = new SoftReference<CompilationUnit>(
 					compilationUnit);
 		}
 		return compilationUnit;
 	}
 
-	public DeclarationListDelta getDeclarationListDelta(Session session,
-			FileSetDelta fileSetDelta) throws IOException {
+	public DeclarationListDelta getDeclarationListDelta() throws IOException {
 		DeclarationListDelta declarationListDelta = null;
 		if (declarationListDeltaRef != null) {
 			declarationListDelta = declarationListDeltaRef.get();
 		}
 		if (declarationListDelta == null) {
-			if (!isValid(fileSetDelta)) {
+			if (!isValid()) {
 				return null;
 			}
-			CompilationUnit oldCompilationUnit = getOldCompilationUnit(
-					session, fileSetDelta);
-			CompilationUnit newCompilationUnit = getNewCompilationUnit(session,
-					fileSetDelta);
+			CompilationUnit oldCompilationUnit = getOldCompilationUnit();
+			CompilationUnit newCompilationUnit = getNewCompilationUnit();
 			declarationListDelta = new DeclarationListDelta(oldCompilationUnit, newCompilationUnit);
 			declarationListDeltaRef = new SoftReference<DeclarationListDelta>(
 					declarationListDelta);
@@ -101,7 +96,7 @@ public class SingleChangedJavaFileView {
 		return declarationListDelta;
 	}
 
-	public ModifiedFile getChangedFile(FileSetDelta delta) {
+	public ModifiedFile getChangedFile() {
 		if (!changedFileDetermined) {
 			changedFileDetermined = true;
 			if (!delta.getFileExtensions().equals(DOT_JAVA)) {
@@ -122,7 +117,7 @@ public class SingleChangedJavaFileView {
 		return changedFile;
 	}
 
-	public boolean isValid(FileSetDelta delta) {
-		return getChangedFile(delta) != null;
+	public boolean isValid() {
+		return getChangedFile() != null;
 	}
 }

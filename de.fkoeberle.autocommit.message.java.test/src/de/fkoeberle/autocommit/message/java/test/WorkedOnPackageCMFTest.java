@@ -2,7 +2,6 @@ package de.fkoeberle.autocommit.message.java.test;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
@@ -11,22 +10,22 @@ import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF;
 
 public class WorkedOnPackageCMFTest {
-	private Session session;
 
-	@Before
-	public void initialize() {
-		session = new Session();
+	private WorkedOnPackageCMF createFactory(FileSetDelta delta) {
+		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
+		Session session = new Session(delta);
+		session.injectSessionData(factory);
+		return factory;
 	}
 
 	@Test
 	public void testSingleAddedFile() {
-		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 
-		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta, session);
+		WorkedOnPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
 		final String expected = factory.workedOnPackage
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -34,13 +33,12 @@ public class WorkedOnPackageCMFTest {
 
 	@Test
 	public void testSingleRemovedFile() {
-		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addRemovedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 
-		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta, session);
+		WorkedOnPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
 		final String expected = factory.workedOnPackage
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -48,14 +46,13 @@ public class WorkedOnPackageCMFTest {
 
 	@Test
 	public void testSingleModifiedFile() {
-		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addModifiedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {int x;}",
 				"package org.example;\n\nclass Test {}");
 
-		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta, session);
+		WorkedOnPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
 		final String expected = factory.workedOnPackage
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -63,7 +60,6 @@ public class WorkedOnPackageCMFTest {
 
 	@Test
 	public void testAddedAndModifiedFileInSamePackage() {
-		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/AddedClass.java",
 				"package org.example;\n\nclass AddedClass {}");
@@ -71,8 +67,8 @@ public class WorkedOnPackageCMFTest {
 				"package org.example;\n\nclass Mod {int x;}",
 				"package org.example;\n\nclass Mod {}");
 
-		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta, session);
+		WorkedOnPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
 		final String expected = factory.workedOnPackage
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -80,15 +76,14 @@ public class WorkedOnPackageCMFTest {
 
 	@Test
 	public void testMovedFileBetweenPackages() {
-		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addRemovedFile("/project1/org/example/oldpackage/Test.java",
 				"package org.example.oldpackage;\n\nclass Test {}");
 		builder.addAddedFile("/project1/org/example/newpackage/Test.java",
 				"package org.example.newpackage;\n\nclass Test {}");
 
-		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta, session);
+		WorkedOnPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
 		final String expected = factory.workedOnSubPackages
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -96,15 +91,14 @@ public class WorkedOnPackageCMFTest {
 
 	@Test
 	public void testMoveToSamePackageInOtherFolder() {
-		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addRemovedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 		builder.addAddedFile("/project2/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 
-		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta, session);
+		WorkedOnPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
 		final String expected = factory.workedOnPackage
 				.createMessageWithArgs("org.example");
 		assertEquals(expected, message);
@@ -112,12 +106,11 @@ public class WorkedOnPackageCMFTest {
 
 	@Test
 	public void testDefaultPackage() {
-		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/Test.java", "class Test {}");
 
-		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta, session);
+		WorkedOnPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
 		final String expected = factory.workedOnDefaultPackage
 				.createMessageWithArgs();
 		assertEquals(expected, message);
@@ -125,13 +118,12 @@ public class WorkedOnPackageCMFTest {
 
 	@Test
 	public void testNonMatchingPath() {
-		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/other/Test.java",
 				"package org.example;\n\nclass Test {}");
 
-		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta, session);
+		WorkedOnPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
 		final String expected = null;
 		assertEquals(expected, message);
 	}
@@ -144,15 +136,14 @@ public class WorkedOnPackageCMFTest {
 	 */
 	@Test
 	public void testThatPerformanceOptimizationGotUsed() {
-		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/One.java",
 				"package org.example;\n\nclass One {}");
 		builder.addAddedFile("/project1/org/other/Two.java",
 				"package org.example;\n\nclass Two {}");
 
-		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta, session);
+		WorkedOnPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
 		final String expected = factory.workedOnSubPackages
 				.createMessageWithArgs("org");
 		assertEquals(expected, message);
@@ -160,15 +151,14 @@ public class WorkedOnPackageCMFTest {
 
 	@Test
 	public void testThatASecondNonMatchingPackageGetsDetectedIfItsInOtherSourceFolder() {
-		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/One.java",
 				"package org.example;\n\nclass One {}");
 		builder.addAddedFile("/project2/org/other/Two.java",
 				"package org.example;\n\nclass Two {}");
 
-		FileSetDelta delta = builder.build();
-		String message = factory.createMessageFor(delta, session);
+		WorkedOnPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
 		final String expected = null;
 		assertEquals(expected, message);
 	}
