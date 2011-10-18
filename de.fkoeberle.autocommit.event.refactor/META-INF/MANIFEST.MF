@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: autocommit.event.refactor
-Bundle-SymbolicName: autocommit.event.refactor;singleton:=true
+Bundle-SymbolicName: de.fkoeberle.autocommit.event.refactor;singleton:=true
 Bundle-Version: 0.0.1.alpha
 Bundle-Activator: de.fkoeberle.autocommit.event.refactor.RefactorEventPluginActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.fkoeberle.autocommit,
  org.eclipse.ltk.core.refactoring

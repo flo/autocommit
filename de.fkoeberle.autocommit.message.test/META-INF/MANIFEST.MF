@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: autocommit.message.test
 Bundle-SymbolicName: de.fkoeberle.autocommit.message.test
 Bundle-Version: 0.0.1.alpha
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: de.fkoeberle.autocommit.message;bundle-version="0.0.1",
  org.junit
 Export-Package: de.fkoeberle.autocommit.message

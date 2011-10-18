@@ -6,6 +6,6 @@ Bundle-Version: 0.0.1.alpha
 Bundle-Activator: de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.resources
 Export-Package: de.fkoeberle.autocommit.message
