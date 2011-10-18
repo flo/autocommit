@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Test
+Bundle-Name: autocommit.message.java.test
 Bundle-SymbolicName: de.fkoeberle.autocommit.message.java.test
 Bundle-Version: 0.0.1.alpha
 Fragment-Host: de.fkoeberle.autocommit;bundle-version="0.0.1"

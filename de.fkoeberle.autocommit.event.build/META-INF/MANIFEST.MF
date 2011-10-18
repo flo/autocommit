@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Build
+Bundle-Name: autocommit.event.build
 Bundle-SymbolicName: de.fkoeberle.autocommit.event.build;singleton:=true
 Bundle-Version: 0.0.1.alpha
 Bundle-Activator: de.fkoeberle.autocommit.event.build.BuildEventPluginActivator
