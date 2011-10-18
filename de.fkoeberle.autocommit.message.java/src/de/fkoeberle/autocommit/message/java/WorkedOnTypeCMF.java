@@ -32,33 +32,21 @@ public class WorkedOnTypeCMF implements ICommitMessageFactory {
 			Translations.WorkedOnTypeCMF_workedOnAnnotation);
 
 	@InjectedBySession
-	private SingleChangedJavaFileView view;
+	private SingleChangedTypeView view;
 
 	@Override
 	public String createMessage() {
-		if (!view.isValid()) {
-			return null;
-		}
-		DeclarationListDelta declationListDelta;
+		DeclarationDelta declarationDelta;
 		try {
-			declationListDelta = view.getDeclarationListDelta();
+			declarationDelta = view.getDeclarationDelta();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
-		if (declationListDelta.getAddedDeclarations().size() != 0) {
+		if (declarationDelta == null) {
 			return null;
 		}
-		if (declationListDelta.getRemovedDeclarations().size() != 0) {
-			return null;
-		}
-		if (declationListDelta.getChangedDeclarations().size() != 1) {
-			return null;
-		}
-
-		DeclarationDelta declarationDelta = declationListDelta
-				.getChangedDeclarations().get(0);
 
 		BodyDeclaration oldBodyDeclaration = declarationDelta
 				.getOldDeclaration();
