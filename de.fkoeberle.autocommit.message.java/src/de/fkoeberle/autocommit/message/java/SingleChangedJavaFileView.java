@@ -2,21 +2,19 @@ package de.fkoeberle.autocommit.message.java;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;
-import java.util.Collections;
-import java.util.Set;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
+import de.fkoeberle.autocommit.message.ChangedFile;
+import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.InjectedBySession;
-import de.fkoeberle.autocommit.message.ChangedFile;
 
 public class SingleChangedJavaFileView {
 	private boolean changedFileDetermined;
 	private ChangedFile changedFile;
 	private SoftReference<CompilationUnit> oldCompilationUnitRef;
 	private SoftReference<CompilationUnit> newCompilationUnitRef;
-	private static final Set<String> DOT_JAVA = Collections.singleton("java"); //$NON-NLS-1$
 	private SoftReference<DeclarationListDelta> declarationListDeltaRef;
 
 	@InjectedBySession
@@ -24,6 +22,9 @@ public class SingleChangedJavaFileView {
 
 	@InjectedBySession
 	private FileSetDelta delta;
+
+	@InjectedBySession
+	private ExtensionsOfAddedModifiedOrChangedFiles extensions;
 
 	/**
 	 * 
@@ -99,7 +100,7 @@ public class SingleChangedJavaFileView {
 	public ChangedFile getChangedFile() {
 		if (!changedFileDetermined) {
 			changedFileDetermined = true;
-			if (!delta.getFileExtensions().equals(DOT_JAVA)) {
+			if (!extensions.containsOnly("java")) {
 				return null;
 			}
 			if (delta.getChangedFiles().size() != 1) {

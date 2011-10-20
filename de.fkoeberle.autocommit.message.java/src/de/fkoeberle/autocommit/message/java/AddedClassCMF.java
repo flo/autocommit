@@ -1,9 +1,7 @@
 package de.fkoeberle.autocommit.message.java;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
@@ -20,19 +18,13 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import de.fkoeberle.autocommit.message.AddedFile;
 import de.fkoeberle.autocommit.message.CommitMessage;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
+import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.IFileContent;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class AddedClassCMF implements ICommitMessageFactory {
-	private static final Set<String> DOT_JAVA = Collections.singleton("java"); //$NON-NLS-1$
-
-	@InjectedBySession
-	private FileSetDelta delta;
-
-	@InjectedBySession
-	private CachingJavaFileContentParser compilationUnitProvider;
 
 	@CommitMessage
 	public final CommitMessageTemplate addedInterfaceMessage = new CommitMessageTemplate(
@@ -54,12 +46,21 @@ public class AddedClassCMF implements ICommitMessageFactory {
 	public final CommitMessageTemplate addedAnotationMessage = new CommitMessageTemplate(
 			Translations.AddedClassCMF_addedAnotationMessage);
 
+	@InjectedBySession
+	private FileSetDelta delta;
+
+	@InjectedBySession
+	private CachingJavaFileContentParser compilationUnitProvider;
+
+	@InjectedBySession
+	private ExtensionsOfAddedModifiedOrChangedFiles extensions;
+
 	public AddedClassCMF() {
 	}
 
 	@Override
 	public String createMessage() {
-		if (!delta.getFileExtensions().equals(DOT_JAVA)) {
+		if (!extensions.containsOnly("java")) {
 			return null;
 		}
 		if (delta.getChangedFiles().size() > 0) {

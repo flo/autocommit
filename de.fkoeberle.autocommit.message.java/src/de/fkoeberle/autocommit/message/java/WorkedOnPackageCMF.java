@@ -1,17 +1,15 @@
 package de.fkoeberle.autocommit.message.java;
 
-import java.util.Collections;
 import java.util.Set;
 
 import de.fkoeberle.autocommit.message.CommitMessage;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
+import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class WorkedOnPackageCMF implements ICommitMessageFactory {
-	private static final Set<String> DOT_JAVA = Collections.singleton("java"); //$NON-NLS-1$
-
 	@CommitMessage
 	public final CommitMessageTemplate workedOnDefaultPackage = new CommitMessageTemplate(
 			Translations.WorkedOnPackageCMF_workedOnDefaultPackage);
@@ -30,9 +28,12 @@ public class WorkedOnPackageCMF implements ICommitMessageFactory {
 	@InjectedBySession
 	private CachingJavaFileContentParser parser;
 
+	@InjectedBySession
+	private ExtensionsOfAddedModifiedOrChangedFiles extensions;
+
 	@Override
 	public String createMessage() {
-		if (!delta.getFileExtensions().equals(DOT_JAVA)) {
+		if (!extensions.containsOnly("java")) {
 			return null;
 		}
 
