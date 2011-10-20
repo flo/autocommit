@@ -43,7 +43,7 @@ public class WorkedOnPathCMFTest {
 	@Test
 	public void testChangedFile() {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addModifiedFile("/some/Path/test.txt",
+		builder.addChangedFile("/some/Path/test.txt",
 				"old content","new content");
 
 		WorkedOnPathCMF factory = createFactory(builder.build());
@@ -56,7 +56,7 @@ public class WorkedOnPathCMFTest {
 	@Test
 	public void testOneAddedAndOneChangedFile() {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addModifiedFile("/some/Path/test.txt", "old content",
+		builder.addChangedFile("/some/Path/test.txt", "old content",
 				"new content");
 		builder.addAddedFile("/some/Point.txt", "(0, 1)");
 

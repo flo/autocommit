@@ -7,13 +7,13 @@ import java.util.List;
 public class CommitMessageBuilder implements ICommitMessageBuilder {
 	private final ProfileManager profileManager;
 	private boolean dirty;
-	private final List<ModifiedFile> changedFiles;
+	private final List<ChangedFile> changedFiles;
 	private final List<AddedFile> addedFiles;
 	private final List<RemovedFile> removedFiles;
 
 	CommitMessageBuilder(ProfileManager factoryManager) {
 		this.profileManager = factoryManager;
-		this.changedFiles = new ArrayList<ModifiedFile>();
+		this.changedFiles = new ArrayList<ChangedFile>();
 		this.addedFiles = new ArrayList<AddedFile>();
 		this.removedFiles = new ArrayList<RemovedFile>();
 	}
@@ -21,7 +21,7 @@ public class CommitMessageBuilder implements ICommitMessageBuilder {
 	@Override
 	public void addChangedFile(String path, IFileContent oldContent,
 			IFileContent newContent) throws IOException {
-		changedFiles.add(new ModifiedFile(path, oldContent, newContent));
+		changedFiles.add(new ChangedFile(path, oldContent, newContent));
 	}
 
 	@Override

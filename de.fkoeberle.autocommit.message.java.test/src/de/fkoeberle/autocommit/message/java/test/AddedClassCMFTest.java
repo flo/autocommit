@@ -133,7 +133,7 @@ public class AddedClassCMFTest {
 		builder.addAddedFile(
 				"/project1/org/example/AddedClass.java",
 				"package org.example;\n\nclass AddedClass { String test() { return \"real value\";}}");
-		builder.addModifiedFile("/project1/org/example/MyInterface.java",
+		builder.addChangedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
 
@@ -146,7 +146,7 @@ public class AddedClassCMFTest {
 	@Test
 	public void testModifiedInterface() {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addModifiedFile("/project1/org/example/MyInterface.java",
+		builder.addChangedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
 

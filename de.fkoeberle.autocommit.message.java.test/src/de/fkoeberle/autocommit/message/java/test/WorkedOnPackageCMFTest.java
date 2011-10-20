@@ -47,7 +47,7 @@ public class WorkedOnPackageCMFTest {
 	@Test
 	public void testSingleModifiedFile() {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addModifiedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {int x;}",
 				"package org.example;\n\nclass Test {}");
 
@@ -63,7 +63,7 @@ public class WorkedOnPackageCMFTest {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/AddedClass.java",
 				"package org.example;\n\nclass AddedClass {}");
-		builder.addModifiedFile("/project1/org/example/Mod.java",
+		builder.addChangedFile("/project1/org/example/Mod.java",
 				"package org.example;\n\nclass Mod {int x;}",
 				"package org.example;\n\nclass Mod {}");
 

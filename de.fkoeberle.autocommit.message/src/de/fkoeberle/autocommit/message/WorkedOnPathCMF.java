@@ -21,7 +21,7 @@ public final class WorkedOnPathCMF implements ICommitMessageFactory {
 
 	private String findCommonPrefix() {
 		CommonParentPathFinder finder = new CommonParentPathFinder();
-		for (ModifiedFile file : delta.getChangedFiles()) {
+		for (ChangedFile file : delta.getChangedFiles()) {
 			finder.checkPath(file.getPath());
 		}
 		for (AddedFile file : delta.getAddedFiles()) {

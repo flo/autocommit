@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileDeltaBuilder {
-	private final List<ModifiedFile> modifiedFiles = new ArrayList<ModifiedFile>();
+	private final List<ChangedFile> changedFiles = new ArrayList<ChangedFile>();
 	private final List<AddedFile> addedFiles = new ArrayList<AddedFile>();
 	private final List<RemovedFile> removedFiles = new ArrayList<RemovedFile>();
 
@@ -16,14 +16,14 @@ public class FileDeltaBuilder {
 		removedFiles.add(new RemovedFile(path, new FileContent(content)));
 	}
 
-	public void addModifiedFile(String path, String oldContent,
+	public void addChangedFile(String path, String oldContent,
 			String newContent) {
-		modifiedFiles.add(new ModifiedFile(path, new FileContent(oldContent),
+		changedFiles.add(new ChangedFile(path, new FileContent(oldContent),
 				new FileContent(newContent)));
 	}
 
 	public FileSetDelta build() {
-		return new FileSetDelta(modifiedFiles, addedFiles, removedFiles);
+		return new FileSetDelta(changedFiles, addedFiles, removedFiles);
 	}
 
 

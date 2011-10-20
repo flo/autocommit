@@ -9,11 +9,11 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.InjectedBySession;
-import de.fkoeberle.autocommit.message.ModifiedFile;
+import de.fkoeberle.autocommit.message.ChangedFile;
 
 public class SingleChangedJavaFileView {
 	private boolean changedFileDetermined;
-	private ModifiedFile changedFile;
+	private ChangedFile changedFile;
 	private SoftReference<CompilationUnit> oldCompilationUnitRef;
 	private SoftReference<CompilationUnit> newCompilationUnitRef;
 	private static final Set<String> DOT_JAVA = Collections.singleton("java"); //$NON-NLS-1$
@@ -40,7 +40,7 @@ public class SingleChangedJavaFileView {
 			compilationUnit = newCompilationUnitRef.get();
 		}
 		if (compilationUnit == null) {
-			ModifiedFile file = getChangedFile();
+			ChangedFile file = getChangedFile();
 			if (file == null) {
 				return null;
 			}
@@ -66,7 +66,7 @@ public class SingleChangedJavaFileView {
 			compilationUnit = oldCompilationUnitRef.get();
 		}
 		if (compilationUnit == null) {
-			ModifiedFile file = getChangedFile();
+			ChangedFile file = getChangedFile();
 			if (file == null) {
 				return null;
 			}
@@ -96,7 +96,7 @@ public class SingleChangedJavaFileView {
 		return declarationListDelta;
 	}
 
-	public ModifiedFile getChangedFile() {
+	public ChangedFile getChangedFile() {
 		if (!changedFileDetermined) {
 			changedFileDetermined = true;
 			if (!delta.getFileExtensions().equals(DOT_JAVA)) {

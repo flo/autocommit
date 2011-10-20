@@ -13,7 +13,7 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 import de.fkoeberle.autocommit.message.AddedFile;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.IFileContent;
-import de.fkoeberle.autocommit.message.ModifiedFile;
+import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.RemovedFile;
 
 final class PackageSetBuilder {
@@ -105,7 +105,7 @@ final class PackageSetBuilder {
 	}
 
 	public boolean addPackagesOf(FileSetDelta delta) {
-		for (ModifiedFile file : delta.getChangedFiles()) {
+		for (ChangedFile file : delta.getChangedFiles()) {
 			boolean success = addPackageOfFile(file.getPath(),
 					file.getNewContent());
 			if (!success) {

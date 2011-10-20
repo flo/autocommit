@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.Set;
 
 public final class FileSetDelta {
-	private final List<ModifiedFile> changedFiles;
+	private final List<ChangedFile> changedFiles;
 	private final List<AddedFile> addedFiles;
 	private final List<RemovedFile> removedFiles;
 	private Set<String> fileExtensions;
 	
-	public FileSetDelta(List<ModifiedFile> changedFiles,
+	public FileSetDelta(List<ChangedFile> changedFiles,
 			List<AddedFile> addedFiles, List<RemovedFile> removedFiles) {
 		this.changedFiles = changedFiles;
 		this.addedFiles = addedFiles;
 		this.removedFiles = removedFiles;
 	}
 
-	public List<ModifiedFile> getChangedFiles() {
+	public List<ChangedFile> getChangedFiles() {
 		return changedFiles;
 	}
 
@@ -43,7 +43,7 @@ public final class FileSetDelta {
 	public Set<String> getFileExtensions() {
 		if (fileExtensions == null) {
 			fileExtensions = new HashSet<String>();
-			for (ModifiedFile file: changedFiles) {
+			for (ChangedFile file: changedFiles) {
 				fileExtensions.add(fileExtensionOf(file.getPath()));
 			}
 			for (AddedFile file: addedFiles) {
