@@ -16,13 +16,13 @@ import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.IFileContent;
 import de.fkoeberle.autocommit.message.RemovedFile;
 
-final class PackageSetBuilder {
+public final class PackageSetBuilder {
 	private final Set<String> packageNames = new HashSet<String>();
 	private final List<String> sourceFolders = new ArrayList<String>();
 
 	private final CachingJavaFileContentParser parser;
 
-	PackageSetBuilder(CachingJavaFileContentParser parser) {
+	public PackageSetBuilder(CachingJavaFileContentParser parser) {
 		this.parser = parser;
 	}
 
@@ -38,7 +38,7 @@ final class PackageSetBuilder {
 			packageName = extractPackage(compilationUnit);
 
 			if (packageName == null) {
-				sourceFolders.add("/");
+				sourceFolders.add(directoryPath);
 				packageName = "";
 			} else {
 				String packagePath = packageName.replace(".", "/");
