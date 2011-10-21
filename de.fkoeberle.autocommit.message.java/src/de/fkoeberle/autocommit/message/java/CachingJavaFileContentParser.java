@@ -28,6 +28,7 @@ public class CachingJavaFileContentParser {
 	private static CompilationUnit createCompilationUnit(char[] fileContent) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource(fileContent);
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		Map<?, ?> options = JavaCore.getOptions();
 		JavaCore.setComplianceOptions(JavaCore.VERSION_1_7, options);
 		parser.setCompilerOptions(options);
