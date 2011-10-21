@@ -15,6 +15,7 @@ public class Translations extends NLS {
 	public static String WorkedOnTypeCMF_workedOnInterface;
 	public static String WorkedOnTypeCMF_workedOnEnum;
 	public static String WorkedOnTypeCMF_workedOnAnnotation;
+	public static String FormattedJavaFileCMF_formattedJavaFileMessage;
 	static {
 		initializeMessages(BASE_NAME, Translations.class);
 	}
