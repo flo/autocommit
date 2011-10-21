@@ -1,33 +1,35 @@
 package de.fkoeberle.autocommit.message.java;
 
+import java.util.Set;
+
 
 public class CommonParentPackageFinder {
 	private String first;
 	private int lengthOfPrefix;
 	
-	public void checkPackage(String r) {
+	public void checkPackage(String p) {
 		if (first == null) {
-			first = r;
-			lengthOfPrefix = r.length();
+			first = p;
+			lengthOfPrefix = p.length();
 		} else {
 			// default package handling:
 			if ((lengthOfPrefix == 0)) {
-				if (r.length() != 0) {
+				if (p.length() != 0) {
 					lengthOfPrefix = -1;
 				}
 				return;
 			}
 			for (int i = 0; i < lengthOfPrefix; i++ ) {
-				if ((i >= r.length())) {
+				if ((i >= p.length())) {
 					lengthOfPrefix = first.lastIndexOf('.', i);
 					return;
-				} else if ((first.charAt(i) != r.charAt(i))) {
+				} else if ((first.charAt(i) != p.charAt(i))) {
 					lengthOfPrefix = first.lastIndexOf('.', i - 1);
 					return;
 				}
 			}
-			if (lengthOfPrefix < r.length()) {
-				lengthOfPrefix = r.lastIndexOf('.', lengthOfPrefix);
+			if (lengthOfPrefix < p.length()) {
+				lengthOfPrefix = p.lastIndexOf('.', lengthOfPrefix);
 			}
 		}
 	}
@@ -36,5 +38,11 @@ public class CommonParentPackageFinder {
 		if ((first == null) || (lengthOfPrefix == -1))
 			return null;
 		return first.substring(0, lengthOfPrefix);
+	}
+
+	public void checkPackages(Set<String> packages) {
+		for (String p : packages) {
+			checkPackage(p);
+		}
 	}
 }
