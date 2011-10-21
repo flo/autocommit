@@ -18,21 +18,16 @@ public class FormattedJavaFileCMF implements ICommitMessageFactory {
 	private JavaFormatationChecker formatationChecker;
 
 	@Override
-	public String createMessage() {
+	public String createMessage() throws IOException {
 		ChangedFile changedFile = singleChangedJavaFileView.getChangedFile();
 		if (changedFile == null) {
 			return null;
 		}
-		try {
-			if (!formatationChecker
-					.foundJavaFormatationChangesOnly(changedFile)) {
-				return null;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		if (!formatationChecker.foundJavaFormatationChangesOnly(changedFile)) {
 			return null;
 		}
+
 		return formattedJavaFileMessage.createMessageWithArgs(changedFile
 				.getPath());
 	}

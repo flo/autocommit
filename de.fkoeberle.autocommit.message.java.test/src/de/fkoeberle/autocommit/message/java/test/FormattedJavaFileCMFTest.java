@@ -2,6 +2,8 @@ package de.fkoeberle.autocommit.message.java.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -20,7 +22,7 @@ public class FormattedJavaFileCMFTest {
 	}
 
 	@Test
-	public void testAddedSpacesToInterface() {
+	public void testAddedSpacesToInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		final String path = "/project1/org/example/MyInterface.java";
 		builder.addChangedFile(path,
@@ -35,7 +37,7 @@ public class FormattedJavaFileCMFTest {
 	}
 
 	@Test
-	public void testAddedLineBreaksToClass() {
+	public void testAddedLineBreaksToClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		final String path = "/project1/org/example/MyClass.java";
 		builder.addChangedFile(path,
@@ -50,7 +52,7 @@ public class FormattedJavaFileCMFTest {
 	}
 
 	@Test
-	public void testAddedLineBreakAfterImport() {
+	public void testAddedLineBreakAfterImport() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		final String path = "/project1/org/example/MyClass.java";
 		builder.addChangedFile(
@@ -66,7 +68,7 @@ public class FormattedJavaFileCMFTest {
 	}
 
 	@Test
-	public void testNoChange() {
+	public void testNoChange() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 
 		FormattedJavaFileCMF factory = createFactory(builder.build());
@@ -76,7 +78,7 @@ public class FormattedJavaFileCMFTest {
 	}
 
 	@Test
-	public void testAddedIfStatement() {
+	public void testAddedIfStatement() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		final String path = "/project1/org/example/MyClass.java";
 		builder.addChangedFile(
@@ -91,7 +93,7 @@ public class FormattedJavaFileCMFTest {
 	}
 
 	@Test
-	public void testWhitespaceChangeInString() {
+	public void testWhitespaceChangeInString() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		final String path = "/project1/org/example/MyClass.java";
 		builder.addChangedFile(
@@ -106,7 +108,7 @@ public class FormattedJavaFileCMFTest {
 	}
 
 	@Test
-	public void testCompareOfFilesWithErrors() {
+	public void testCompareOfFilesWithErrors() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		final String path = "/project1/org/example/MyClass.java";
 		builder.addChangedFile(
@@ -121,7 +123,7 @@ public class FormattedJavaFileCMFTest {
 	}
 
 	@Test
-	public void testCompareOfFilesWithErrorInOld() {
+	public void testCompareOfFilesWithErrorInOld() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		final String path = "/project1/org/example/MyClass.java";
 		builder.addChangedFile(
@@ -136,7 +138,7 @@ public class FormattedJavaFileCMFTest {
 	}
 
 	@Test
-	public void testCompareOfFilesWithErrorInNew() {
+	public void testCompareOfFilesWithErrorInNew() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		final String path = "/project1/org/example/MyClass.java";
 		builder.addChangedFile(
@@ -152,7 +154,8 @@ public class FormattedJavaFileCMFTest {
 
 	@Ignore("The current implementation doesn't support this corner case which isn't important.")
 	@Test
-	public void testCompareOfFilesWithErrorsWhichAreTheSameExceptWhitespace() {
+	public void testCompareOfFilesWithErrorsWhichAreTheSameExceptWhitespace()
+			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		final String path = "/project1/org/example/MyClass.java";
 		builder.addChangedFile(

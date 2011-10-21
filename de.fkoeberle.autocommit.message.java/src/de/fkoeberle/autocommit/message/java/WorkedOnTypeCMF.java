@@ -35,15 +35,9 @@ public class WorkedOnTypeCMF implements ICommitMessageFactory {
 	private SingleChangedTypeView view;
 
 	@Override
-	public String createMessage() {
-		DeclarationDelta declarationDelta;
-		try {
-			declarationDelta = view.getDeclarationDelta();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+	public String createMessage() throws IOException {
+		DeclarationDelta declarationDelta = view.getDeclarationDelta();
+
 		if (declarationDelta == null) {
 			return null;
 		}

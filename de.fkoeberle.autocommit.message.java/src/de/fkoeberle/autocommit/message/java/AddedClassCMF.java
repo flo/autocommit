@@ -59,7 +59,7 @@ public class AddedClassCMF implements ICommitMessageFactory {
 	}
 
 	@Override
-	public String createMessage() {
+	public String createMessage() throws IOException {
 		if (!extensions.containsOnly("java")) {
 			return null;
 		}
@@ -75,15 +75,9 @@ public class AddedClassCMF implements ICommitMessageFactory {
 
 		AddedFile addedFile = delta.getAddedFiles().get(0);
 		IFileContent genericContent = addedFile.getNewContent();
-		CompilationUnit compilationUnit;
-		try {
-			compilationUnit = compilationUnitProvider
+		CompilationUnit compilationUnit = compilationUnitProvider
 					.getInstanceFor(genericContent);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+
 
 		List<?> topLevelTypes = compilationUnit.types();
 		if (topLevelTypes.size() != 1) {

@@ -11,9 +11,9 @@ import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import de.fkoeberle.autocommit.message.AddedFile;
+import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.IFileContent;
-import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.RemovedFile;
 
 final class PackageSetBuilder {
@@ -26,19 +26,15 @@ final class PackageSetBuilder {
 		this.parser = parser;
 	}
 
-	private boolean addPackageOfFile(String filePath, IFileContent fileContent) {
+	private boolean addPackageOfFile(String filePath, IFileContent fileContent)
+			throws IOException {
 		final String directoryPath = directoryOf(filePath);
 		String packageName = determinePackageFromDirectory(directoryPath);
 
 		if (packageName == null) {
-			CompilationUnit compilationUnit;
-			try {
-				compilationUnit = parser.getInstanceFor(fileContent);
-			} catch (IOException e) {
-				// TODO better logging
-				e.printStackTrace();
-				return false;
-			}
+			CompilationUnit compilationUnit = parser
+					.getInstanceFor(fileContent);
+
 			packageName = extractPackage(compilationUnit);
 
 			if (packageName == null) {
@@ -82,7 +78,6 @@ final class PackageSetBuilder {
 				break;
 			}
 		}
-		// TODO check and document: returns "" if default package
 		return packageName;
 	}
 
@@ -104,7 +99,7 @@ final class PackageSetBuilder {
 		return packageNames;
 	}
 
-	public boolean addPackagesOf(FileSetDelta delta) {
+	public boolean addPackagesOf(FileSetDelta delta) throws IOException {
 		for (ChangedFile file : delta.getChangedFiles()) {
 			boolean success = addPackageOfFile(file.getPath(),
 					file.getNewContent());

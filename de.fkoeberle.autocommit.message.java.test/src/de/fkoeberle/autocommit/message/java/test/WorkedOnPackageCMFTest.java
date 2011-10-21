@@ -2,6 +2,8 @@ package de.fkoeberle.autocommit.message.java.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
@@ -19,7 +21,7 @@ public class WorkedOnPackageCMFTest {
 	}
 
 	@Test
-	public void testSingleAddedFile() {
+	public void testSingleAddedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
@@ -32,7 +34,7 @@ public class WorkedOnPackageCMFTest {
 	}
 
 	@Test
-	public void testSingleRemovedFile() {
+	public void testSingleRemovedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addRemovedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
@@ -45,7 +47,7 @@ public class WorkedOnPackageCMFTest {
 	}
 
 	@Test
-	public void testSingleModifiedFile() {
+	public void testSingleModifiedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {int x;}",
@@ -59,7 +61,7 @@ public class WorkedOnPackageCMFTest {
 	}
 
 	@Test
-	public void testAddedAndModifiedFileInSamePackage() {
+	public void testAddedAndModifiedFileInSamePackage() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/AddedClass.java",
 				"package org.example;\n\nclass AddedClass {}");
@@ -75,7 +77,7 @@ public class WorkedOnPackageCMFTest {
 	}
 
 	@Test
-	public void testMovedFileBetweenPackages() {
+	public void testMovedFileBetweenPackages() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addRemovedFile("/project1/org/example/oldpackage/Test.java",
 				"package org.example.oldpackage;\n\nclass Test {}");
@@ -90,7 +92,7 @@ public class WorkedOnPackageCMFTest {
 	}
 
 	@Test
-	public void testMoveToSamePackageInOtherFolder() {
+	public void testMoveToSamePackageInOtherFolder() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addRemovedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
@@ -105,7 +107,7 @@ public class WorkedOnPackageCMFTest {
 	}
 
 	@Test
-	public void testDefaultPackage() {
+	public void testDefaultPackage() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/Test.java", "class Test {}");
 
@@ -117,7 +119,7 @@ public class WorkedOnPackageCMFTest {
 	}
 
 	@Test
-	public void testNonMatchingPath() {
+	public void testNonMatchingPath() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/other/Test.java",
 				"package org.example;\n\nclass Test {}");
@@ -133,9 +135,11 @@ public class WorkedOnPackageCMFTest {
 	 * look at the content of the second file thus does not notice the error.
 	 * It's important that not all files get parsed but only one per source
 	 * folder so that the time can be saved to analyze all files.
+	 * 
+	 * @throws IOException
 	 */
 	@Test
-	public void testThatPerformanceOptimizationGotUsed() {
+	public void testThatPerformanceOptimizationGotUsed() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/One.java",
 				"package org.example;\n\nclass One {}");
@@ -150,7 +154,8 @@ public class WorkedOnPackageCMFTest {
 	}
 
 	@Test
-	public void testThatASecondNonMatchingPackageGetsDetectedIfItsInOtherSourceFolder() {
+	public void testThatASecondNonMatchingPackageGetsDetectedIfItsInOtherSourceFolder()
+			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/One.java",
 				"package org.example;\n\nclass One {}");

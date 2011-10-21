@@ -2,6 +2,8 @@ package de.fkoeberle.autocommit.message.java.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
@@ -19,7 +21,7 @@ public class AddedClassCMFTest {
 	}
 
 	@Test
-	public void testAddedStubClass() {
+	public void testAddedStubClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
@@ -32,7 +34,7 @@ public class AddedClassCMFTest {
 	}
 
 	@Test
-	public void testAddedClass() {
+	public void testAddedClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile(
 				"/project1/org/example/AddedClass.java",
@@ -46,7 +48,7 @@ public class AddedClassCMFTest {
 	}
 
 	@Test
-	public void testAddedInterface() {
+	public void testAddedInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}");
@@ -59,7 +61,7 @@ public class AddedClassCMFTest {
 	}
 
 	@Test
-	public void testAddedEnum() {
+	public void testAddedEnum() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/MyEnum.java",
 				"package org.example;\n\npublic enum MyEnum {\n\n}\n");
@@ -72,7 +74,7 @@ public class AddedClassCMFTest {
 	}
 
 	@Test
-	public void testAddedAnnotationType() {
+	public void testAddedAnnotationType() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile(
 				"/project1/org/example/MyFieldAnnotation.java",
@@ -86,7 +88,7 @@ public class AddedClassCMFTest {
 	}
 
 	@Test
-	public void testAddedClassAndInterface() {
+	public void testAddedClassAndInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile(
 				"/project1/org/example/AddedClass.java",
@@ -101,7 +103,7 @@ public class AddedClassCMFTest {
 	}
 
 	@Test
-	public void testAddedClassAndRemovedInterface() {
+	public void testAddedClassAndRemovedInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile(
 				"/project1/org/example/AddedClass.java",
@@ -116,7 +118,7 @@ public class AddedClassCMFTest {
 	}
 
 	@Test
-	public void testRemovedInterface() {
+	public void testRemovedInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addRemovedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}");
@@ -128,7 +130,7 @@ public class AddedClassCMFTest {
 	}
 
 	@Test
-	public void testAddedClassAndModifiedInterface() {
+	public void testAddedClassAndModifiedInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile(
 				"/project1/org/example/AddedClass.java",
@@ -144,7 +146,7 @@ public class AddedClassCMFTest {
 	}
 
 	@Test
-	public void testModifiedInterface() {
+	public void testModifiedInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}",

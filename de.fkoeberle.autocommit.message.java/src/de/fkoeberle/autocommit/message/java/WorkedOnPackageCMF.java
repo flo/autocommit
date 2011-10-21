@@ -1,5 +1,6 @@
 package de.fkoeberle.autocommit.message.java;
 
+import java.io.IOException;
 import java.util.Set;
 
 import de.fkoeberle.autocommit.message.CommitMessage;
@@ -32,7 +33,7 @@ public class WorkedOnPackageCMF implements ICommitMessageFactory {
 	private ExtensionsOfAddedModifiedOrChangedFiles extensions;
 
 	@Override
-	public String createMessage() {
+	public String createMessage() throws IOException {
 		if (!extensions.containsOnly("java")) {
 			return null;
 		}

@@ -37,7 +37,7 @@ public class CommitMessageBuilder implements ICommitMessageBuilder {
 	}
 
 	@Override
-	public String buildMessage() {
+	public String buildMessage() throws IOException {
 		if (dirty) {
 			throw new IllegalStateException(
 					"buildMessage() has already been called! Create a new builder!");
