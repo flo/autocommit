@@ -2,7 +2,7 @@ package de.fkoeberle.autocommit.message.java;
 
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 
-public class DeclarationDelta {
+public final class DeclarationDelta {
 	private final BodyDeclaration oldDeclaration;
 	private final BodyDeclaration newDeclaration;
 

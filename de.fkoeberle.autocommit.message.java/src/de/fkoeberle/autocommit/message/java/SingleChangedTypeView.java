@@ -7,19 +7,22 @@ import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class SingleChangedTypeView {
 	private boolean invalid;
-	private SoftReference<DeclarationDelta> typeDeltaRef;
+	private SoftReference<TypeDelta> typeDeltaRef;
 
 	@InjectedBySession
 	private SingleChangedJavaFileView view;
 
-	private DeclarationDelta determineTypeDelta() throws IOException {
-		if (!view.isValid()) {
+	private TypeDelta determineTypeDelta() throws IOException {
+		DeclarationListDelta declarationListDelta = view
+				.getDeclarationListDelta();
+		if (declarationListDelta == null) {
 			return null;
 		}
+		return findTypeDeltaAtAnyDepth(view.getDeclarationListDelta());
+	}
 
-		DeclarationListDelta declationListDelta = view
-				.getDeclarationListDelta();
-
+	private TypeDelta findTypeDeltaAtAnyDepth(
+			DeclarationListDelta declationListDelta) {
 		if (declationListDelta.getAddedDeclarations().size() != 0) {
 			return null;
 		}
@@ -29,15 +32,29 @@ public class SingleChangedTypeView {
 		if (declationListDelta.getChangedDeclarations().size() != 1) {
 			return null;
 		}
+		DeclarationDelta declarationDelta = declationListDelta
+				.getChangedDeclarations().get(0);
+		TypeDelta typeDelta = TypeDelta.valueOf(declarationDelta);
+		if (typeDelta == null) {
+			return null;
+		}
+		if (typeDelta.isDeclarationListOnlyChange()) {
+			DeclarationListDelta subDeclarationList = typeDelta
+					.getDeclarationListDelta();
+			TypeDelta subTypeDelta = findTypeDeltaAtAnyDepth(subDeclarationList);
+			if (subTypeDelta != null) {
+				return subTypeDelta;
+			}
+		}
 
-		return declationListDelta.getChangedDeclarations().get(0);
+		return typeDelta;
 	}
 
-	public DeclarationDelta getDeclarationDelta() throws IOException {
+	public TypeDelta getTypeDelta() throws IOException {
 		if (invalid) {
 			return null;
 		}
-		DeclarationDelta typeDelta = null;
+		TypeDelta typeDelta = null;
 		if (typeDeltaRef != null) {
 			typeDelta = typeDeltaRef.get();
 		}
@@ -48,7 +65,7 @@ public class SingleChangedTypeView {
 			invalid = true;
 			return null;
 		} else {
-			typeDeltaRef = new SoftReference<DeclarationDelta>(typeDelta);
+			typeDeltaRef = new SoftReference<TypeDelta>(typeDelta);
 			return typeDelta;
 		}
 	}

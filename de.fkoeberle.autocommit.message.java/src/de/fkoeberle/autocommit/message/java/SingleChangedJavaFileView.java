@@ -78,6 +78,12 @@ public class SingleChangedJavaFileView {
 		return compilationUnit;
 	}
 
+	/**
+	 * 
+	 * @return an instance of {@link DeclarationListDelta} or null if
+	 *         {@link #isValid()} returns false.
+	 * @throws IOException
+	 */
 	public DeclarationListDelta getDeclarationListDelta() throws IOException {
 		DeclarationListDelta declarationListDelta = null;
 		if (declarationListDeltaRef != null) {
@@ -119,6 +125,7 @@ public class SingleChangedJavaFileView {
 	}
 
 	public boolean isValid() {
+		// TODO remove this method and update documentation
 		return getChangedFile() != null;
 	}
 }
