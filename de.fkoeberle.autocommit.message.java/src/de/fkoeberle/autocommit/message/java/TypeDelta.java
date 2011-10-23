@@ -1,6 +1,5 @@
 package de.fkoeberle.autocommit.message.java;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTMatcher;
@@ -195,52 +194,17 @@ public class TypeDelta {
 	}
 
 	public String getSimpleTypeName() {
-		return nameOf(oldType);
+		return TypeUtil.nameOf(oldType);
 	}
 
 	public String getOuterTypeName() {
-		return outerTypeNameOf(oldType);
+		return TypeUtil.outerTypeNameOf(oldType);
 	}
 
 	public String getFullTypeName() {
-		return fullTypeNameOf(oldType);
+		return TypeUtil.fullTypeNameOf(oldType);
 	}
 
-	private String outerTypeNameOf(AbstractTypeDeclaration type) {
-		ASTNode parent = type.getParent();
-		if (!(parent instanceof AbstractTypeDeclaration)) {
-			return null;
-		}
-		return fullTypeNameOf((AbstractTypeDeclaration) parent);
-	}
 
-	private String fullTypeNameOf(AbstractTypeDeclaration type) {
-		ASTNode currentType = type;
-		List<String> reversedTypeParts = new ArrayList<String>();
-		while (currentType instanceof AbstractTypeDeclaration) {
-			reversedTypeParts
-					.add(nameOf((AbstractTypeDeclaration) currentType));
-			currentType = currentType.getParent();
-		}
-		int length = 0;
-		for (String part : reversedTypeParts) {
-			length += part.length();
-		}
-		length += reversedTypeParts.size() - 1;
-		StringBuilder stringBuilder = new StringBuilder(length);
-		for (int i = reversedTypeParts.size() - 1; i >= 0; i--) {
-			stringBuilder.append(reversedTypeParts.get(i));
-			if (i != 0) {
-				stringBuilder.append('.');
-			}
-		}
-		String result = stringBuilder.toString();
-		assert (result.length() == length);
-		return result;
-	}
-
-	private String nameOf(AbstractTypeDeclaration typeDeclation) {
-		return typeDeclation.getName().getIdentifier();
-	}
 
 }
