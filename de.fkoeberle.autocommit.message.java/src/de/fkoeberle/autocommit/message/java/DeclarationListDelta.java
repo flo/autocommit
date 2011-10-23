@@ -22,9 +22,9 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 public class DeclarationListDelta {
-	List<BodyDeclaration> addedDeclarations;
-	List<BodyDeclaration> removedDeclarations;
-	List<DeclarationDelta> changedDeclarations;
+	private final List<BodyDeclaration> addedDeclarations;
+	private final List<BodyDeclaration> removedDeclarations;
+	private final List<DeclarationDelta> changedDeclarations;
 
 
 

@@ -202,15 +202,25 @@ public class TypeDelta {
 		return outerTypeNameOf(oldType);
 	}
 
+	public String getFullTypeName() {
+		return fullTypeNameOf(oldType);
+	}
+
 	private String outerTypeNameOf(AbstractTypeDeclaration type) {
 		ASTNode parent = type.getParent();
 		if (!(parent instanceof AbstractTypeDeclaration)) {
 			return null;
 		}
+		return fullTypeNameOf((AbstractTypeDeclaration) parent);
+	}
+
+	private String fullTypeNameOf(AbstractTypeDeclaration type) {
+		ASTNode currentType = type;
 		List<String> reversedTypeParts = new ArrayList<String>();
-		while (parent instanceof AbstractTypeDeclaration) {
-			reversedTypeParts.add(nameOf((AbstractTypeDeclaration) parent));
-			parent = parent.getParent();
+		while (currentType instanceof AbstractTypeDeclaration) {
+			reversedTypeParts
+					.add(nameOf((AbstractTypeDeclaration) currentType));
+			currentType = currentType.getParent();
 		}
 		int length = 0;
 		for (String part : reversedTypeParts) {

@@ -8,6 +8,7 @@ public class Translations extends NLS {
 	public static String AddedClassCMF_addedEnumMessage;
 	public static String AddedClassCMF_addedInterfaceMessage;
 	public static String AddedClassCMF_addedStubClassMessage;
+	public static String WorkedOnMethodCMF_workedOnMethodWithArgs;
 	public static String WorkedOnPackageCMF_workedOnDefaultPackage;
 	public static String WorkedOnPackageCMF_workedOnPackage;
 	public static String WorkedOnPackageCMF_workedOnSubPackages;
