@@ -24,13 +24,16 @@ public class TypeUtil {
 		boolean addComma = false;
 		for (Object parameterObject : methodDeclaration.parameters()) {
 			if (addComma) {
-				builder.append(',');
+				builder.append(", ");
 			} else {
 				addComma = true;
 			}
 			SingleVariableDeclaration parameter = (SingleVariableDeclaration) parameterObject;
 			Type type = parameter.getType();
 			appendTypeTo(type, builder);
+			if (parameter.isVarargs()) {
+				builder.append("...");
+			}
 		}
 		return builder.toString();
 	}
@@ -66,7 +69,13 @@ public class TypeUtil {
 			builder.append("<"); //$NON-NLS-1$
 			@SuppressWarnings("unchecked")
 			List<Type> typeArguments = parameterizedType.typeArguments();
+			boolean addComma = false;
 			for (Type typeArg : typeArguments) {
+				if (addComma) {
+					builder.append(", ");
+				} else {
+					addComma = true;
+				}
 				appendTypeTo(typeArg, builder);
 			}
 			builder.append(">"); //$NON-NLS-1$
