@@ -133,4 +133,12 @@ public class TypeUtil {
 	public static String nameOf(AbstractTypeDeclaration typeDeclation) {
 		return typeDeclation.getName().getIdentifier();
 	}
+
+	public static boolean typeNameMatchesFile(
+			AbstractTypeDeclaration typeDeclaration,
+			String path) {
+		String typeName = TypeUtil.nameOf(typeDeclaration);
+		String expectedSuffix = "/" + typeName + ".java";
+		return path.endsWith(expectedSuffix);
+	}
 }

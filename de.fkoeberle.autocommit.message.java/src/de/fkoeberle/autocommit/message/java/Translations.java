@@ -25,6 +25,10 @@ public class Translations extends NLS {
 	public static String FormattedJavaFilesOfPackageCMF_formattedSourceInPackage;
 	public static String FormattedJavaFilesOfPackageCMF_formattedSourceInSubPackagesOf;
 	public static String FormattedJavaFilesOfPackageCMF_formattedSourceInTheDefaultPackage;
+	public static String FormattedJavaTypeCMF_formattedClass;
+	public static String FormattedJavaTypeCMF_formattedInterface;
+	public static String FormattedJavaTypeCMF_formattedEnum;
+	public static String FormattedJavaTypeCMF_formattedAnnotation;
 
 	static {
 		initializeMessages(BASE_NAME, Translations.class);
