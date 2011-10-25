@@ -95,7 +95,7 @@ public class AddedClassCMF implements ICommitMessageFactory {
 			if (type.isInterface()) {
 				return addedInterfaceMessage.createMessageWithArgs(name);
 			} else {
-				boolean stub = isClassAStub(compilationUnit, type);
+				boolean stub = isClassAStub(type);
 				if (stub) {
 					return addedStubClassMessage.createMessageWithArgs(name);
 				} else {
@@ -113,8 +113,7 @@ public class AddedClassCMF implements ICommitMessageFactory {
 
 	}
 
-	private boolean isClassAStub(CompilationUnit compilationUnit,
-			TypeDeclaration declaration) {
+	private boolean isClassAStub(TypeDeclaration declaration) {
 		if (declaration.getFields().length > 0) {
 			return false;
 		}
