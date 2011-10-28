@@ -25,6 +25,9 @@ public class AddedMethodCMF implements ICommitMessageFactory {
 			return null;
 		}
 		MethodDeclaration addedMethod = (MethodDeclaration) addedDeclaration;
+		if (addedMethod.isConstructor()) {
+			return null;
+		}
 
 		AbstractTypeDeclaration type = (AbstractTypeDeclaration) (addedMethod
 				.getParent());
