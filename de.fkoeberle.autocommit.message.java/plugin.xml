@@ -39,9 +39,6 @@
                id="de.fkoeberle.autocommit.message.java.FormattedJavaFilesOfPackageCMF">
          </factory>
          <factory
-               id="de.fkoeberle.autocommit.message.java.FormattedJavaFileCMF">
-         </factory>
-         <factory
                id="de.fkoeberle.autocommit.message.java.WorkedOnMethodCMF"></factory>
          <factory
                id="de.fkoeberle.autocommit.message.java.WorkedOnTypeCMF">
@@ -55,13 +52,6 @@
                id="de.fkoeberle.autocommit.message.WorkedOnPathCMF">
          </factory>
       </profile>
-   </extension>
-   <extension
-         point="de.fkoeberle.autocommit.message.factory">
-      <factory
-            class="de.fkoeberle.autocommit.message.java.FormattedJavaFileCMF"
-            id="de.fkoeberle.autocommit.message.java.FormattedJavaFileCMF">
-      </factory>
    </extension>
 
 </plugin>
