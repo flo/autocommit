@@ -31,6 +31,10 @@
             class="de.fkoeberle.autocommit.message.java.AddedMethodCMF"
             id="de.fkoeberle.autocommit.message.java.AddedMethodCMF">
       </factory>
+      <factory
+            class="de.fkoeberle.autocommit.message.java.AddedConstructorCMF"
+            id="de.fkoeberle.autocommit.message.java.AddedConstructorCMF">
+      </factory>
    </extension>
    <extension
          point="de.fkoeberle.autocommit.message.profile">
@@ -44,6 +48,9 @@
          </factory>
          <factory
                id="de.fkoeberle.autocommit.message.java.AddedMethodCMF">
+         </factory>
+         <factory
+               id="de.fkoeberle.autocommit.message.java.AddedConstructorCMF">
          </factory>
          <factory
                id="de.fkoeberle.autocommit.message.java.WorkedOnMethodCMF"></factory>
