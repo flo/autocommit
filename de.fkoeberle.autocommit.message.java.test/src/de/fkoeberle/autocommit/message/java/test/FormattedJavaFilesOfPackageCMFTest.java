@@ -69,18 +69,105 @@ public class FormattedJavaFilesOfPackageCMFTest {
 	@Test
 	public void testFormattedTwoFilesInNoCommonPackage() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/com/example/test1/IClass.java",
-				"package org.example.test1;\n\nclass MyClass {void m() {};}",
-				"package org.example.test1;\n\nclass MyClass {void m() {\n};}");
+		builder.addChangedFile("/project1/com/example/test1/MyClass.java",
+				"package com.example.test1;\n\nclass MyClass {void m() {};}",
+				"package com.example.test1;\n\nclass MyClass {void m() {\n};}");
 		builder.addChangedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {int  m();}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
 		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceMessage
-				.createMessageWithArgs("org.example");
+				.createMessageWithArgs();
 		assertEquals(expected, message);
 	}
+
+	@Test
+	public void testFormattedTwoFilesWithSecondInDefaultPackage()
+			throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile("/project1/src/com/example/test1/IClass.java",
+				"package org.example.test1;\n\nclass MyClass {void m() {};}",
+				"package org.example.test1;\n\nclass MyClass {void m() {\n};}");
+		builder.addChangedFile("/project1/src/MyInterface.java",
+				"interface MyInterface {int  m();}",
+				"interface MyInterface {int m();}");
+		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
+		final String expected = factory.formattedSourceMessage
+				.createMessageWithArgs();
+		assertEquals(expected, message);
+	}
+
+	@Test
+	public void testFormattedTwoFilesWithFirstInDefaultPackage()
+			throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile("/project1/src/MyInterface.java",
+				"interface MyInterface {int  m();}",
+				"interface MyInterface {int m();}");
+		builder.addChangedFile("/project1/src/com/example/test1/IClass.java",
+				"package org.example.test1;\n\nclass MyClass {void m() {};}",
+				"package org.example.test1;\n\nclass MyClass {void m() {\n};}");
+		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
+		final String expected = factory.formattedSourceMessage
+				.createMessageWithArgs();
+		assertEquals(expected, message);
+	}
+
+	@Test
+	public void testFormattedTwoFilesWithFirstInDefaultPackage1b()
+			throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile("/project1/src/MyInterface.java",
+				"interface MyInterface {int  m();}",
+				"interface MyInterface {int m();}");
+		builder.addChangedFile("/project1/src/org/example/MyClass.java",
+				"package org.example;\n\nclass MyClass {void m() {};}",
+				"package org.example;\n\nclass MyClass {void m() {\n};}");
+		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
+		final String expected = factory.formattedSourceMessage
+				.createMessageWithArgs();
+		assertEquals(expected, message);
+	}
+
+
+	@Test
+	public void testFormattedTwoFilesWithFirstInDefaultPackage2()
+			throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile("/project1/src/MyEnum.java",
+				"\nenum MyEnum {\nNEW,OLD;\n}\n",
+				"\nenum MyEnum {\nNEW,OLD; \n}\n");
+		builder.addChangedFile("/project1/src/org/example/NumberProvider.java",
+				"package org.example;\n\npublic class NumberProvider {\n\n\tpublic int returnANumber(Object newParam) {\n\t\t// TODO Auto-generated method stub\n\t\treturn 21;\n\n\t}\n\n}",
+				"package org.example;\n\npublic class NumberProvider {\n\n\tpublic int returnANumber(Object newParam) {\n\t\t// TODO Auto-generated method stub\n\t\treturn 21;\n\t}\n\n}");
+		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
+		final String expected = factory.formattedSourceMessage
+				.createMessageWithArgs();
+		assertEquals(expected, message);
+	}
+
+	@Test
+	public void testFormattedTwoFilesWithFirstInDefaultPackage3()
+			throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile("/project1/src/MyEnum.java",
+				"\nenum MyEnum {\nNEW,OLD;\n}\n",
+				"\nenum MyEnum {\nNEW,OLD; \n}\n");
+		builder.addChangedFile("/project1/src/org/example/NumberProvider.java",
+				"package org.example;\n\nclass NumberProvider {\n}",
+				"package org.example;\n\nclass NumberProvider {}");
+		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
+		final String expected = factory.formattedSourceMessage
+				.createMessageWithArgs();
+		assertEquals(expected, message);
+	}
+
 
 	@Test
 	public void testFormattedTwoFilesInDefaultPackage() throws IOException {
@@ -94,7 +181,31 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceInTheDefaultPackageMessage
-				.createMessageWithArgs("org.example");
+				.createMessageWithArgs();
+		assertEquals(expected, message);
+	}
+
+	@Test
+	public void testFormattedOneEnumInDefaultPackage() throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile("/project1/MyEnum.java",
+				"enum MyEnum {NEW,OLD;}", "enum MyEnum {NEW, OLD;}");
+		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
+		final String expected = factory.formattedSourceInTheDefaultPackageMessage
+				.createMessageWithArgs();
+		assertEquals(expected, message);
+	}
+
+	@Test
+	public void testFormattedOneClassInDefaultPackage() throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile("/project1/MyClass.java", "class MyClass {}",
+				"class MyClass { }");
+		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
+		final String expected = factory.formattedSourceInTheDefaultPackageMessage
+				.createMessageWithArgs();
 		assertEquals(expected, message);
 	}
 }

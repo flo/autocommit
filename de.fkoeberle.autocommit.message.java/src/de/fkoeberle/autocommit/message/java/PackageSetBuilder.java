@@ -42,6 +42,7 @@ public final class PackageSetBuilder {
 				packageName = "";
 			} else {
 				String packagePath = packageName.replace(".", "/");
+				packagePath = packagePath + "/";
 				if (directoryPath.endsWith(packagePath)) {
 					String sourceFolder = directoryPath.substring(0,
 							directoryPath.length() - packagePath.length());
@@ -63,7 +64,7 @@ public final class PackageSetBuilder {
 		if (lastSlash == -1) {
 			directoryPath = "/";
 		} else {
-			directoryPath = filePath.substring(0, lastSlash);
+			directoryPath = filePath.substring(0, lastSlash + 1);
 		}
 		return directoryPath;
 	}
@@ -72,8 +73,15 @@ public final class PackageSetBuilder {
 		String packageName = null;
 		for (String sourceFolder : sourceFolders) {
 			if (directoryPath.startsWith(sourceFolder)) {
-				String packagePath = directoryPath.substring(sourceFolder
-						.length());
+				int fromIndex = sourceFolder.length();
+				int toIndex = directoryPath.length() - 1;
+				String packagePath;
+				if (toIndex > fromIndex) {
+					packagePath = directoryPath.substring(
+							sourceFolder.length(), directoryPath.length() - 1);
+				} else {
+					packagePath = "";
+				}
 				packageName = packagePath.replace('/', '.');
 				break;
 			}
