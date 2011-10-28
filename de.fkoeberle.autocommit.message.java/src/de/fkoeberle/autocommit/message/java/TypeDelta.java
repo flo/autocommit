@@ -47,6 +47,10 @@ public class TypeDelta {
 		return new TypeDelta(oldType, newType);
 	}
 
+	/**
+	 * 
+	 * @return never null.
+	 */
 	public DeclarationListDelta getDeclarationListDelta() {
 		if (declarationListDelta == null) {
 			declarationListDelta = new DeclarationListDelta(oldType, newType);
