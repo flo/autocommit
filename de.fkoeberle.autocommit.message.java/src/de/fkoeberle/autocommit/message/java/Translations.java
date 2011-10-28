@@ -29,6 +29,7 @@ public class Translations extends NLS {
 	public static String FormattedJavaTypeCMF_formattedInterface;
 	public static String FormattedJavaTypeCMF_formattedEnum;
 	public static String FormattedJavaTypeCMF_formattedAnnotation;
+	public static String AddedMethodCMF_addedMethod;
 
 	static {
 		initializeMessages(BASE_NAME, Translations.class);

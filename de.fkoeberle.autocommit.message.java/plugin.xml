@@ -27,6 +27,10 @@
             class="de.fkoeberle.autocommit.message.java.FormattedJavaTypeCMF"
             id="de.fkoeberle.autocommit.message.java.FormattedJavaTypeCMF">
       </factory>
+      <factory
+            class="de.fkoeberle.autocommit.message.java.AddedMethodCMF"
+            id="de.fkoeberle.autocommit.message.java.AddedMethodCMF">
+      </factory>
    </extension>
    <extension
          point="de.fkoeberle.autocommit.message.profile">
@@ -37,6 +41,9 @@
                id="de.fkoeberle.autocommit.message.java.FormattedJavaTypeCMF"></factory>
          <factory
                id="de.fkoeberle.autocommit.message.java.FormattedJavaFilesOfPackageCMF">
+         </factory>
+         <factory
+               id="de.fkoeberle.autocommit.message.java.AddedMethodCMF">
          </factory>
          <factory
                id="de.fkoeberle.autocommit.message.java.WorkedOnMethodCMF"></factory>

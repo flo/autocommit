@@ -135,10 +135,16 @@ public class TypeUtil {
 	}
 
 	public static boolean typeNameMatchesFile(
-			AbstractTypeDeclaration typeDeclaration,
-			String path) {
+			AbstractTypeDeclaration typeDeclaration, String path) {
 		String typeName = TypeUtil.nameOf(typeDeclaration);
 		String expectedSuffix = "/" + typeName + ".java";
 		return path.endsWith(expectedSuffix);
 	}
+
+	public static String typeRefAsString(Type type) {
+		StringBuilder stringBuilder = new StringBuilder();
+		appendTypeTo(type, stringBuilder);
+		return stringBuilder.toString();
+	}
+
 }
