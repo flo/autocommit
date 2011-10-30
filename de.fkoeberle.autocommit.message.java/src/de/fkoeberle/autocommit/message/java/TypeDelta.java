@@ -3,15 +3,13 @@ package de.fkoeberle.autocommit.message.java;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTMatcher;
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-public class TypeDelta {
+public final class TypeDelta extends DeclarationDelta {
 	private final AbstractTypeDeclaration oldType;
 	private final AbstractTypeDeclaration newType;
 	private DeclarationListDelta declarationListDelta;
@@ -20,6 +18,7 @@ public class TypeDelta {
 
 	public TypeDelta(AbstractTypeDeclaration oldType,
 			AbstractTypeDeclaration newType) {
+		super(oldType, newType);
 		this.oldType = oldType;
 		this.newType = newType;
 	}
@@ -93,10 +92,10 @@ public class TypeDelta {
 		if (isTypeOfTypeChange()) {
 			return Boolean.FALSE;
 		}
-		if (isJavaDocChange()) {
+		if (containsJavaDocChanges()) {
 			return Boolean.FALSE;
 		}
-		if (isModifierChange()) {
+		if (containsModifierChanges()) {
 			return Boolean.FALSE;
 		}
 
@@ -160,43 +159,6 @@ public class TypeDelta {
 		return listsOfASTNodesDiffer(oldInterfaces, newInterfaces);
 	}
 	
-	private static boolean listsOfASTNodesDiffer(List<?> oldList,
-			List<?> newList) {
-		if (oldList.size() != newList.size()) {
-			return true;
-		}
-		int size = oldList.size();
-		for (int i = 0; i < size; i++) {
-			ASTNode oldInterface = (ASTNode) (oldList.get(i));
-			ASTNode newInterface = (ASTNode) (newList.get(i));
-			boolean matches = oldInterface.subtreeMatch(new ASTMatcher(true),
-					newInterface);
-			if (!matches) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean isModifierChange() {
-		if (oldType.getModifiers() != newType.getModifiers()) {
-			return true;
-		}
-		List<?> oldModifieres = oldType.modifiers();
-		List<?> newModifieres = newType.modifiers();
-		return listsOfASTNodesDiffer(oldModifieres, newModifieres);
-	}
-
-	private boolean isJavaDocChange() {
-		Javadoc oldJavaDoc = oldType.getJavadoc();
-		Javadoc newJavaDoc = newType.getJavadoc();
-		if (oldJavaDoc == null || newJavaDoc == null) {
-			return oldJavaDoc != newJavaDoc;
-		}
-
-		return oldJavaDoc.subtreeMatch(new ASTMatcher(true), newJavaDoc);
-	}
-
 	public String getSimpleTypeName() {
 		return TypeUtil.nameOf(oldType);
 	}

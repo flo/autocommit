@@ -5,13 +5,13 @@ import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
-public class MethodDelta {
+public class MethodDelta extends DeclarationDelta {
 	private final MethodDeclaration oldMethodDeclaration;
 	private final MethodDeclaration newMethodDeclaration;
 
 	public MethodDelta(MethodDeclaration oldMethodDeclaration,
 			MethodDeclaration newMethodDeclaration) {
-		super();
+		super(oldMethodDeclaration, newMethodDeclaration);
 		this.oldMethodDeclaration = oldMethodDeclaration;
 		this.newMethodDeclaration = newMethodDeclaration;
 	}
@@ -61,5 +61,4 @@ public class MethodDelta {
 	public String getSimpleTypeName() {
 		return TypeUtil.nameOf(getNewParentType());
 	}
-
 }
