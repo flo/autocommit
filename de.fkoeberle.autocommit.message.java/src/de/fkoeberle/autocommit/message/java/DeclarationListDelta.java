@@ -60,7 +60,7 @@ public class DeclarationListDelta {
 			} else {
 				if (!oldDeclaration.subtreeMatch(new ASTMatcher(true),
 						newDeclaration)) {
-					changedDeclarations.add(new DeclarationDelta(
+					changedDeclarations.add(DeclarationDelta.valueOf(
 							oldDeclaration, newDeclaration));
 				}
 			}

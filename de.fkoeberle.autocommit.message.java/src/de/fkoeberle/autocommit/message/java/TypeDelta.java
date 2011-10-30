@@ -1,5 +1,6 @@
 package de.fkoeberle.autocommit.message.java;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTMatcher;
@@ -13,8 +14,8 @@ public final class TypeDelta extends DeclarationDelta {
 	private final AbstractTypeDeclaration oldType;
 	private final AbstractTypeDeclaration newType;
 	private DeclarationListDelta declarationListDelta;
-	private Boolean typeOfTypeChange;
-	private Boolean declarationListOnlyChange;
+	private final EnumSet<BodyDeclarationChangeType> declarationListChange = EnumSet
+			.of(BodyDeclarationChangeType.DECLARATION_LIST);
 
 	public TypeDelta(AbstractTypeDeclaration oldType,
 			AbstractTypeDeclaration newType) {
@@ -57,14 +58,37 @@ public final class TypeDelta extends DeclarationDelta {
 		return declarationListDelta;
 	}
 
-	public boolean isTypeOfTypeChange() {
-		if (typeOfTypeChange == null) {
-			typeOfTypeChange = determineValueOfTypeOfTypeChange();
+
+	@Override
+	protected EnumSet<BodyDeclarationChangeType> determineOtherChangeTypes() {
+		EnumSet<BodyDeclarationChangeType> result = EnumSet
+				.noneOf(BodyDeclarationChangeType.class);
+		if (isTypeOfTypeChange()) {
+			result.add(BodyDeclarationChangeType.TYPE_OF_TYPE);
 		}
-		return typeOfTypeChange.booleanValue();
+		if (oldType instanceof TypeDeclaration) {
+			assert newType instanceof TypeDeclaration : "must be true since isTypeOfTypeChange() was false";
+			TypeDeclaration oldTypeDeclaration = ((TypeDeclaration) oldType);
+			TypeDeclaration newTypeDeclaration = ((TypeDeclaration) newType);
+			if (isSuperClassChange(oldTypeDeclaration, newTypeDeclaration)) {
+				result.add(BodyDeclarationChangeType.SUPER_CLASS);
+			}
+			if (isSuperInterfaceListChange(oldTypeDeclaration,
+					newTypeDeclaration)) {
+				result.add(BodyDeclarationChangeType.SUPER_INTERFACE_LIST);
+			}
+		} else if (oldType instanceof EnumDeclaration) {
+			assert newType instanceof EnumDeclaration : "must be true since isTypeOfTypeChange() was false";
+			EnumDeclaration oldEnum = (EnumDeclaration) oldType;
+			EnumDeclaration newEnum = (EnumDeclaration) newType;
+			if (isSuperInterfaceListChange(oldEnum, newEnum)) {
+				result.add(BodyDeclarationChangeType.SUPER_INTERFACE_LIST);
+			}
+		}
+		return result;
 	}
 
-	private Boolean determineValueOfTypeOfTypeChange() {
+	private Boolean isTypeOfTypeChange() {
 		if (oldType.getClass().equals(newType.getClass())) {
 			if (oldType instanceof TypeDeclaration) {
 				assert (newType instanceof TypeDeclaration) : "classes are the same";
@@ -81,48 +105,6 @@ public final class TypeDelta extends DeclarationDelta {
 		}
 	}
 
-	public boolean isDeclarationListOnlyChange() {
-		if (declarationListOnlyChange == null) {
-			declarationListOnlyChange = determineValueOfDeclarationListOnlyChange();
-		}
-		return declarationListOnlyChange.booleanValue();
-	}
-
-	private Boolean determineValueOfDeclarationListOnlyChange() {
-		if (isTypeOfTypeChange()) {
-			return Boolean.FALSE;
-		}
-		if (containsJavaDocChanges()) {
-			return Boolean.FALSE;
-		}
-		if (containsModifierChanges()) {
-			return Boolean.FALSE;
-		}
-
-		if (oldType instanceof TypeDeclaration) {
-			assert newType instanceof TypeDeclaration : "must be true since isTypeOfTypeChange() was false";
-			TypeDeclaration oldTypeDeclaration = ((TypeDeclaration) oldType);
-			TypeDeclaration newTypeDeclaration = ((TypeDeclaration) newType);
-			if (isSuperClassChange(oldTypeDeclaration, newTypeDeclaration)) {
-				return Boolean.FALSE;
-			}
-			if (isSuperInterfaceListChange(oldTypeDeclaration,
-					newTypeDeclaration)) {
-				return Boolean.FALSE;
-			}
-		} else if (oldType instanceof EnumDeclaration) {
-			assert newType instanceof EnumDeclaration : "must be true since isTypeOfTypeChange() was false";
-			EnumDeclaration oldEnum = (EnumDeclaration) oldType;
-			EnumDeclaration newEnum = (EnumDeclaration) newType;
-			if (isSuperInterfaceListChange(oldEnum, newEnum)) {
-				return Boolean.FALSE;
-			}
-		}
-		// There isn't a check for AnnotationTypeDeclaration since
-		// they don't have anything additional to compare
-
-		return Boolean.TRUE;
-	}
 
 	private static boolean isSuperClassChange(
 			TypeDeclaration oldTypeDeclaration,
@@ -169,6 +151,10 @@ public final class TypeDelta extends DeclarationDelta {
 
 	public String getFullTypeName() {
 		return TypeUtil.fullTypeNameOf(oldType);
+	}
+
+	public boolean isDeclarationListOnlyChange() {
+		return getChangeTypes().equals(declarationListChange);
 	}
 
 

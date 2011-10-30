@@ -12,6 +12,7 @@ public class SingleAddedBodyDeclarationView extends
 	@InjectedBySession
 	private SingleChangedTypeView singleChangedTypeView;
 
+
 	@Override
 	protected BodyDeclaration determineCachableValue() throws IOException {
 		TypeDelta typeDelta = singleChangedTypeView.getTypeDelta();
@@ -19,7 +20,7 @@ public class SingleAddedBodyDeclarationView extends
 			return null;
 		}
 
-		if (!typeDelta.isDeclarationListOnlyChange()) {
+		if (typeDelta.isDeclarationListOnlyChange()) {
 			return null;
 		}
 		DeclarationListDelta declarationListDelta = typeDelta
