@@ -60,7 +60,7 @@ public class MethodDelta extends DeclarationDelta {
 	}
 
 	public String getFullTypeName() {
-		return TypeUtil.nameOf(getNewParentType());
+		return TypeUtil.fullTypeNameOf(getNewParentType());
 	}
 
 	public String getParameterTypes() {

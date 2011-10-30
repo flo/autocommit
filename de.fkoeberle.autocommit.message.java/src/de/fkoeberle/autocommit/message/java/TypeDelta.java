@@ -85,10 +85,19 @@ public final class TypeDelta extends DeclarationDelta {
 				result.add(BodyDeclarationChangeType.SUPER_INTERFACE_LIST);
 			}
 		}
+		if (containsDeclarationListChange()) {
+			result.add(BodyDeclarationChangeType.DECLARATION_LIST);
+		}
 		return result;
 	}
 
-	private Boolean isTypeOfTypeChange() {
+	private boolean containsDeclarationListChange() {
+		List<?> oldDeclarations = oldType.bodyDeclarations();
+		List<?> newDeclarations = newType.bodyDeclarations();
+		return listsOfASTNodesDiffer(oldDeclarations, newDeclarations);
+	}
+
+	private boolean isTypeOfTypeChange() {
 		if (oldType.getClass().equals(newType.getClass())) {
 			if (oldType instanceof TypeDeclaration) {
 				assert (newType instanceof TypeDeclaration) : "classes are the same";
@@ -96,12 +105,12 @@ public final class TypeDelta extends DeclarationDelta {
 				TypeDeclaration newClassOrInterface = (TypeDeclaration) newType;
 				if (oldClassOrInterface.isInterface() != newClassOrInterface
 						.isInterface()) {
-					return Boolean.TRUE;
+					return true;
 				}
 			}
-			return Boolean.FALSE;
+			return false;
 		} else {
-			return Boolean.TRUE;
+			return true;
 		}
 	}
 

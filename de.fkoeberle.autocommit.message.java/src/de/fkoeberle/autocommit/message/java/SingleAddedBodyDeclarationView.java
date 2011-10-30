@@ -20,7 +20,7 @@ public class SingleAddedBodyDeclarationView extends
 			return null;
 		}
 
-		if (typeDelta.isDeclarationListOnlyChange()) {
+		if (!typeDelta.isDeclarationListOnlyChange()) {
 			return null;
 		}
 		DeclarationListDelta declarationListDelta = typeDelta
