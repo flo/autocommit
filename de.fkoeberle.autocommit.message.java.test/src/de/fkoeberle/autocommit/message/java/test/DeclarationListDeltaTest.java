@@ -9,9 +9,6 @@ import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.PrimitiveType.Code;
-import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -22,6 +19,7 @@ import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.CachingJavaFileContentParser;
 import de.fkoeberle.autocommit.message.java.DeclarationDelta;
 import de.fkoeberle.autocommit.message.java.DeclarationListDelta;
+import de.fkoeberle.autocommit.message.java.TypeUtil;
 
 public class DeclarationListDeltaTest {
 
@@ -65,7 +63,7 @@ public class DeclarationListDeltaTest {
 		MethodDeclaration methodDeclaration = (MethodDeclaration) declaration;
 		StringBuilder builder = new StringBuilder();
 
-		builder.append(typeToString(methodDeclaration.getReturnType2()));
+		TypeUtil.appendTypeTo(methodDeclaration.getReturnType2(), builder);
 		builder.append(' ');
 		builder.append(methodDeclaration.getName().getIdentifier());
 		builder.append('(');
@@ -78,31 +76,12 @@ public class DeclarationListDeltaTest {
 			}
 			SingleVariableDeclaration parameter = (SingleVariableDeclaration) parameterObject;
 			Type type = parameter.getType();
-			builder.append(typeToString(type));
+			TypeUtil.appendTypeTo(type, builder);
 		}
 		builder.append(')');
 		return builder.toString();
 	}
 
-	/**
-	 * @return a string version of the specified type or another string
-	 *         indicating an error.
-	 */
-	private static String typeToString(Type type) {
-
-		String typeString;
-		if (type instanceof SimpleType) {
-			SimpleType simpleType = (SimpleType) type;
-			typeString = simpleType.getName().getFullyQualifiedName();
-		} else if (type instanceof PrimitiveType) {
-			PrimitiveType primitiveType = (PrimitiveType) type;
-			Code code = primitiveType.getPrimitiveTypeCode();
-			typeString = code.toString();
-		} else {
-			typeString = "??UnhandledType??";
-		}
-		return typeString;
-	}
 
 	@Test
 	public void testAddedClass() {
