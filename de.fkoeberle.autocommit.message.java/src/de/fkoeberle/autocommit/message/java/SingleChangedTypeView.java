@@ -32,10 +32,11 @@ public class SingleChangedTypeView extends AbstractViewWithCache<TypeDelta> {
 		}
 		DeclarationDelta declarationDelta = declationListDelta
 				.getChangedDeclarations().get(0);
-		TypeDelta typeDelta = TypeDelta.valueOf(declarationDelta);
-		if (typeDelta == null) {
+		if (!(declarationDelta instanceof TypeDelta)) {
 			return null;
 		}
+		TypeDelta typeDelta = (TypeDelta) declarationDelta;
+
 		if (typeDelta.isDeclarationListOnlyChange()) {
 			DeclarationListDelta subDeclarationList = typeDelta
 					.getDeclarationListDelta();

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -17,7 +16,7 @@ public final class TypeDelta extends DeclarationDelta {
 	private final EnumSet<BodyDeclarationChangeType> declarationListChange = EnumSet
 			.of(BodyDeclarationChangeType.DECLARATION_LIST);
 
-	public TypeDelta(AbstractTypeDeclaration oldType,
+	TypeDelta(AbstractTypeDeclaration oldType,
 			AbstractTypeDeclaration newType) {
 		super(oldType, newType);
 		this.oldType = oldType;
@@ -30,21 +29,6 @@ public final class TypeDelta extends DeclarationDelta {
 
 	public AbstractTypeDeclaration getNewType() {
 		return newType;
-	}
-
-	public static TypeDelta valueOf(DeclarationDelta declarationDelta) {
-		BodyDeclaration oldDeclaration = declarationDelta.getOldDeclaration();
-		BodyDeclaration newDeclaration = declarationDelta.getNewDeclaration();
-		if (!(oldDeclaration instanceof AbstractTypeDeclaration)) {
-			return null;
-		}
-		if (!(newDeclaration instanceof AbstractTypeDeclaration)) {
-			return null;
-		}
-		AbstractTypeDeclaration oldType = (AbstractTypeDeclaration) oldDeclaration;
-		AbstractTypeDeclaration newType = (AbstractTypeDeclaration) newDeclaration;
-
-		return new TypeDelta(oldType, newType);
 	}
 
 	/**

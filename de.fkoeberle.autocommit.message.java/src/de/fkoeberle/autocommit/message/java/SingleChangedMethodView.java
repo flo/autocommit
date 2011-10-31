@@ -32,7 +32,11 @@ public class SingleChangedMethodView extends AbstractViewWithCache<MethodDelta> 
 		DeclarationDelta declarationDelta = declarationListDelta
 				.getChangedDeclarations().get(0);
 
-		return MethodDelta.valueOf(declarationDelta);
+		if (declarationDelta instanceof MethodDelta) {
+			return (MethodDelta) declarationDelta;
+		} else {
+			return null;
+		}
 	}
 
 	public MethodDelta getMethodDelta() throws IOException {

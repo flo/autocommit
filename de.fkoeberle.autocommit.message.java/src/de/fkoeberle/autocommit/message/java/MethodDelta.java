@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 public class MethodDelta extends DeclarationDelta {
@@ -18,7 +17,7 @@ public class MethodDelta extends DeclarationDelta {
 	 * @param oldMethodDeclaration
 	 * @param newMethodDeclaration
 	 */
-	public MethodDelta(MethodDeclaration oldMethodDeclaration,
+	MethodDelta(MethodDeclaration oldMethodDeclaration,
 			MethodDeclaration newMethodDeclaration) {
 		super(oldMethodDeclaration, newMethodDeclaration);
 		this.oldMethodDeclaration = oldMethodDeclaration;
@@ -31,23 +30,6 @@ public class MethodDelta extends DeclarationDelta {
 
 	public MethodDeclaration getNewMethodDeclaration() {
 		return newMethodDeclaration;
-	}
-
-	/**
-	 * 
-	 * @return a {@link MethodDelta} or null if the specified delta is not about
-	 *         methods.
-	 */
-	public static MethodDelta valueOf(DeclarationDelta declarationDelta) {
-		BodyDeclaration oldDeclaration = declarationDelta.getOldDeclaration();
-		BodyDeclaration newDeclaration = declarationDelta.getNewDeclaration();
-		if (!(oldDeclaration instanceof MethodDeclaration)) {
-			return null;
-		}
-		assert newDeclaration instanceof MethodDeclaration : "since it has same type as oldDeclaration based on how DeclarationDelta gets created"; //$NON-NLS-1$
-		MethodDeclaration oldMethodDeclaration = (MethodDeclaration) oldDeclaration;
-		MethodDeclaration newMethodDeclaration = (MethodDeclaration) newDeclaration;
-		return new MethodDelta(oldMethodDeclaration, newMethodDeclaration);
 	}
 
 	private final AbstractTypeDeclaration getNewParentType() {
