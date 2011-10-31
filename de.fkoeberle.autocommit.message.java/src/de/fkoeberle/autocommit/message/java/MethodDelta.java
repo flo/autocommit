@@ -5,7 +5,9 @@ import java.util.EnumSet;
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Type;
 
 public class MethodDelta extends DeclarationDelta {
 	private final MethodDeclaration oldMethodDeclaration;
@@ -59,7 +61,7 @@ public class MethodDelta extends DeclarationDelta {
 				.noneOf(BodyDeclarationChangeType.class);
 
 		/*
-		 * Name and parameter can be assumed to be the same as the constructor
+		 * Name and parameters can be assumed to be the same as the constructor
 		 * requires it
 		 */
 
@@ -77,15 +79,24 @@ public class MethodDelta extends DeclarationDelta {
 	}
 
 	private boolean containsReturnTypeChanges() {
-		boolean sameReturnType = (oldMethodDeclaration.getReturnType2()
-				.subtreeMatch(new ASTMatcher(true),
-						newMethodDeclaration.getReturnType2()));
+		Type oldType = oldMethodDeclaration.getReturnType2();
+		Type newType = newMethodDeclaration.getReturnType2();
+		if (oldType == null || newType == null) {
+			return oldType != newType;
+		}
+		boolean sameReturnType = (oldType.subtreeMatch(new ASTMatcher(true),
+				newType));
 		return !sameReturnType;
 	}
 
 	private boolean containsBodyChanges() {
-		boolean sameReturnType = (oldMethodDeclaration.getBody().subtreeMatch(
-				new ASTMatcher(true), newMethodDeclaration.getBody()));
+		Block oldBody = oldMethodDeclaration.getBody();
+		Block newBody = newMethodDeclaration.getBody();
+		if (oldBody == null || newBody == null) {
+			return oldBody != newBody;
+		}
+		boolean sameReturnType = (oldBody.subtreeMatch(new ASTMatcher(true),
+				newBody));
 		return !sameReturnType;
 	}
 }
