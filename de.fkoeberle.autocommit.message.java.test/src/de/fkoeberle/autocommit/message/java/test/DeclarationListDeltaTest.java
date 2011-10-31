@@ -411,5 +411,29 @@ public class DeclarationListDeltaTest {
 				.getRemovedDeclarations().get(1)));
 	}
 
+	@Test
+	public void testChangedMethodToUseVarArgsInsteadOfAnArray()
+			throws IOException {
+		DeclarationListDelta delta = createClassDelta(
+				"int m(String[] args) { return null;}",
+				"int m(String.. args) {return null;}");
+
+		assertEquals(1, delta.getAddedDeclarations().size());
+		assertEquals(0, delta.getChangedDeclarations().size());
+		assertEquals(1, delta.getRemovedDeclarations().size());
+	}
+
+	@Test
+	public void testChangedMethodToUseAnArrayInsteadOfVarArgs()
+			throws IOException {
+		DeclarationListDelta delta = createClassDelta(
+				"int m(String... args) { return null;}",
+				"int m(String[] args) {return null;}");
+
+		assertEquals(1, delta.getAddedDeclarations().size());
+		assertEquals(0, delta.getChangedDeclarations().size());
+		assertEquals(1, delta.getRemovedDeclarations().size());
+	}
+
 	// TODO test class, enum, interface and annotation body declaration changes
 }
