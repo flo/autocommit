@@ -1,5 +1,6 @@
 package de.fkoeberle.autocommit.message.java.test;
 
+import static de.fkoeberle.autocommit.message.java.test.DeclarationListUtil.createDelta;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -7,46 +8,21 @@ import java.io.IOException;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.junit.Test;
 
-import de.fkoeberle.autocommit.message.FileContent;
-import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.CachingJavaFileContentParser;
 import de.fkoeberle.autocommit.message.java.DeclarationDelta;
 import de.fkoeberle.autocommit.message.java.DeclarationListDelta;
+import de.fkoeberle.autocommit.message.java.FieldDelta;
 import de.fkoeberle.autocommit.message.java.TypeUtil;
 
 public class DeclarationListDeltaTest {
 
-
-	private DeclarationListDelta createDelta(String oldContent,
-			String newContent) {
-		try {
-			Session session = new Session();
-			CompilationUnit oldCompilationUnit = createCompilationUnit(session,
-					oldContent);
-			CompilationUnit newCompilationUnit = createCompilationUnit(session,
-					newContent);
-			return new DeclarationListDelta(oldCompilationUnit,
-					newCompilationUnit);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private CompilationUnit createCompilationUnit(Session session,
-			String content)
-			throws IOException {
-		FileContent fileContent = new FileContent(content);
-		CachingJavaFileContentParser parser = session
-				.getInstanceOf(CachingJavaFileContentParser.class);
-		return parser.getInstanceFor(fileContent);
-	}
 
 	/**
 	 * 
@@ -435,5 +411,43 @@ public class DeclarationListDeltaTest {
 		assertEquals(1, delta.getRemovedDeclarations().size());
 	}
 
+	@Test
+	public void testRenameField() {
+		DeclarationListDelta delta = createClassDelta("int oldField;\n",
+				"int newField;\n");
+
+		assertEquals(1, delta.getAddedDeclarations().size());
+		assertEquals(0, delta.getChangedDeclarations().size());
+		assertEquals(1, delta.getRemovedDeclarations().size());
+
+		BodyDeclaration addedDeclaration = delta.getAddedDeclarations().get(0);
+		assertTrue(addedDeclaration instanceof FieldDeclaration);
+		FieldDeclaration addedField = (FieldDeclaration) addedDeclaration;
+		VariableDeclarationFragment fragmentOfAddedField = (VariableDeclarationFragment) addedField
+				.fragments().get(0);
+		assertEquals("newField", fragmentOfAddedField.getName().getIdentifier());
+
+		BodyDeclaration removedDeclaration = delta.getRemovedDeclarations()
+				.get(0);
+		assertTrue(removedDeclaration instanceof FieldDeclaration);
+		FieldDeclaration removedField = (FieldDeclaration) removedDeclaration;
+		VariableDeclarationFragment fragmentOfRemovedField = (VariableDeclarationFragment) removedField
+				.fragments().get(0);
+		assertEquals("oldField", fragmentOfRemovedField.getName()
+				.getIdentifier());
+	}
+
+	@Test
+	public void testChangedField() {
+		DeclarationListDelta delta = createClassDelta("int field;\n",
+				"String field;\n");
+
+		assertEquals(0, delta.getAddedDeclarations().size());
+		assertEquals(1, delta.getChangedDeclarations().size());
+		assertEquals(0, delta.getRemovedDeclarations().size());
+
+		DeclarationDelta declaration = delta.getChangedDeclarations().get(0);
+		assertTrue(declaration instanceof FieldDelta);
+	}
 	// TODO test class, enum, interface and annotation body declaration changes
 }

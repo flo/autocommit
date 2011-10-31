@@ -7,6 +7,7 @@ import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
@@ -126,6 +127,16 @@ public abstract class DeclarationDelta {
 			return new TypeDelta(oldType, newType);
 		}
 
+		if (oldDeclaration instanceof FieldDeclaration) {
+			if (!(newDeclaration instanceof FieldDeclaration)) {
+				throw new IllegalArgumentException(
+						"One declaration is of type FieldDeclaration but not the other");
+			}
+			FieldDeclaration oldField = (FieldDeclaration) oldDeclaration;
+			FieldDeclaration newField = (FieldDeclaration) newDeclaration;
+
+			return new FieldDelta(oldField, newField);
+		}
 
 		return new DeclarationDelta(oldDeclaration, newDeclaration) {
 
