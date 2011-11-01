@@ -8,9 +8,7 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 
-public final class MethodDelta extends DeclarationDelta {
-	private final MethodDeclaration oldMethodDeclaration;
-	private final MethodDeclaration newMethodDeclaration;
+public final class MethodDelta extends DeclarationDelta<MethodDeclaration> {
 
 	/**
 	 * Both method declarations must have the same name and parameter list.
@@ -21,25 +19,15 @@ public final class MethodDelta extends DeclarationDelta {
 	MethodDelta(MethodDeclaration oldMethodDeclaration,
 			MethodDeclaration newMethodDeclaration) {
 		super(oldMethodDeclaration, newMethodDeclaration);
-		this.oldMethodDeclaration = oldMethodDeclaration;
-		this.newMethodDeclaration = newMethodDeclaration;
-	}
-
-	public MethodDeclaration getOldMethodDeclaration() {
-		return oldMethodDeclaration;
-	}
-
-	public MethodDeclaration getNewMethodDeclaration() {
-		return newMethodDeclaration;
 	}
 
 	private final AbstractTypeDeclaration getNewParentType() {
-		ASTNode parent = getNewMethodDeclaration().getParent();
+		ASTNode parent = newDeclaration.getParent();
 		return (AbstractTypeDeclaration) parent;
 	}
 
 	public String getMethodName() {
-		return TypeUtil.nameOfMethod(getNewMethodDeclaration());
+		return TypeUtil.nameOfMethod(newDeclaration);
 	}
 
 	public String getFullTypeName() {
@@ -47,7 +35,7 @@ public final class MethodDelta extends DeclarationDelta {
 	}
 
 	public String getParameterTypes() {
-		return TypeUtil.parameterTypesOf(getNewMethodDeclaration());
+		return TypeUtil.parameterTypesOf(newDeclaration);
 	}
 
 	public String getSimpleTypeName() {
@@ -70,7 +58,7 @@ public final class MethodDelta extends DeclarationDelta {
 		if (containsBodyChanges()) {
 			result.add(BodyDeclarationChangeType.METHOD_BODY);
 		}
-		if (oldMethodDeclaration.getExtraDimensions() != newMethodDeclaration
+		if (oldDeclaration.getExtraDimensions() != newDeclaration
 				.getExtraDimensions()) {
 			result.add(BodyDeclarationChangeType.METHOD_EXTRA_DIMENSIONS);
 		}
@@ -78,14 +66,14 @@ public final class MethodDelta extends DeclarationDelta {
 	}
 
 	private boolean containsReturnTypeChanges() {
-		Type oldType = oldMethodDeclaration.getReturnType2();
-		Type newType = newMethodDeclaration.getReturnType2();
+		Type oldType = oldDeclaration.getReturnType2();
+		Type newType = newDeclaration.getReturnType2();
 		return astNodesDiffer(oldType, newType);
 	}
 
 	private boolean containsBodyChanges() {
-		Block oldBody = oldMethodDeclaration.getBody();
-		Block newBody = newMethodDeclaration.getBody();
+		Block oldBody = oldDeclaration.getBody();
+		Block newBody = newDeclaration.getBody();
 		return astNodesDiffer(oldBody, newBody);
 	}
 }

@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 public class DeclarationListDelta {
 	private final List<BodyDeclaration> addedDeclarations;
 	private final List<BodyDeclaration> removedDeclarations;
-	private final List<DeclarationDelta> changedDeclarations;
+	private final List<DeclarationDelta<?>> changedDeclarations;
 
 
 
@@ -44,7 +44,7 @@ public class DeclarationListDelta {
 		Map<DeclarationId, BodyDeclaration> idToOldVersion = new LinkedHashMap<DeclarationId, BodyDeclaration>(
 				oldTypes.size());
 		this.addedDeclarations = new ArrayList<BodyDeclaration>();
-		this.changedDeclarations = new ArrayList<DeclarationDelta>();
+		this.changedDeclarations = new ArrayList<DeclarationDelta<?>>();
 		for (Object declarationObject : oldTypes) {
 			BodyDeclaration declaration = (BodyDeclaration) declarationObject;
 			DeclarationId id = declarationIdOf(declaration);
@@ -101,7 +101,7 @@ public class DeclarationListDelta {
 		return addedDeclarations;
 	}
 
-	public List<DeclarationDelta> getChangedDeclarations() {
+	public List<DeclarationDelta<?>> getChangedDeclarations() {
 		return changedDeclarations;
 	}
 
@@ -327,7 +327,7 @@ public class DeclarationListDelta {
 
 	}
 
-	private static DeclarationDelta createDeclarationDelta(
+	private static DeclarationDelta<?> createDeclarationDelta(
 			BodyDeclaration oldDeclaration, BodyDeclaration newDeclaration) {
 
 		if (oldDeclaration instanceof MethodDeclaration) {

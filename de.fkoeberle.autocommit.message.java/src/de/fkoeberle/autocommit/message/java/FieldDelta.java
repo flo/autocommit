@@ -6,9 +6,7 @@ import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 
-public final class FieldDelta extends DeclarationDelta {
-	private final FieldDeclaration oldDeclaration;
-	private final FieldDeclaration newDeclaration;
+public final class FieldDelta extends DeclarationDelta<FieldDeclaration> {
 
 	/**
 	 * 
@@ -22,8 +20,6 @@ public final class FieldDelta extends DeclarationDelta {
 	public FieldDelta(FieldDeclaration oldDeclaration,
 			FieldDeclaration newDeclaration) {
 		super(oldDeclaration, newDeclaration);
-		this.oldDeclaration = oldDeclaration;
-		this.newDeclaration = newDeclaration;
 	}
 
 	@Override

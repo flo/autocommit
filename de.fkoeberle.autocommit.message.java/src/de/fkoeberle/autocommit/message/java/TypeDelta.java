@@ -8,9 +8,7 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-public final class TypeDelta extends DeclarationDelta {
-	private final AbstractTypeDeclaration oldType;
-	private final AbstractTypeDeclaration newType;
+public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 	private DeclarationListDelta declarationListDelta;
 	private final EnumSet<BodyDeclarationChangeType> declarationListChange = EnumSet
 			.of(BodyDeclarationChangeType.DECLARATION_LIST);
@@ -19,16 +17,6 @@ public final class TypeDelta extends DeclarationDelta {
 	TypeDelta(AbstractTypeDeclaration oldType,
 			AbstractTypeDeclaration newType) {
 		super(oldType, newType);
-		this.oldType = oldType;
-		this.newType = newType;
-	}
-
-	public AbstractTypeDeclaration getOldType() {
-		return oldType;
-	}
-
-	public AbstractTypeDeclaration getNewType() {
-		return newType;
 	}
 
 	/**
@@ -37,7 +25,7 @@ public final class TypeDelta extends DeclarationDelta {
 	 */
 	public DeclarationListDelta getDeclarationListDelta() {
 		if (declarationListDelta == null) {
-			declarationListDelta = new DeclarationListDelta(oldType, newType);
+			declarationListDelta = new DeclarationListDelta(oldDeclaration, newDeclaration);
 		}
 		return declarationListDelta;
 	}
@@ -51,8 +39,8 @@ public final class TypeDelta extends DeclarationDelta {
 	public DeclarationListDelta getEnumConstantsDelta() throws RuntimeException {
 		if (enumConstantsDelta == null) {
 			// cast is allowed to result in a RuntimeException:
-			EnumDeclaration oldEnum = (EnumDeclaration) oldType;
-			EnumDeclaration newEnum = (EnumDeclaration) newType;
+			EnumDeclaration oldEnum = (EnumDeclaration) oldDeclaration;
+			EnumDeclaration newEnum = (EnumDeclaration) newDeclaration;
 			enumConstantsDelta = new DeclarationListDelta(
 					oldEnum.enumConstants(), newEnum.enumConstants());
 		}
@@ -65,10 +53,10 @@ public final class TypeDelta extends DeclarationDelta {
 		if (isTypeOfTypeChange()) {
 			result.add(BodyDeclarationChangeType.TYPE_OF_TYPE);
 		}
-		if (oldType instanceof TypeDeclaration) {
-			assert newType instanceof TypeDeclaration : "must be true since isTypeOfTypeChange() was false";
-			TypeDeclaration oldTypeDeclaration = ((TypeDeclaration) oldType);
-			TypeDeclaration newTypeDeclaration = ((TypeDeclaration) newType);
+		if (oldDeclaration instanceof TypeDeclaration) {
+			assert newDeclaration instanceof TypeDeclaration : "must be true since isTypeOfTypeChange() was false";
+			TypeDeclaration oldTypeDeclaration = ((TypeDeclaration) oldDeclaration);
+			TypeDeclaration newTypeDeclaration = ((TypeDeclaration) newDeclaration);
 			if (isSuperClassChange(oldTypeDeclaration, newTypeDeclaration)) {
 				result.add(BodyDeclarationChangeType.SUPER_CLASS);
 			}
@@ -76,10 +64,10 @@ public final class TypeDelta extends DeclarationDelta {
 					newTypeDeclaration)) {
 				result.add(BodyDeclarationChangeType.SUPER_INTERFACE_LIST);
 			}
-		} else if (oldType instanceof EnumDeclaration) {
-			assert newType instanceof EnumDeclaration : "must be true since isTypeOfTypeChange() was false";
-			EnumDeclaration oldEnum = (EnumDeclaration) oldType;
-			EnumDeclaration newEnum = (EnumDeclaration) newType;
+		} else if (oldDeclaration instanceof EnumDeclaration) {
+			assert newDeclaration instanceof EnumDeclaration : "must be true since isTypeOfTypeChange() was false";
+			EnumDeclaration oldEnum = (EnumDeclaration) oldDeclaration;
+			EnumDeclaration newEnum = (EnumDeclaration) newDeclaration;
 			if (isSuperInterfaceListChange(oldEnum, newEnum)) {
 				result.add(BodyDeclarationChangeType.SUPER_INTERFACE_LIST);
 			}
@@ -101,17 +89,17 @@ public final class TypeDelta extends DeclarationDelta {
 	}
 
 	private boolean containsDeclarationListChange() {
-		List<?> oldDeclarations = oldType.bodyDeclarations();
-		List<?> newDeclarations = newType.bodyDeclarations();
+		List<?> oldDeclarations = oldDeclaration.bodyDeclarations();
+		List<?> newDeclarations = newDeclaration.bodyDeclarations();
 		return listsOfASTNodesDiffer(oldDeclarations, newDeclarations);
 	}
 
 	private boolean isTypeOfTypeChange() {
-		if (oldType.getClass().equals(newType.getClass())) {
-			if (oldType instanceof TypeDeclaration) {
-				assert (newType instanceof TypeDeclaration) : "classes are the same";
-				TypeDeclaration oldClassOrInterface = (TypeDeclaration) oldType;
-				TypeDeclaration newClassOrInterface = (TypeDeclaration) newType;
+		if (oldDeclaration.getClass().equals(newDeclaration.getClass())) {
+			if (oldDeclaration instanceof TypeDeclaration) {
+				assert (newDeclaration instanceof TypeDeclaration) : "classes are the same";
+				TypeDeclaration oldClassOrInterface = (TypeDeclaration) oldDeclaration;
+				TypeDeclaration newClassOrInterface = (TypeDeclaration) newDeclaration;
 				if (oldClassOrInterface.isInterface() != newClassOrInterface
 						.isInterface()) {
 					return true;
@@ -149,15 +137,15 @@ public final class TypeDelta extends DeclarationDelta {
 	}
 	
 	public String getSimpleTypeName() {
-		return TypeUtil.nameOf(oldType);
+		return TypeUtil.nameOf(oldDeclaration);
 	}
 
 	public String getOuterTypeName() {
-		return TypeUtil.outerTypeNameOf(oldType);
+		return TypeUtil.outerTypeNameOf(oldDeclaration);
 	}
 
 	public String getFullTypeName() {
-		return TypeUtil.fullTypeNameOf(oldType);
+		return TypeUtil.fullTypeNameOf(oldDeclaration);
 	}
 
 	public boolean isDeclarationListOnlyChange() {

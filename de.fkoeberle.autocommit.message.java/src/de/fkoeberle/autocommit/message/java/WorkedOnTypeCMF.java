@@ -55,7 +55,7 @@ public class WorkedOnTypeCMF implements ICommitMessageFactory {
 		if (typeDelta == null) {
 			return null;
 		}
-		AbstractTypeDeclaration oldType = typeDelta.getOldType();
+		AbstractTypeDeclaration oldType = typeDelta.getOldDeclaration();
 
 		String typeName = typeDelta.getSimpleTypeName();
 		String fullOuterTypeName = typeDelta.getOuterTypeName();

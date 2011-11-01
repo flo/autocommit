@@ -4,7 +4,8 @@ import java.util.EnumSet;
 
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 
-public final class EnumConstantDelta extends DeclarationDelta {
+public final class EnumConstantDelta extends
+		DeclarationDelta<EnumConstantDeclaration> {
 
 	public EnumConstantDelta(EnumConstantDeclaration oldDeclaration,
 			EnumConstantDeclaration newDeclaration) {

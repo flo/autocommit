@@ -6,9 +6,8 @@ import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.Type;
 
-public final class AnnotationTypeMemberDelta extends DeclarationDelta {
-	private final AnnotationTypeMemberDeclaration oldDeclaration;
-	private final AnnotationTypeMemberDeclaration newDeclaration;
+public final class AnnotationTypeMemberDelta extends
+		DeclarationDelta<AnnotationTypeMemberDeclaration> {
 
 	/**
 	 * 
@@ -21,8 +20,6 @@ public final class AnnotationTypeMemberDelta extends DeclarationDelta {
 			AnnotationTypeMemberDeclaration oldDeclaration,
 			AnnotationTypeMemberDeclaration newDeclaration) {
 		super(oldDeclaration, newDeclaration);
-		this.oldDeclaration = oldDeclaration;
-		this.newDeclaration = newDeclaration;
 	}
 
 	@Override

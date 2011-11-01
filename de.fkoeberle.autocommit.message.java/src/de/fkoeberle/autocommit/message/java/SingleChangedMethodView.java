@@ -29,7 +29,7 @@ public class SingleChangedMethodView extends AbstractViewWithCache<MethodDelta> 
 		if (declarationListDelta.getChangedDeclarations().size() != 1) {
 			return null;
 		}
-		DeclarationDelta declarationDelta = declarationListDelta
+		DeclarationDelta<?> declarationDelta = declarationListDelta
 				.getChangedDeclarations().get(0);
 
 		if (declarationDelta instanceof MethodDelta) {

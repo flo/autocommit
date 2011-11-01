@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import org.eclipse.jdt.core.dom.Initializer;
 
-public final class InitializerDelta extends DeclarationDelta {
+public final class InitializerDelta extends DeclarationDelta<Initializer> {
 
 	public InitializerDelta(Initializer oldDeclaration,
 			Initializer newDeclaration) {

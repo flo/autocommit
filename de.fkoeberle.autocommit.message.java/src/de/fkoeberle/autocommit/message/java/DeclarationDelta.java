@@ -8,22 +8,21 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.Javadoc;
 
-public abstract class DeclarationDelta {
-	private final BodyDeclaration oldDeclaration;
-	private final BodyDeclaration newDeclaration;
+public abstract class DeclarationDelta<T extends BodyDeclaration> {
+	protected final T oldDeclaration;
+	protected final T newDeclaration;
 	private EnumSet<BodyDeclarationChangeType> changeTypes;
 
-	public DeclarationDelta(BodyDeclaration oldDeclaration,
-			BodyDeclaration newDeclaration) {
+	public DeclarationDelta(T oldDeclaration, T newDeclaration) {
 		this.oldDeclaration = oldDeclaration;
 		this.newDeclaration = newDeclaration;
 	}
 
-	public BodyDeclaration getOldDeclaration() {
+	public T getOldDeclaration() {
 		return oldDeclaration;
 	}
 
-	public BodyDeclaration getNewDeclaration() {
+	public T getNewDeclaration() {
 		return newDeclaration;
 	}
 

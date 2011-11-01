@@ -109,7 +109,8 @@ public class DeclarationListDeltaTest {
 		assertEquals(1, delta.getChangedDeclarations().size());
 		assertEquals(0, delta.getRemovedDeclarations().size());
 
-		DeclarationDelta modifiedType = delta.getChangedDeclarations().get(0);
+		DeclarationDelta<?> modifiedType = delta.getChangedDeclarations()
+				.get(0);
 
 		BodyDeclaration oldDeclaration = modifiedType.getOldDeclaration();
 		assertTrue(oldDeclaration instanceof TypeDeclaration);
@@ -144,7 +145,8 @@ public class DeclarationListDeltaTest {
 		assertEquals(1, delta.getChangedDeclarations().size());
 		assertEquals(0, delta.getRemovedDeclarations().size());
 
-		DeclarationDelta modifiedType = delta.getChangedDeclarations().get(0);
+		DeclarationDelta<?> modifiedType = delta.getChangedDeclarations()
+				.get(0);
 
 		BodyDeclaration oldDeclaration = modifiedType.getOldDeclaration();
 		assertTrue(oldDeclaration instanceof TypeDeclaration);
@@ -171,7 +173,8 @@ public class DeclarationListDeltaTest {
 		assertEquals(1, fileDelta.getChangedDeclarations().size());
 		assertEquals(0, fileDelta.getRemovedDeclarations().size());
 
-		DeclarationDelta modifiedType = fileDelta.getChangedDeclarations().get(
+		DeclarationDelta<?> modifiedType = fileDelta.getChangedDeclarations()
+				.get(
 				0);
 
 		BodyDeclaration oldDeclaration = modifiedType.getOldDeclaration();
@@ -452,7 +455,7 @@ public class DeclarationListDeltaTest {
 		assertEquals(1, delta.getChangedDeclarations().size());
 		assertEquals(0, delta.getRemovedDeclarations().size());
 
-		DeclarationDelta declaration = delta.getChangedDeclarations().get(0);
+		DeclarationDelta<?> declaration = delta.getChangedDeclarations().get(0);
 		assertTrue(declaration instanceof FieldDelta);
 	}
 
@@ -517,7 +520,8 @@ public class DeclarationListDeltaTest {
 		assertEquals(1, delta.getChangedDeclarations().size());
 		assertEquals(0, delta.getRemovedDeclarations().size());
 
-		DeclarationDelta declarationDelta = delta.getChangedDeclarations().get(
+		DeclarationDelta<?> declarationDelta = delta.getChangedDeclarations()
+				.get(
 				0);
 		assertTrue(declarationDelta instanceof TypeDelta);
 		TypeDelta typeDelta = (TypeDelta) declarationDelta;
@@ -535,7 +539,8 @@ public class DeclarationListDeltaTest {
 		assertEquals(1, delta.getChangedDeclarations().size());
 		assertEquals(0, delta.getRemovedDeclarations().size());
 
-		DeclarationDelta declarationDelta = delta.getChangedDeclarations().get(
+		DeclarationDelta<?> declarationDelta = delta.getChangedDeclarations()
+				.get(
 				0);
 		assertTrue(declarationDelta instanceof TypeDelta);
 		TypeDelta typeDelta = (TypeDelta) declarationDelta;
@@ -558,7 +563,8 @@ public class DeclarationListDeltaTest {
 		assertEquals(1, fileDelta.getChangedDeclarations().size());
 		assertEquals(0, fileDelta.getRemovedDeclarations().size());
 
-		DeclarationDelta declarationDelta = fileDelta.getChangedDeclarations()
+		DeclarationDelta<?> declarationDelta = fileDelta
+				.getChangedDeclarations()
 				.get(0);
 
 		TypeDelta typeDelta = (TypeDelta) declarationDelta;
@@ -574,7 +580,8 @@ public class DeclarationListDeltaTest {
 		assertEquals(0, listDelta.getAddedDeclarations().size());
 		assertEquals(1, listDelta.getChangedDeclarations().size());
 		assertEquals(0, listDelta.getRemovedDeclarations().size());
-		DeclarationDelta declarationDelta = listDelta.getChangedDeclarations()
+		DeclarationDelta<?> declarationDelta = listDelta
+				.getChangedDeclarations()
 				.get(0);
 		assertTrue(declarationDelta instanceof AnnotationTypeMemberDelta);
 
@@ -592,7 +599,8 @@ public class DeclarationListDeltaTest {
 		assertEquals(0, listDelta.getAddedDeclarations().size());
 		assertEquals(1, listDelta.getChangedDeclarations().size());
 		assertEquals(0, listDelta.getRemovedDeclarations().size());
-		DeclarationDelta declarationDelta = listDelta.getChangedDeclarations()
+		DeclarationDelta<?> declarationDelta = listDelta
+				.getChangedDeclarations()
 				.get(0);
 		assertTrue(declarationDelta instanceof AnnotationTypeMemberDelta);
 
@@ -638,7 +646,8 @@ public class DeclarationListDeltaTest {
 		assertEquals(1, fileDelta.getChangedDeclarations().size());
 		assertEquals(0, fileDelta.getRemovedDeclarations().size());
 
-		DeclarationDelta declarationDelta = fileDelta.getChangedDeclarations()
+		DeclarationDelta<?> declarationDelta = fileDelta
+				.getChangedDeclarations()
 				.get(0);
 
 		TypeDelta typeDelta = (TypeDelta) declarationDelta;
@@ -661,7 +670,7 @@ public class DeclarationListDeltaTest {
 		assertEquals(1, enumConstants.getChangedDeclarations().size());
 		assertEquals(0, enumConstants.getRemovedDeclarations().size());
 
-		DeclarationDelta declarationDelta = enumConstants
+		DeclarationDelta<?> declarationDelta = enumConstants
 				.getChangedDeclarations()
 				.get(0);
 		assertTrue(declarationDelta instanceof EnumConstantDelta);
