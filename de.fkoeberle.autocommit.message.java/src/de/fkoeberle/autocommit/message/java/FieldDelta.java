@@ -6,7 +6,7 @@ import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 
-public class FieldDelta extends DeclarationDelta {
+public final class FieldDelta extends DeclarationDelta {
 	private final FieldDeclaration oldDeclaration;
 	private final FieldDeclaration newDeclaration;
 

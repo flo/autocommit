@@ -5,11 +5,8 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.Javadoc;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 public abstract class DeclarationDelta {
 	private final BodyDeclaration oldDeclaration;
@@ -46,6 +43,24 @@ public abstract class DeclarationDelta {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 
+	 * @param oldNode
+	 *            can be null.
+	 * @param newNode
+	 *            can be null.
+	 * @return true if and only if the nodes match when compared with a
+	 *         {@link ASTMatcher}.
+	 */
+	protected static boolean astNodesDiffer(ASTNode oldNode, ASTNode newNode) {
+		if (oldNode == null || newNode == null) {
+			return oldNode != newNode;
+		}
+		boolean sameReturnType = (oldNode.subtreeMatch(new ASTMatcher(true),
+				newNode));
+		return !sameReturnType;
 	}
 
 	private final boolean containsModifierChanges() {
@@ -102,48 +117,4 @@ public abstract class DeclarationDelta {
 		return changeTypes;
 	}
 
-	public static DeclarationDelta valueOf(BodyDeclaration oldDeclaration,
-			BodyDeclaration newDeclaration) {
-
-		if (oldDeclaration instanceof MethodDeclaration) {
-			if (!(newDeclaration instanceof MethodDeclaration)) {
-				throw new IllegalArgumentException(
-						"One declaration is of type MethodDeclaration but not the other");
-			}
-			MethodDeclaration oldMethod = (MethodDeclaration) oldDeclaration;
-			MethodDeclaration newMethod = (MethodDeclaration) newDeclaration;
-
-			return new MethodDelta(oldMethod, newMethod);
-		}
-
-		if (oldDeclaration instanceof AbstractTypeDeclaration) {
-			if (!(newDeclaration instanceof AbstractTypeDeclaration)) {
-				throw new IllegalArgumentException(
-						"One declaration is of type AbstractTypeDeclaration but not the other");
-			}
-			AbstractTypeDeclaration oldType = (AbstractTypeDeclaration) oldDeclaration;
-			AbstractTypeDeclaration newType = (AbstractTypeDeclaration) newDeclaration;
-
-			return new TypeDelta(oldType, newType);
-		}
-
-		if (oldDeclaration instanceof FieldDeclaration) {
-			if (!(newDeclaration instanceof FieldDeclaration)) {
-				throw new IllegalArgumentException(
-						"One declaration is of type FieldDeclaration but not the other");
-			}
-			FieldDeclaration oldField = (FieldDeclaration) oldDeclaration;
-			FieldDeclaration newField = (FieldDeclaration) newDeclaration;
-
-			return new FieldDelta(oldField, newField);
-		}
-
-		return new DeclarationDelta(oldDeclaration, newDeclaration) {
-
-			@Override
-			protected EnumSet<BodyDeclarationChangeType> determineOtherChangeTypes() {
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
 }

@@ -60,7 +60,7 @@ public class DeclarationListDelta {
 			} else {
 				if (!oldDeclaration.subtreeMatch(new ASTMatcher(true),
 						newDeclaration)) {
-					changedDeclarations.add(DeclarationDelta.valueOf(
+					changedDeclarations.add(createDeclarationDelta(
 							oldDeclaration, newDeclaration));
 				}
 			}
@@ -325,5 +325,78 @@ public class DeclarationListDelta {
 			return 0;
 		}
 
+	}
+
+	private static DeclarationDelta createDeclarationDelta(
+			BodyDeclaration oldDeclaration, BodyDeclaration newDeclaration) {
+
+		if (oldDeclaration instanceof MethodDeclaration) {
+			if (!(newDeclaration instanceof MethodDeclaration)) {
+				throw new IllegalArgumentException(
+						"One declaration is of type MethodDeclaration but not the other");
+			}
+			MethodDeclaration oldMethod = (MethodDeclaration) oldDeclaration;
+			MethodDeclaration newMethod = (MethodDeclaration) newDeclaration;
+
+			return new MethodDelta(oldMethod, newMethod);
+		}
+
+		if (oldDeclaration instanceof AbstractTypeDeclaration) {
+			if (!(newDeclaration instanceof AbstractTypeDeclaration)) {
+				throw new IllegalArgumentException(
+						"One declaration is of type AbstractTypeDeclaration but not the other");
+			}
+			AbstractTypeDeclaration oldType = (AbstractTypeDeclaration) oldDeclaration;
+			AbstractTypeDeclaration newType = (AbstractTypeDeclaration) newDeclaration;
+
+			return new TypeDelta(oldType, newType);
+		}
+
+		if (oldDeclaration instanceof FieldDeclaration) {
+			if (!(newDeclaration instanceof FieldDeclaration)) {
+				throw new IllegalArgumentException(
+						"One declaration is of type FieldDeclaration but not the other");
+			}
+			FieldDeclaration oldField = (FieldDeclaration) oldDeclaration;
+			FieldDeclaration newField = (FieldDeclaration) newDeclaration;
+
+			return new FieldDelta(oldField, newField);
+		}
+
+		if (oldDeclaration instanceof Initializer) {
+			if (!(newDeclaration instanceof Initializer)) {
+				throw new IllegalArgumentException(
+						"One declaration is of type Initializer but not the other");
+			}
+			Initializer oldInitializer = (Initializer) oldDeclaration;
+			Initializer newInitializer = (Initializer) newDeclaration;
+
+			return new InitializerDelta(oldInitializer, newInitializer);
+		}
+
+		if (oldDeclaration instanceof EnumConstantDeclaration) {
+			if (!(newDeclaration instanceof EnumConstantDeclaration)) {
+				throw new IllegalArgumentException(
+						"One declaration is of type EnumConstantDeclaration but not the other");
+			}
+			EnumConstantDeclaration oldEnumConstant = (EnumConstantDeclaration) oldDeclaration;
+			EnumConstantDeclaration newEnumConstant = (EnumConstantDeclaration) newDeclaration;
+
+			return new EnumConstantDelta(oldEnumConstant, newEnumConstant);
+		}
+
+		if (oldDeclaration instanceof AnnotationTypeMemberDeclaration) {
+			if (!(newDeclaration instanceof AnnotationTypeMemberDeclaration)) {
+				throw new IllegalArgumentException(
+						"One declaration is of type AnnotationTypeMemberDeclaration but not the other");
+			}
+			AnnotationTypeMemberDeclaration oldAnnotationTypeMember = (AnnotationTypeMemberDeclaration) oldDeclaration;
+			AnnotationTypeMemberDeclaration newAnnotationTypeMember = (AnnotationTypeMemberDeclaration) newDeclaration;
+
+			return new AnnotationTypeMemberDelta(oldAnnotationTypeMember,
+					newAnnotationTypeMember);
+		}
+
+		throw new RuntimeException("Unhandled type");
 	}
 }

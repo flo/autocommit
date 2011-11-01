@@ -5,10 +5,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.EnumSet;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
+import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
@@ -16,13 +20,16 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.java.AnnotationTypeMemberDelta;
+import de.fkoeberle.autocommit.message.java.BodyDeclarationChangeType;
 import de.fkoeberle.autocommit.message.java.DeclarationDelta;
 import de.fkoeberle.autocommit.message.java.DeclarationListDelta;
+import de.fkoeberle.autocommit.message.java.EnumConstantDelta;
 import de.fkoeberle.autocommit.message.java.FieldDelta;
+import de.fkoeberle.autocommit.message.java.TypeDelta;
 import de.fkoeberle.autocommit.message.java.TypeUtil;
 
 public class DeclarationListDeltaTest {
-
 
 	/**
 	 * 
@@ -57,7 +64,6 @@ public class DeclarationListDeltaTest {
 		builder.append(')');
 		return builder.toString();
 	}
-
 
 	@Test
 	public void testAddedClass() {
@@ -377,8 +383,8 @@ public class DeclarationListDeltaTest {
 		assertEquals("Object getValue()", methodSignature(delta
 				.getAddedDeclarations().get(1)));
 		assertEquals("void removeListener(ChangeListener)",
-				methodSignature(delta
-				.getChangedDeclarations().get(0).getOldDeclaration()));
+				methodSignature(delta.getChangedDeclarations().get(0)
+						.getOldDeclaration()));
 		assertEquals("void addListener(ChangeListener)", methodSignature(delta
 				.getChangedDeclarations().get(1).getOldDeclaration()));
 		assertEquals("void setString(String)", methodSignature(delta
@@ -449,5 +455,248 @@ public class DeclarationListDeltaTest {
 		DeclarationDelta declaration = delta.getChangedDeclarations().get(0);
 		assertTrue(declaration instanceof FieldDelta);
 	}
-	// TODO test class, enum, interface and annotation body declaration changes
+
+	@Test
+	public void testReplacedInitializer() {
+		DeclarationListDelta delta = createClassDelta(
+				"static int i; { i = 0; }\n", "static int i; { i = 1; i++;}\n");
+
+		assertEquals(1, delta.getAddedDeclarations().size());
+		assertEquals(0, delta.getChangedDeclarations().size());
+		assertEquals(1, delta.getRemovedDeclarations().size());
+
+		BodyDeclaration removedDeclaration = delta.getRemovedDeclarations()
+				.get(0);
+		assertTrue(removedDeclaration instanceof Initializer);
+		Initializer removedInitializer = (Initializer) removedDeclaration;
+		assertEquals(1, removedInitializer.getBody().statements().size());
+
+		BodyDeclaration addedDeclaration = delta.getAddedDeclarations().get(0);
+		assertTrue(addedDeclaration instanceof Initializer);
+		Initializer addedInitializer = (Initializer) addedDeclaration;
+		assertEquals(2, addedInitializer.getBody().statements().size());
+	}
+
+	@Test
+	public void testAddedInnerClass() {
+		DeclarationListDelta delta = createClassDelta("\n", "class Hello {}\n");
+
+		assertEquals(1, delta.getAddedDeclarations().size());
+		assertEquals(0, delta.getChangedDeclarations().size());
+		assertEquals(0, delta.getRemovedDeclarations().size());
+
+		BodyDeclaration addedDeclaration = delta.getAddedDeclarations()
+				.get(0);
+		assertTrue(addedDeclaration instanceof TypeDeclaration);
+		TypeDeclaration addedType = (TypeDeclaration) addedDeclaration;
+		assertEquals("Hello", addedType.getName().getIdentifier());
+	}
+
+	@Test
+	public void testRemovedInnerClass() {
+		DeclarationListDelta delta = createClassDelta("class Hello {}\n", "\n");
+
+		assertEquals(0, delta.getAddedDeclarations().size());
+		assertEquals(0, delta.getChangedDeclarations().size());
+		assertEquals(1, delta.getRemovedDeclarations().size());
+
+		BodyDeclaration removedDeclaration = delta.getRemovedDeclarations()
+				.get(0);
+		assertTrue(removedDeclaration instanceof TypeDeclaration);
+		TypeDeclaration removedType = (TypeDeclaration) removedDeclaration;
+		assertEquals("Hello", removedType.getName().getIdentifier());
+	}
+
+	@Test
+	public void testChangedSuperClassOfInnerClass() {
+		DeclarationListDelta delta = createClassDelta(
+				"class Hello extends OldClass {}\n",
+				"class Hello extends NewClass {}\n");
+
+		assertEquals(0, delta.getAddedDeclarations().size());
+		assertEquals(1, delta.getChangedDeclarations().size());
+		assertEquals(0, delta.getRemovedDeclarations().size());
+
+		DeclarationDelta declarationDelta = delta.getChangedDeclarations().get(
+				0);
+		assertTrue(declarationDelta instanceof TypeDelta);
+		TypeDelta typeDelta = (TypeDelta) declarationDelta;
+		assertEquals(EnumSet.of(BodyDeclarationChangeType.SUPER_CLASS),
+				typeDelta.getChangeTypes());
+	}
+
+	@Test
+	public void testChangedImplementedInterfaceOfInnerClass() {
+		DeclarationListDelta delta = createClassDelta(
+				"class Hello implements IOldClass {}\n",
+				"class Hello implements INewClass {}\n");
+
+		assertEquals(0, delta.getAddedDeclarations().size());
+		assertEquals(1, delta.getChangedDeclarations().size());
+		assertEquals(0, delta.getRemovedDeclarations().size());
+
+		DeclarationDelta declarationDelta = delta.getChangedDeclarations().get(
+				0);
+		assertTrue(declarationDelta instanceof TypeDelta);
+		TypeDelta typeDelta = (TypeDelta) declarationDelta;
+		assertEquals(
+				EnumSet.of(BodyDeclarationChangeType.SUPER_INTERFACE_LIST),
+				typeDelta.getChangeTypes());
+	}
+
+	private DeclarationListDelta createAnnotationDelta(String oldBodyContent,
+			String newBodyContent) {
+		String oldSource = String.format(
+				"package org.example;\n\n@interface MyAnnotation {\n%s\n}",
+				oldBodyContent);
+		String newSource = String.format(
+				"package org.example;\n\n@interface MyAnnotation {\n%s\n}",
+				newBodyContent);
+		DeclarationListDelta fileDelta = createDelta(oldSource, newSource);
+
+		assertEquals(0, fileDelta.getAddedDeclarations().size());
+		assertEquals(1, fileDelta.getChangedDeclarations().size());
+		assertEquals(0, fileDelta.getRemovedDeclarations().size());
+
+		DeclarationDelta declarationDelta = fileDelta.getChangedDeclarations()
+				.get(0);
+
+		TypeDelta typeDelta = (TypeDelta) declarationDelta;
+		return typeDelta.getDeclarationListDelta();
+	}
+
+	@Test
+	public void testChangedAnnotationMemberDefaultAndJavaDoc() {
+		DeclarationListDelta listDelta = createAnnotationDelta(
+				"String name();",
+				"/** name for annotated object */ String name() default \"no name\";");
+
+		assertEquals(0, listDelta.getAddedDeclarations().size());
+		assertEquals(1, listDelta.getChangedDeclarations().size());
+		assertEquals(0, listDelta.getRemovedDeclarations().size());
+		DeclarationDelta declarationDelta = listDelta.getChangedDeclarations()
+				.get(0);
+		assertTrue(declarationDelta instanceof AnnotationTypeMemberDelta);
+
+		AnnotationTypeMemberDelta annotationTypeMemberDelta = (AnnotationTypeMemberDelta) declarationDelta;
+		assertEquals(EnumSet.of(BodyDeclarationChangeType.JAVADOC,
+				BodyDeclarationChangeType.ANNOTATION_MEMBER_DEFAULT),
+				annotationTypeMemberDelta.getChangeTypes());
+	}
+
+	@Test
+	public void testChangedAnnotationMemberType() {
+		DeclarationListDelta listDelta = createAnnotationDelta("int id();",
+				"long id();");
+
+		assertEquals(0, listDelta.getAddedDeclarations().size());
+		assertEquals(1, listDelta.getChangedDeclarations().size());
+		assertEquals(0, listDelta.getRemovedDeclarations().size());
+		DeclarationDelta declarationDelta = listDelta.getChangedDeclarations()
+				.get(0);
+		assertTrue(declarationDelta instanceof AnnotationTypeMemberDelta);
+
+		AnnotationTypeMemberDelta annotationTypeMemberDelta = (AnnotationTypeMemberDelta) declarationDelta;
+		assertEquals(
+				EnumSet.of(BodyDeclarationChangeType.ANNOTATION_MEMBER_TYPE),
+				annotationTypeMemberDelta.getChangeTypes());
+	}
+
+	@Test
+	public void testRenamedAnnotationMember() {
+		DeclarationListDelta listDelta = createAnnotationDelta("String id();",
+				"String name();");
+
+		assertEquals(1, listDelta.getAddedDeclarations().size());
+		assertEquals(0, listDelta.getChangedDeclarations().size());
+		assertEquals(1, listDelta.getRemovedDeclarations().size());
+
+		BodyDeclaration removedDeclaration = listDelta.getRemovedDeclarations()
+				.get(0);
+		assertTrue(removedDeclaration instanceof AnnotationTypeMemberDeclaration);
+		AnnotationTypeMemberDeclaration removedAnnotationTypeMember = (AnnotationTypeMemberDeclaration) removedDeclaration;
+		assertEquals("id", removedAnnotationTypeMember.getName()
+				.getIdentifier());
+
+		BodyDeclaration addedDeclaration = listDelta.getAddedDeclarations()
+				.get(0);
+		assertTrue(addedDeclaration instanceof AnnotationTypeMemberDeclaration);
+		AnnotationTypeMemberDeclaration addedAnnotationTypeMember = (AnnotationTypeMemberDeclaration) addedDeclaration;
+		assertEquals("name", addedAnnotationTypeMember.getName()
+				.getIdentifier());
+	}
+
+	private TypeDelta createEnumDelta(String oldBodyContent,
+			String newBodyContent) {
+		String oldSource = String.format(
+				"package org.example;\n\nenum MyEnum {\n%s\n}", oldBodyContent);
+		String newSource = String.format(
+				"package org.example;\n\nenum MyEnum {\n%s\n}", newBodyContent);
+		DeclarationListDelta fileDelta = createDelta(oldSource, newSource);
+
+		assertEquals(0, fileDelta.getAddedDeclarations().size());
+		assertEquals(1, fileDelta.getChangedDeclarations().size());
+		assertEquals(0, fileDelta.getRemovedDeclarations().size());
+
+		DeclarationDelta declarationDelta = fileDelta.getChangedDeclarations()
+				.get(0);
+
+		TypeDelta typeDelta = (TypeDelta) declarationDelta;
+		return typeDelta;
+	}
+
+	@Test
+	public void testChangedEnumConstantJavaDoc() {
+		TypeDelta typeDelta = createEnumDelta("ONE, TWO, THREE;",
+				"ONE, /** is default */ TWO, THREE;");
+
+		DeclarationListDelta bodyDeclarations = typeDelta
+				.getDeclarationListDelta();
+		assertEquals(0, bodyDeclarations.getAddedDeclarations().size());
+		assertEquals(0, bodyDeclarations.getChangedDeclarations().size());
+		assertEquals(0, bodyDeclarations.getRemovedDeclarations().size());
+
+		DeclarationListDelta enumConstants = typeDelta.getEnumConstantsDelta();
+		assertEquals(0, enumConstants.getAddedDeclarations().size());
+		assertEquals(1, enumConstants.getChangedDeclarations().size());
+		assertEquals(0, enumConstants.getRemovedDeclarations().size());
+
+		DeclarationDelta declarationDelta = enumConstants
+				.getChangedDeclarations()
+				.get(0);
+		assertTrue(declarationDelta instanceof EnumConstantDelta);
+		assertEquals(EnumSet.of(BodyDeclarationChangeType.JAVADOC),
+				declarationDelta.getChangeTypes());
+	}
+
+	@Test
+	public void testGetEnumConstantsDeltWithChangedEnumName() {
+		TypeDelta typeDelta = createEnumDelta("ONE;", "TWO;");
+
+		DeclarationListDelta bodyDeclarations = typeDelta
+				.getDeclarationListDelta();
+		assertEquals(0, bodyDeclarations.getAddedDeclarations().size());
+		assertEquals(0, bodyDeclarations.getChangedDeclarations().size());
+		assertEquals(0, bodyDeclarations.getRemovedDeclarations().size());
+
+		DeclarationListDelta enumConstants = typeDelta.getEnumConstantsDelta();
+		assertEquals(1, enumConstants.getAddedDeclarations().size());
+		assertEquals(0, enumConstants.getChangedDeclarations().size());
+		assertEquals(1, enumConstants.getRemovedDeclarations().size());
+
+		BodyDeclaration removedDeclaration = enumConstants
+				.getRemovedDeclarations()
+				.get(0);
+		assertTrue(removedDeclaration instanceof EnumConstantDeclaration);
+		EnumConstantDeclaration removedEnumConstantDeclaration = (EnumConstantDeclaration) removedDeclaration;
+		assertEquals("ONE", removedEnumConstantDeclaration.getName()
+				.getIdentifier());
+
+		BodyDeclaration addedDeclaration = enumConstants.getAddedDeclarations()
+				.get(0);
+		assertTrue(addedDeclaration instanceof EnumConstantDeclaration);
+		EnumConstantDeclaration addedEnumConstantDeclaration = (EnumConstantDeclaration) addedDeclaration;
+		assertEquals("TWO", addedEnumConstantDeclaration.getName()
+				.getIdentifier());
+	}
 }

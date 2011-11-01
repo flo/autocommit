@@ -3,7 +3,6 @@ package de.fkoeberle.autocommit.message.java;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Type;
@@ -15,6 +14,7 @@ public final class TypeDelta extends DeclarationDelta {
 	private DeclarationListDelta declarationListDelta;
 	private final EnumSet<BodyDeclarationChangeType> declarationListChange = EnumSet
 			.of(BodyDeclarationChangeType.DECLARATION_LIST);
+	private DeclarationListDelta enumConstantsDelta;
 
 	TypeDelta(AbstractTypeDeclaration oldType,
 			AbstractTypeDeclaration newType) {
@@ -42,7 +42,22 @@ public final class TypeDelta extends DeclarationDelta {
 		return declarationListDelta;
 	}
 
-
+	/**
+	 * 
+	 * @return never null.
+	 * @throws RuntimeException
+	 *             if it's not an enum delta.
+	 */
+	public DeclarationListDelta getEnumConstantsDelta() throws RuntimeException {
+		if (enumConstantsDelta == null) {
+			// cast is allowed to result in a RuntimeException:
+			EnumDeclaration oldEnum = (EnumDeclaration) oldType;
+			EnumDeclaration newEnum = (EnumDeclaration) newType;
+			enumConstantsDelta = new DeclarationListDelta(
+					oldEnum.enumConstants(), newEnum.enumConstants());
+		}
+		return enumConstantsDelta;
+	}
 	@Override
 	protected EnumSet<BodyDeclarationChangeType> determineOtherChangeTypes() {
 		EnumSet<BodyDeclarationChangeType> result = EnumSet
@@ -68,11 +83,21 @@ public final class TypeDelta extends DeclarationDelta {
 			if (isSuperInterfaceListChange(oldEnum, newEnum)) {
 				result.add(BodyDeclarationChangeType.SUPER_INTERFACE_LIST);
 			}
+			if (isConstantsChange(oldEnum, newEnum)) {
+				result.add(BodyDeclarationChangeType.ENUM_CONSTANTS);
+			}
 		}
 		if (containsDeclarationListChange()) {
 			result.add(BodyDeclarationChangeType.DECLARATION_LIST);
 		}
 		return result;
+	}
+
+	private static boolean isConstantsChange(EnumDeclaration oldEnum,
+			EnumDeclaration newEnum) {
+		List<?> oldDeclarations = oldEnum.enumConstants();
+		List<?> newDeclarations = newEnum.enumConstants();
+		return listsOfASTNodesDiffer(oldDeclarations, newDeclarations);
 	}
 
 	private boolean containsDeclarationListChange() {
@@ -104,18 +129,7 @@ public final class TypeDelta extends DeclarationDelta {
 			TypeDeclaration newTypeDeclaration) {
 		Type oldSuperClass = oldTypeDeclaration.getSuperclassType();
 		Type newSuperClass = newTypeDeclaration.getSuperclassType();
-		if ((oldSuperClass == null) != (newSuperClass == null)) {
-			return true;
-		}
-		if (oldSuperClass != null) {
-			assert newSuperClass != null;
-			boolean matches = oldSuperClass.subtreeMatch(new ASTMatcher(true),
-					newSuperClass);
-			if (!matches) {
-				return true;
-			}
-		}
-		return false;
+		return astNodesDiffer(oldSuperClass, newSuperClass);
 	}
 
 	private static boolean isSuperInterfaceListChange(

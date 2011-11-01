@@ -2,14 +2,13 @@ package de.fkoeberle.autocommit.message.java;
 
 import java.util.EnumSet;
 
-import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 
-public class MethodDelta extends DeclarationDelta {
+public final class MethodDelta extends DeclarationDelta {
 	private final MethodDeclaration oldMethodDeclaration;
 	private final MethodDeclaration newMethodDeclaration;
 
@@ -81,22 +80,12 @@ public class MethodDelta extends DeclarationDelta {
 	private boolean containsReturnTypeChanges() {
 		Type oldType = oldMethodDeclaration.getReturnType2();
 		Type newType = newMethodDeclaration.getReturnType2();
-		if (oldType == null || newType == null) {
-			return oldType != newType;
-		}
-		boolean sameReturnType = (oldType.subtreeMatch(new ASTMatcher(true),
-				newType));
-		return !sameReturnType;
+		return astNodesDiffer(oldType, newType);
 	}
 
 	private boolean containsBodyChanges() {
 		Block oldBody = oldMethodDeclaration.getBody();
 		Block newBody = newMethodDeclaration.getBody();
-		if (oldBody == null || newBody == null) {
-			return oldBody != newBody;
-		}
-		boolean sameReturnType = (oldBody.subtreeMatch(new ASTMatcher(true),
-				newBody));
-		return !sameReturnType;
+		return astNodesDiffer(oldBody, newBody);
 	}
 }
