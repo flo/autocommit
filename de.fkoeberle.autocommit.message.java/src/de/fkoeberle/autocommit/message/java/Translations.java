@@ -32,6 +32,10 @@ public class Translations extends NLS {
 	public static String AddedMethodCMF_addedMethod;
 	public static String AddedConstructorCMF_addedConstructor;
 	public static String DocumentedMethodCMF_documentedMethod;
+	public static String DocumentedTypeCMF_documentedClass;
+	public static String DocumentedTypeCMF_documentedInterface;
+	public static String DocumentedTypeCMF_documentedEnum;
+	public static String DocumentedTypeCMF_documentedAnnotation;
 
 	static {
 		initializeMessages(BASE_NAME, Translations.class);

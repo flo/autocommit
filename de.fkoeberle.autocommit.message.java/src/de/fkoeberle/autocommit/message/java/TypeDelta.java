@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -14,8 +15,7 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 			.of(BodyDeclarationChangeType.DECLARATION_LIST);
 	private DeclarationListDelta enumConstantsDelta;
 
-	TypeDelta(AbstractTypeDeclaration oldType,
-			AbstractTypeDeclaration newType) {
+	TypeDelta(AbstractTypeDeclaration oldType, AbstractTypeDeclaration newType) {
 		super(oldType, newType);
 	}
 
@@ -25,7 +25,8 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 	 */
 	public DeclarationListDelta getDeclarationListDelta() {
 		if (declarationListDelta == null) {
-			declarationListDelta = new DeclarationListDelta(oldDeclaration, newDeclaration);
+			declarationListDelta = new DeclarationListDelta(oldDeclaration,
+					newDeclaration);
 		}
 		return declarationListDelta;
 	}
@@ -46,6 +47,7 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 		}
 		return enumConstantsDelta;
 	}
+
 	@Override
 	protected EnumSet<BodyDeclarationChangeType> determineOtherChangeTypes() {
 		EnumSet<BodyDeclarationChangeType> result = EnumSet
@@ -111,7 +113,6 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 		}
 	}
 
-
 	private static boolean isSuperClassChange(
 			TypeDeclaration oldTypeDeclaration,
 			TypeDeclaration newTypeDeclaration) {
@@ -135,7 +136,7 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 		List<?> newInterfaces = newTypeDeclaration.superInterfaceTypes();
 		return listsOfASTNodesDiffer(oldInterfaces, newInterfaces);
 	}
-	
+
 	public String getSimpleTypeName() {
 		return TypeUtil.nameOf(oldDeclaration);
 	}
@@ -152,6 +153,20 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 		return getChangeTypes().equals(declarationListChange);
 	}
 
-
-
+	public TypeDeltaType getType() {
+		if (oldDeclaration instanceof TypeDeclaration) {
+			TypeDeclaration typeDeclaration = (TypeDeclaration) oldDeclaration;
+			if (typeDeclaration.isInterface()) {
+				return TypeDeltaType.INTERFACE;
+			} else {
+				return TypeDeltaType.CLASS;
+			}
+		} else if (oldDeclaration instanceof EnumDeclaration) {
+			return TypeDeltaType.ENUM;
+		} else if (oldDeclaration instanceof AnnotationTypeDeclaration) {
+			return TypeDeltaType.ANNOTATION;
+		} else {
+			return null;
+		}
+	}
 }
