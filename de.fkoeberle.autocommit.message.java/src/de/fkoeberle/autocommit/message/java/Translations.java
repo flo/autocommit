@@ -36,6 +36,12 @@ public class Translations extends NLS {
 	public static String DocumentedTypeCMF_documentedInterface;
 	public static String DocumentedTypeCMF_documentedEnum;
 	public static String DocumentedTypeCMF_documentedAnnotation;
+	public static String AddedGettersAndSettersCMF_addedGetters;
+	public static String AddedGettersAndSettersCMF_addedSetters;
+	public static String AddedGettersAndSettersCMF_addedGettersAndSetters;
+	public static String AddedGettersAndSettersCMF_addedAGetterAndSetters;
+	public static String AddedGettersAndSettersCMF_addedGettersAndASetter;
+	public static String AddedGettersAndSettersCMF_addedAGettersAndSetter;
 
 	static {
 		initializeMessages(BASE_NAME, Translations.class);

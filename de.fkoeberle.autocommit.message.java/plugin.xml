@@ -43,6 +43,10 @@
             class="de.fkoeberle.autocommit.message.java.DocumentedMethodCMF"
             id="de.fkoeberle.autocommit.message.java.DocumentedMethodCMF">
       </factory>
+      <factory
+            class="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF"
+            id="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF">
+      </factory>
    </extension>
    <extension
          point="de.fkoeberle.autocommit.message.profile">
@@ -64,6 +68,9 @@
          </factory>
          <factory
                id="de.fkoeberle.autocommit.message.java.AddedConstructorCMF">
+         </factory>
+         <factory
+               id="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF">
          </factory>
          <factory
                id="de.fkoeberle.autocommit.message.java.WorkedOnMethodCMF"></factory>
