@@ -1,4 +1,4 @@
-package de.fkoeberle.autocommit.event.refactor;
+package de.fkoeberle.autocommit.message.refactor;
 
 import org.eclipse.ltk.core.refactoring.IUndoManagerListener;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;

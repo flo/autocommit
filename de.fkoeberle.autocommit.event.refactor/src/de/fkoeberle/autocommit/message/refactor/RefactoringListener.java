@@ -1,4 +1,4 @@
-package de.fkoeberle.autocommit.event.refactor;
+package de.fkoeberle.autocommit.message.refactor;
 
 import java.util.HashSet;
 import java.util.Set;

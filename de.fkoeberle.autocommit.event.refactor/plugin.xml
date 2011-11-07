@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.startup">
       <startup
-            class="de.fkoeberle.autocommit.event.refactor.StartUp">
+            class="de.fkoeberle.autocommit.message.refactor.StartUp">
       </startup>
    </extension>
 
