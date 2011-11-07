@@ -30,11 +30,9 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
-import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.WorkingTreeIterator;
 import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
-import org.eclipse.jgit.treewalk.filter.NotIgnoredFilter;
 import org.eclipse.jgit.treewalk.filter.SkipWorkTreeFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
@@ -252,17 +250,26 @@ public class GitRepositoryAdapter implements IRepository {
 		}
 		RevWalk revWalk = new RevWalk(repository);
 		RevTree revTree = revWalk.parseTree(headTreeId);
-		FileTreeIterator fileTreeIterator = new FileTreeIterator(repository);
+
+		// Using the IteratorService is important
+		// to for example automatically ignore class files in bin/
+		WorkingTreeIterator fileTreeIterator = IteratorService
+				.createInitialIterator(repository);
 		int revTreeIndex = treeWalk.addTree(revTree);
 		int workTreeIndex = treeWalk.addTree(fileTreeIterator);
-		treeWalk.setFilter(AndTreeFilter.create(new NotIgnoredFilter(
-				workTreeIndex), TreeFilter.ANY_DIFF));
+		treeWalk.setFilter(TreeFilter.ANY_DIFF);
 
 		while (treeWalk.next()) {
 			AbstractTreeIterator headMatch = treeWalk.getTree(revTreeIndex,
 					AbstractTreeIterator.class);
-			FileTreeIterator fileTreeMatch = treeWalk.getTree(workTreeIndex,
-					FileTreeIterator.class);
+			WorkingTreeIterator fileTreeMatch = treeWalk.getTree(workTreeIndex,
+					WorkingTreeIterator.class);
+			// TODO is this check necessary:
+			if (fileTreeMatch != null) {
+				if (fileTreeMatch.isEntryIgnored()) {
+					continue;
+				}
+			}
 			final String path = treeWalk.getPathString();
 			ObjectId oldObjectId = null;
 			if (headMatch != null) {
