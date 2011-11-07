@@ -1,7 +1,9 @@
 package de.fkoeberle.autocommit;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -29,7 +31,8 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AutoCommitPluginActivator extends AbstractUIPlugin {
+public class AutoCommitPluginActivator extends AbstractUIPlugin implements
+		Iterable<IRepository> {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "de.fkoeberle.autocommit"; //$NON-NLS-1$
 	public static final String EXTENSION_POINT_ID = "de.fkoeberle.autocommit.vcs";
@@ -67,7 +70,9 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 					versionControlSystems.add(vcs);
 				}
 			} catch (CoreException ex) {
-				logException("An exception occured while updating the list of available version control systems for automatic commits.", ex);
+				logException(
+						"An exception occured while updating the list of available version control systems for automatic commits.",
+						ex);
 			}
 		}
 	}
@@ -104,25 +109,20 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
-	/**
-	 * 
-	 * @param message the message the commit should get or null if the message should be choosen automatically.
-	 */
-	public synchronized void commitIfPossible(final String message) {
+	public synchronized void commitIfPossible() {
 		UIJob job = new UIJob("Auto Commit") {
-			
+
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
-				// TODO ensure that it runs on UI thread: 
+				// TODO ensure that it runs on UI thread:
 				// example when it's necessary: extracting a variable
 				IWorkbenchWindow window = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow();
 				IWorkbenchPage page = window.getActivePage();
 				IEditorPart[] dirtyEditors = page.getDirtyEditors();
 				if (dirtyEditors.length > 0) {
-					logInfo(String.format(
-							"Not committing as '%s' since there unsaved changes",
-							message));
+					logInfo(String
+							.format("Not committing since there unsaved changes"));
 					return Status.OK_STATUS;
 				}
 
@@ -130,31 +130,35 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 				IWorkspaceRoot root = workspace.getRoot();
 				int maxProblemServity;
 				try {
-					maxProblemServity = root.findMaxProblemSeverity(IMarker.PROBLEM,
-							true, IResource.DEPTH_INFINITE);
+					maxProblemServity = root.findMaxProblemSeverity(
+							IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 				} catch (CoreException e) {
 					logException(
 							"An exception occured while determining if there are problems for an auto commit.",
 							e);
-					return new Status(IStatus.ERROR,AutoCommitPluginActivator.PLUGIN_ID,"An exception occured while determining if there are problems for an auto commit.",
+					return new Status(
+							IStatus.ERROR,
+							AutoCommitPluginActivator.PLUGIN_ID,
+							"An exception occured while determining if there are problems for an auto commit.",
 							e);
 				}
 				if (maxProblemServity == IMarker.SEVERITY_ERROR) {
-					logInfo(String.format(
-							"Not committing as '%s' since there are problem markers",
-							message));
+					logInfo(String
+							.format("Not committing since there are problem markers"));
 					return Status.OK_STATUS;
 				}
 
 				for (IVersionControlSystem vcs : versionControlSystems) {
-					vcs.commit(message);
+					for (IRepository repository : vcs) {
+						repository.commit();
+					}
 				}
 				return Status.OK_STATUS;
 			}
 		};
 		job.setRule(ResourcesPlugin.getWorkspace().getRoot());
 		job.schedule();
-		
+
 	}
 
 	private void logException(String message, Exception e) {
@@ -165,19 +169,6 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 	private void logInfo(String message) {
 		getLog().log(
 				new Status(Status.INFO, PLUGIN_ID, Status.OK, message, null));
-	}
-
-	/**
-	 * 
-	 * @return true, if it could be verified that there are no uncommitted changes. If it fails to determine if there are changes it returns true.
-	 */
-	public synchronized boolean noUncommittedChangesExists() {
-		for (IVersionControlSystem vcs : versionControlSystems) {
-			if (!vcs.noUncommittedChangesExist()) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private final class RegistryEventListener implements IRegistryEventListener {
@@ -200,6 +191,48 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		public void added(IExtension[] extensions) {
 			updateVersionControlSystemsList();
 		}
+	}
+
+	@Override
+	public Iterator<IRepository> iterator() {
+		return new Iterator<IRepository>() {
+			private final Iterator<IVersionControlSystem> vcsIterator = versionControlSystems
+					.iterator();
+			private Iterator<IRepository> repositoryIterator = null;
+
+			private void ensureRepositoryIteratorHasNextOrIsNull() {
+				while (repositoryIterator == null
+						|| (!repositoryIterator.hasNext() && vcsIterator
+								.hasNext())) {
+					repositoryIterator = vcsIterator.next().iterator();
+				}
+				if (repositoryIterator != null && !repositoryIterator.hasNext()) {
+					repositoryIterator = null;
+				}
+			}
+
+			@Override
+			public boolean hasNext() {
+				ensureRepositoryIteratorHasNextOrIsNull();
+
+				return repositoryIterator != null;
+			}
+
+			@Override
+			public IRepository next() {
+				ensureRepositoryIteratorHasNextOrIsNull();
+				if (repositoryIterator == null) {
+					throw new NoSuchElementException();
+				}
+				return repositoryIterator.next();
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+
+		};
 	}
 
 }
