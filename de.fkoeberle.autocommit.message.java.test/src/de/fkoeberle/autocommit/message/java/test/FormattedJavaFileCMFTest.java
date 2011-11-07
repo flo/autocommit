@@ -16,7 +16,8 @@ public class FormattedJavaFileCMFTest {
 
 	private FormattedJavaFileCMF createFactory(FileSetDelta delta) {
 		FormattedJavaFileCMF factory = new FormattedJavaFileCMF();
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		session.injectSessionData(factory);
 		return factory;
 	}

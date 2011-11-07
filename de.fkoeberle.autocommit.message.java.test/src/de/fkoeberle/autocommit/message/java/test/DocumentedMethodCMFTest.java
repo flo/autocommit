@@ -14,7 +14,8 @@ import de.fkoeberle.autocommit.message.java.DocumentedMethodCMF;
 public class DocumentedMethodCMFTest {
 	private DocumentedMethodCMF createFactory(FileSetDelta delta) {
 		DocumentedMethodCMF factory = new DocumentedMethodCMF();
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		session.injectSessionData(factory);
 		return factory;
 	}

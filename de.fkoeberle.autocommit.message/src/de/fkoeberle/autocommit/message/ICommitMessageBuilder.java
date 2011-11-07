@@ -13,4 +13,6 @@ public interface ICommitMessageBuilder {
 
 	String buildMessage() throws IOException;
 
+	void addSessionData(Object data);
+
 }

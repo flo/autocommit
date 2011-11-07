@@ -7,11 +7,6 @@ import java.util.Map;
 public final class Session {
 	private final Map<Class<?>, Object> objects;
 
-	public Session(FileSetDelta delta) {
-		objects = new HashMap<Class<?>, Object>();
-		objects.put(FileSetDelta.class, delta);
-	}
-
 	public Session() {
 		objects = new HashMap<Class<?>, Object>();
 	}
@@ -53,5 +48,9 @@ public final class Session {
 				}
 			}
 		}
+	}
+
+	public void add(Object data) {
+		objects.put(data.getClass(), data);
 	}
 }

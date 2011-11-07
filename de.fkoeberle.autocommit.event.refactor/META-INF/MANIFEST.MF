@@ -5,7 +5,8 @@ Bundle-SymbolicName: de.fkoeberle.autocommit.message.refactor;singleton:=true
 Bundle-Version: 0.0.1.alpha
 Bundle-Activator: de.fkoeberle.autocommit.message.refactor.RefactorEventPluginActivator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ de.fkoeberle.autocommit.message;bundle-version="0.0.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.fkoeberle.autocommit,

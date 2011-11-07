@@ -7,5 +7,12 @@
             class="de.fkoeberle.autocommit.message.refactor.StartUp">
       </startup>
    </extension>
+   <extension
+         point="de.fkoeberle.autocommit.message.factory">
+      <factory
+            class="de.fkoeberle.autocommit.message.refactor.RefactoringCommentCMF"
+            id="de.fkoeberle.autocommit.message.refactor.RefactoringCommentCMF">
+      </factory>
+   </extension>
 
 </plugin>

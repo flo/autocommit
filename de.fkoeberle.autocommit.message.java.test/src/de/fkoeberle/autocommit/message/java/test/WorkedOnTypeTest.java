@@ -14,7 +14,8 @@ import de.fkoeberle.autocommit.message.java.WorkedOnTypeCMF;
 public class WorkedOnTypeTest {
 	private WorkedOnTypeCMF createFactory(FileSetDelta delta) {
 		WorkedOnTypeCMF factory = new WorkedOnTypeCMF();
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		session.injectSessionData(factory);
 		return factory;
 	}

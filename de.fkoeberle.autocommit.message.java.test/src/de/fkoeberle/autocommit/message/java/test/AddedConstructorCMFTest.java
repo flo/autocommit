@@ -14,7 +14,8 @@ import de.fkoeberle.autocommit.message.java.AddedConstructorCMF;
 public class AddedConstructorCMFTest {
 	private AddedConstructorCMF createFactory(FileSetDelta delta) {
 		AddedConstructorCMF factory = new AddedConstructorCMF();
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		session.injectSessionData(factory);
 		return factory;
 	}

@@ -17,7 +17,8 @@ import de.fkoeberle.autocommit.message.java.SingleChangedMethodView;
 public class MethodDeltaTest {
 	private SingleChangedMethodView createView(FileSetDelta delta)
 			throws IOException {
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		SingleChangedMethodView view = session
 				.getInstanceOf(SingleChangedMethodView.class);
 		return view;

@@ -15,7 +15,8 @@ public class AddedGettersAndSettersCMFTest {
 
 	private AddedGettersAndSettersCMF createFactory(FileSetDelta delta) {
 		AddedGettersAndSettersCMF factory = new AddedGettersAndSettersCMF();
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		session.injectSessionData(factory);
 		return factory;
 	}

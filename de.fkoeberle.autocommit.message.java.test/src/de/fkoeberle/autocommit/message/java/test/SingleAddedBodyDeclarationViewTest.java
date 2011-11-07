@@ -19,7 +19,8 @@ import de.fkoeberle.autocommit.message.java.TypeUtil;
 public class SingleAddedBodyDeclarationViewTest {
 	private SingleAddedBodyDeclarationView createView(FileSetDelta delta)
 			throws IOException {
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		SingleAddedBodyDeclarationView view = session
 				.getInstanceOf(SingleAddedBodyDeclarationView.class);
 		return view;

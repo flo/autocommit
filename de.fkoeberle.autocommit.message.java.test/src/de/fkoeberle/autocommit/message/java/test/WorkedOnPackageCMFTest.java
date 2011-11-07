@@ -15,7 +15,8 @@ public class WorkedOnPackageCMFTest {
 
 	private WorkedOnPackageCMF createFactory(FileSetDelta delta) {
 		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		session.injectSessionData(factory);
 		return factory;
 	}

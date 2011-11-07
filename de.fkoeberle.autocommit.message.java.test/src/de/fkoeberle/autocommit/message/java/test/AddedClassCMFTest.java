@@ -15,7 +15,8 @@ public class AddedClassCMFTest {
 
 	private AddedClassCMF createFactory(FileSetDelta delta) {
 		AddedClassCMF factory = new AddedClassCMF();
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		session.injectSessionData(factory);
 		return factory;
 	}

@@ -4,7 +4,8 @@ Bundle-Name: autocommit.message.java
 Bundle-SymbolicName: de.fkoeberle.autocommit.message.java;singleton:=true
 Bundle-Version: 0.0.1.alpha
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: de.fkoeberle.autocommit.message;bundle-version="0.0.1"
+Require-Bundle: de.fkoeberle.autocommit.message;bundle-version="0.0.1",
+ de.fkoeberle.autocommit.message.refactor;bundle-version="0.0.1"
 Import-Package: org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.jdt.core,
  org.eclipse.jdt.core.dom,

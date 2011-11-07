@@ -14,7 +14,8 @@ import de.fkoeberle.autocommit.message.java.FormattedJavaFilesOfPackageCMF;
 public class FormattedJavaFilesOfPackageCMFTest {
 	private FormattedJavaFilesOfPackageCMF createFactory(FileSetDelta delta) {
 		FormattedJavaFilesOfPackageCMF factory = new FormattedJavaFilesOfPackageCMF();
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		session.injectSessionData(factory);
 		return factory;
 	}

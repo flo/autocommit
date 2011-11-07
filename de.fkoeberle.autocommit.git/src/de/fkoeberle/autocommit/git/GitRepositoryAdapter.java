@@ -1,8 +1,11 @@
 package de.fkoeberle.autocommit.git;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.egit.core.IteratorService;
@@ -36,15 +39,27 @@ import de.fkoeberle.autocommit.IRepository;
 import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
 import de.fkoeberle.autocommit.message.ICommitMessageBuilder;
 
+/**
+ * Enhances and existing git repository to match the interface
+ * {@link IRepository}. It keeps only a weak reference to the repository, which
+ * makes it possible to manage instances of this class in a WeakHashMap from
+ * {@link Repository} to {@link GitRepositoryAdapter}.
+ */
 public class GitRepositoryAdapter implements IRepository {
-	private final Repository repository;
+	private final WeakReference<Repository> repositoryRef;
+	private final List<Object> sessionData;
 
 	public GitRepositoryAdapter(Repository repository) {
-		this.repository = repository;
+		this.repositoryRef = new WeakReference<Repository>(repository);
+		this.sessionData = new ArrayList<Object>();
 	}
 
 	@Override
 	public void commit() {
+		Repository repository = repositoryRef.get();
+		if (repository == null) {
+			return;
+		}
 		WorkingTreeIterator workingTreeIterator = IteratorService
 				.createInitialIterator(repository);
 		try {
@@ -134,6 +149,10 @@ public class GitRepositoryAdapter implements IRepository {
 
 	@Override
 	public boolean noUncommittedChangesExist() {
+		Repository repository = repositoryRef.get();
+		if (repository == null) {
+			return true;
+		}
 		WorkingTreeIterator workingTreeIterator = IteratorService
 				.createInitialIterator(repository);
 		try {
@@ -197,11 +216,15 @@ public class GitRepositoryAdapter implements IRepository {
 				messageBuilder.addChangedFile(path, oldContent, newContent);
 			}
 		}
+		for (Object data : sessionData) {
+			messageBuilder.addSessionData(data);
+		}
 		return messageBuilder.buildMessage();
 	}
 
 	@Override
 	public void addSessionDataForUncommittedChanges(Object data) {
 		// TODO stub
+		sessionData.add(data);
 	}
 }

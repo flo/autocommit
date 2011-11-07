@@ -8,7 +8,8 @@ public class WorkedOnPathCMFTest {
 
 	private WorkedOnPathCMF createFactory(FileSetDelta delta) {
 		WorkedOnPathCMF factory = new WorkedOnPathCMF();
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		session.injectSessionData(factory);
 		return factory;
 	}

@@ -54,6 +54,9 @@
             id="de.fkoeberle.autocommit.message.profile.java.default"
             name="Default Java Profile">
          <factory
+               id="de.fkoeberle.autocommit.message.refactor.RefactoringCommentCMF">
+         </factory>
+         <factory
                id="de.fkoeberle.autocommit.message.java.FormattedJavaTypeCMF"></factory>
          <factory
                id="de.fkoeberle.autocommit.message.java.FormattedJavaFilesOfPackageCMF">

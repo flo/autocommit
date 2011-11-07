@@ -17,7 +17,8 @@ import de.fkoeberle.autocommit.message.java.TypeDelta;
 public class TypeDeltaTest {
 	private SingleChangedTypeView createView(FileSetDelta delta)
 			throws IOException {
-		Session session = new Session(delta);
+		Session session = new Session();
+		session.add(delta);
 		SingleChangedTypeView view = session
 				.getInstanceOf(SingleChangedTypeView.class);
 		return view;

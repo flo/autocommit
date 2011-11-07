@@ -10,9 +10,11 @@ public class CommitMessageBuilder implements ICommitMessageBuilder {
 	private final List<ChangedFile> changedFiles;
 	private final List<AddedFile> addedFiles;
 	private final List<RemovedFile> removedFiles;
+	private final Session session;
 
 	CommitMessageBuilder(ProfileManager factoryManager) {
 		this.profileManager = factoryManager;
+		this.session = new Session();
 		this.changedFiles = new ArrayList<ChangedFile>();
 		this.addedFiles = new ArrayList<AddedFile>();
 		this.removedFiles = new ArrayList<RemovedFile>();
@@ -37,6 +39,11 @@ public class CommitMessageBuilder implements ICommitMessageBuilder {
 	}
 
 	@Override
+	public void addSessionData(Object data) {
+		session.add(data);
+	}
+
+	@Override
 	public String buildMessage() throws IOException {
 		if (dirty) {
 			throw new IllegalStateException(
@@ -50,7 +57,7 @@ public class CommitMessageBuilder implements ICommitMessageBuilder {
 		List<ICommitMessageFactory> factories = profileManager
 				.getFirstProfileFactories();
 
-		Session session = new Session(delta);
+		session.add(delta);
 		for (ICommitMessageFactory factory : factories) {
 			session.injectSessionData(factory);
 			String message = factory.createMessage();
