@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: autocommit.message.tex.test
+Bundle-SymbolicName: de.fkoeberle.autocommit.message.tex.test
+Bundle-Version: 0.0.1.alpha
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit,
+ de.fkoeberle.autocommit.message.tex;bundle-version="0.0.1"
