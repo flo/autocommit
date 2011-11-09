@@ -8,8 +8,12 @@ import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class WorkedOnMethodCMF implements ICommitMessageFactory {
 
-	public final CommitMessageTemplate workedOnMethodWithArgsMessage = new CommitMessageTemplate(
-			Translations.WorkedOnMethodCMF_workedOnMethodWithArgs);
+	public final CommitMessageTemplate workedOnMethodMessage = new CommitMessageTemplate(
+			Translations.WorkedOnMethodCMF_workedOnMethod);
+
+	public final CommitMessageTemplate workedOnConstructorMessage = new CommitMessageTemplate(
+			Translations.WorkedOnMethodCMF_workedOnConstructor);
+
 	@InjectedBySession
 	SingleChangedMethodView singleChangedMethodView;
 
@@ -24,7 +28,13 @@ public class WorkedOnMethodCMF implements ICommitMessageFactory {
 		String methodName = methodDelta.getMethodName();
 		String parameterTypes = methodDelta.getParameterTypes();
 		String typeName = methodDelta.getSimpleTypeName();
-		return workedOnMethodWithArgsMessage.createMessageWithArgs(
+		CommitMessageTemplate messageTemplate;
+		if (methodDelta.getOldDeclaration().isConstructor()) {
+			messageTemplate = workedOnConstructorMessage;
+		} else {
+			messageTemplate = workedOnMethodMessage;
+		}
+		return messageTemplate.createMessageWithArgs(
 				fullTypeName, methodName, parameterTypes, typeName);
 	}
 
