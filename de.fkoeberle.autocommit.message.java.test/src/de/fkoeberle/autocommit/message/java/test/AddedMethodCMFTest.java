@@ -29,15 +29,14 @@ public class AddedMethodCMFTest {
 				"package org.example;\n\nclass Test {class Inner{int myMethod(String s, int i) {return 0;}}}");
 		AddedMethodCMF factory = createFactory(builder.build());
 
+		factory.addedMethodMessage.setValue(factory.addedMethodMessage
+				.getValue()
+						+ " [method|{0}|{1}|{2}|{3}]");
 		String actualMessage = factory.createMessage();
 		String expectedMessage = factory.addedMethodMessage
-				.createMessageWithArgs("Test.Inner", "myMethod", "String, int");
-
+				.createMessageWithArgs("Test.Inner", "myMethod", "String, int",
+						"Inner");
 		assertEquals(expectedMessage, actualMessage);
-
-		factory.addedMethodMessage.setValue("{3}");
-		final String typeName = factory.createMessage();
-		assertEquals("Inner", typeName);
 	}
 
 	@Test
@@ -72,7 +71,13 @@ public class AddedMethodCMFTest {
 				"package org.example;\n\nclass Test {class Inner{Inner(String s, int i) {}}}");
 		AddedMethodCMF factory = createFactory(builder.build());
 
+		factory.addedConstructorMessage
+				.setValue(factory.addedConstructorMessage.getValue()
+						+ " [constructor|{0}|{1}|{2}|{3}]");
 		String actualMessage = factory.createMessage();
-		assertEquals(null, actualMessage);
+		String expectedMessage = factory.addedConstructorMessage
+				.createMessageWithArgs("Test.Inner", "Inner", "String, int",
+						"Inner");
+		assertEquals(expectedMessage, actualMessage);
 	}
 }

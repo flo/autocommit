@@ -31,7 +31,7 @@ public class Translations extends NLS {
 	public static String FormattedJavaTypeCMF_formattedEnum;
 	public static String FormattedJavaTypeCMF_formattedAnnotation;
 	public static String AddedMethodCMF_addedMethod;
-	public static String AddedConstructorCMF_addedConstructor;
+	public static String AddedMethodCMF_addedConstructor;
 	public static String DocumentedMethodCMF_documentedMethod;
 	public static String DocumentedTypeCMF_documentedClass;
 	public static String DocumentedTypeCMF_documentedInterface;

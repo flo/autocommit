@@ -14,6 +14,9 @@ public class AddedMethodCMF implements ICommitMessageFactory {
 	public final CommitMessageTemplate addedMethodMessage = new CommitMessageTemplate(
 			Translations.AddedMethodCMF_addedMethod);
 
+	public final CommitMessageTemplate addedConstructorMessage = new CommitMessageTemplate(
+			Translations.AddedMethodCMF_addedConstructor);
+
 	@InjectedBySession
 	private SingleAddedBodyDeclarationView singleAddedBodyDeclarationView;
 
@@ -25,9 +28,6 @@ public class AddedMethodCMF implements ICommitMessageFactory {
 			return null;
 		}
 		MethodDeclaration addedMethod = (MethodDeclaration) addedDeclaration;
-		if (addedMethod.isConstructor()) {
-			return null;
-		}
 
 		AbstractTypeDeclaration type = (AbstractTypeDeclaration) (addedMethod
 				.getParent());
@@ -36,7 +36,15 @@ public class AddedMethodCMF implements ICommitMessageFactory {
 		String methodName = TypeUtil.nameOfMethod(addedMethod);
 		String parameterTypes = TypeUtil.parameterTypesOf(addedMethod);
 		String typeName = TypeUtil.nameOf(type);
-		return addedMethodMessage.createMessageWithArgs(fullTypeName,
+		CommitMessageTemplate message;
+		if (addedMethod.isConstructor()) {
+			message = addedConstructorMessage;
+		} else {
+
+			message = addedMethodMessage;
+		}
+
+		return message.createMessageWithArgs(fullTypeName,
 				methodName, parameterTypes, typeName);
 	}
 
