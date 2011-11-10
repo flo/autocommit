@@ -9,6 +9,7 @@ import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.SingleChangedFileView;
 
 public class SingleChangedJavaFileView {
 	private boolean changedFileDetermined;
@@ -21,7 +22,7 @@ public class SingleChangedJavaFileView {
 	private CachingJavaFileContentParser parser;
 
 	@InjectedBySession
-	private FileSetDelta delta;
+	private SingleChangedFileView singleChangedFileView;
 
 	@InjectedBySession
 	private ExtensionsOfAddedModifiedOrChangedFiles extensions;
@@ -34,8 +35,7 @@ public class SingleChangedJavaFileView {
 	 *             if the compilation unit got parsed and an IOException
 	 *             occured.
 	 */
-	public CompilationUnit getNewCompilationUnit()
-			throws IOException {
+	public CompilationUnit getNewCompilationUnit() throws IOException {
 		CompilationUnit compilationUnit = null;
 		if (newCompilationUnitRef != null) {
 			compilationUnit = newCompilationUnitRef.get();
@@ -60,8 +60,7 @@ public class SingleChangedJavaFileView {
 	 *             if the compilation unit got parsed and an IOException
 	 *             occurred.
 	 */
-	public CompilationUnit getOldCompilationUnit()
-			throws IOException {
+	public CompilationUnit getOldCompilationUnit() throws IOException {
 		CompilationUnit compilationUnit = null;
 		if (oldCompilationUnitRef != null) {
 			compilationUnit = oldCompilationUnitRef.get();
@@ -95,7 +94,8 @@ public class SingleChangedJavaFileView {
 			}
 			CompilationUnit oldCompilationUnit = getOldCompilationUnit();
 			CompilationUnit newCompilationUnit = getNewCompilationUnit();
-			declarationListDelta = new DeclarationListDelta(oldCompilationUnit, newCompilationUnit);
+			declarationListDelta = new DeclarationListDelta(oldCompilationUnit,
+					newCompilationUnit);
 			declarationListDeltaRef = new SoftReference<DeclarationListDelta>(
 					declarationListDelta);
 
@@ -109,17 +109,7 @@ public class SingleChangedJavaFileView {
 			if (!extensions.containsOnly("java")) {
 				return null;
 			}
-			if (delta.getChangedFiles().size() != 1) {
-				return null;
-			}
-			if (delta.getRemovedFiles().size() != 0) {
-				return null;
-			}
-			if (delta.getAddedFiles().size() != 0) {
-				return null;
-			}
-
-			changedFile = delta.getChangedFiles().get(0);
+			changedFile = singleChangedFileView.getChangedFile();
 		}
 		return changedFile;
 	}
