@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: autocommit.message.tex
 Bundle-SymbolicName: de.fkoeberle.autocommit.message.tex
 Bundle-Version: 0.0.1.alpha
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ de.fkoeberle.autocommit.message;bundle-version="0.0.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: de.fkoeberle.autocommit.message.tex

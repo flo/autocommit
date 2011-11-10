@@ -5,4 +5,6 @@ Bundle-SymbolicName: de.fkoeberle.autocommit.message.tex.test
 Bundle-Version: 0.0.1.alpha
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit,
- de.fkoeberle.autocommit.message.tex;bundle-version="0.0.1"
+ de.fkoeberle.autocommit.message.tex;bundle-version="0.0.1",
+ de.fkoeberle.autocommit.message;bundle-version="0.0.1",
+ de.fkoeberle.autocommit.message.test;bundle-version="0.0.1"
