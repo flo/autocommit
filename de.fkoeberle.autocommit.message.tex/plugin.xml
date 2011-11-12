@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="de.fkoeberle.autocommit.message.factory">
+      <factory
+            class="de.fkoeberle.autocommit.message.tex.WorkedOnHeadlineCMF"
+            id="de.fkoeberle.autocommit.message.tex.WorkedOnHeadlineCMF">
+      </factory>
+   </extension>
+   <extension
+         point="de.fkoeberle.autocommit.message.profile">
+      <profile
+            id="de.fkoeberle.autocommit.message.tex.TexProfile"
+            name="Tex Profile">
+         <factory
+               id="de.fkoeberle.autocommit.message.tex.WorkedOnHeadlineCMF">
+         </factory>
+         <factory
+               id="de.fkoeberle.autocommit.message.WorkedOnPathCMF">
+         </factory>
+      </profile>
+   </extension>
+
+</plugin>

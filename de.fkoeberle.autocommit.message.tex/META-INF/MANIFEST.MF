@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: autocommit.message.tex
-Bundle-SymbolicName: de.fkoeberle.autocommit.message.tex
+Bundle-SymbolicName: de.fkoeberle.autocommit.message.tex;singleton:=true
 Bundle-Version: 0.0.1.alpha
 Require-Bundle: org.eclipse.core.runtime,
  de.fkoeberle.autocommit.message;bundle-version="0.0.1"
