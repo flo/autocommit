@@ -5,8 +5,8 @@ Bundle-SymbolicName: de.fkoeberle.autocommit.event.build;singleton:=true
 Bundle-Version: 0.0.1.alpha
 Bundle-Activator: de.fkoeberle.autocommit.event.build.BuildEventPluginActivator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ de.fkoeberle.autocommit;bundle-version="0.0.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: de.fkoeberle.autocommit,
- org.eclipse.core.resources
+Import-Package: org.eclipse.core.resources
