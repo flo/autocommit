@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>autocommit.category</name>
+	<comment></comment>
+	<projects>
+		<project>autocommit.feature.java</project>
+		<project>autocommit.feature.tex</project>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+	</natures>
+</projectDescription>

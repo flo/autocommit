@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/de.fkoeberle.autocommit.feature.java_0.0.1.alpha.jar" id="de.fkoeberle.autocommit.feature.java" version="0.0.1.alpha">
+      <category name="de.fkoberle.autocommit.category"/>
+   </feature>
+   <feature url="features/de.fkoeberle.autocommit.feature.tex_0.0.1.alpha.jar" id="de.fkoeberle.autocommit.feature.tex" version="0.0.1.alpha">
+      <category name="de.fkoberle.autocommit.category"/>
+   </feature>
+   <category-def name="de.fkoberle.autocommit.category" label="Auto Commit Related Features"/>
+</site>
