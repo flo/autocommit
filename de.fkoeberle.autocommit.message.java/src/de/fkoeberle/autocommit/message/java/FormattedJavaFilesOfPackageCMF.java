@@ -25,6 +25,9 @@ public class FormattedJavaFilesOfPackageCMF implements ICommitMessageFactory {
 	private JavaFormatationChecker formatationChecker;
 
 	@InjectedBySession
+	private OnlyChangedFilesChecker onlyChangedFilesChecker;
+
+	@InjectedBySession
 	private FileSetDelta fileSetDelta;
 
 	@InjectedBySession
@@ -32,13 +35,7 @@ public class FormattedJavaFilesOfPackageCMF implements ICommitMessageFactory {
 
 	@Override
 	public String createMessage() throws IOException {
-		if (fileSetDelta.getAddedFiles().size() != 0) {
-			return null;
-		}
-		if (fileSetDelta.getRemovedFiles().size() != 0) {
-			return null;
-		}
-		if (fileSetDelta.getChangedFiles().size() == 0) {
+		if (onlyChangedFilesChecker.checkFailed()) {
 			return null;
 		}
 		for (ChangedFile changedFile : fileSetDelta.getChangedFiles()) {
@@ -71,5 +68,4 @@ public class FormattedJavaFilesOfPackageCMF implements ICommitMessageFactory {
 			return formattedSourceMessage.createMessageWithArgs();
 		}
 	}
-
 }
