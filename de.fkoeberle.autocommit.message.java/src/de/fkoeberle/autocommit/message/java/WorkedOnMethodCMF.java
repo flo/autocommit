@@ -15,7 +15,7 @@ public class WorkedOnMethodCMF implements ICommitMessageFactory {
 			Translations.WorkedOnMethodCMF_workedOnConstructor);
 
 	@InjectedBySession
-	SingleChangedMethodView singleChangedMethodView;
+	SingleChangedBodyDeclarationView singleChangedMethodView;
 
 	@Override
 	public String createMessage() throws IOException {

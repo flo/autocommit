@@ -4,13 +4,14 @@ import java.io.IOException;
 
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
-public class SingleChangedMethodView extends AbstractViewWithCache<MethodDelta> {
+public class SingleChangedBodyDeclarationView extends
+		AbstractViewWithCache<DeclarationDelta<?>> {
 
 	@InjectedBySession
 	private SingleChangedTypeView singleChangedTypeView;
 
 	@Override
-	protected MethodDelta determineCachableValue() throws IOException {
+	protected DeclarationDelta<?> determineCachableValue() throws IOException {
 		TypeDelta typeDelta = singleChangedTypeView.getTypeDelta();
 		if (typeDelta == null) {
 			return null;
@@ -29,19 +30,25 @@ public class SingleChangedMethodView extends AbstractViewWithCache<MethodDelta> 
 		if (declarationListDelta.getChangedDeclarations().size() != 1) {
 			return null;
 		}
-		DeclarationDelta<?> declarationDelta = declarationListDelta
-				.getChangedDeclarations().get(0);
+		return declarationListDelta.getChangedDeclarations().get(0);
+	}
 
-		if (declarationDelta instanceof MethodDelta) {
-			return (MethodDelta) declarationDelta;
+	/**
+	 * 
+	 * @return an instance of {@link MethodDelta} or null if there was not
+	 *         (only) a method change.
+	 */
+	public MethodDelta getMethodDelta() throws IOException {
+		DeclarationDelta<?> delta = getCachableValue();
+		if (delta instanceof MethodDelta) {
+			return (MethodDelta) delta;
 		} else {
 			return null;
 		}
 	}
 
-	public MethodDelta getMethodDelta() throws IOException {
+	public DeclarationDelta<?> getDelta() throws IOException {
 		return getCachableValue();
 	}
-
 
 }

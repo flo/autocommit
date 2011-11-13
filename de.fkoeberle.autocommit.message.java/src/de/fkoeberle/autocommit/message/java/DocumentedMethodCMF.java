@@ -12,7 +12,7 @@ public class DocumentedMethodCMF implements ICommitMessageFactory {
 	public final CommitMessageTemplate documentedMethodMessage = new CommitMessageTemplate(
 			Translations.DocumentedMethodCMF_documentedMethod);
 	@InjectedBySession
-	SingleChangedMethodView singleChangedMethodView;
+	SingleChangedBodyDeclarationView singleChangedMethodView;
 
 	@Override
 	public String createMessage() throws IOException {
