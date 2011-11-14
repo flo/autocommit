@@ -33,14 +33,19 @@ public class FormattedJavaFilesOfPackageCMF implements ICommitMessageFactory {
 	@InjectedBySession
 	private CachingJavaFileContentParser parser;
 
+	@InjectedBySession
+	private JavaFileDeltaProvider javaFileDeltaProvider;
+
 	@Override
 	public String createMessage() throws IOException {
 		if (onlyChangedFilesChecker.checkFailed()) {
 			return null;
 		}
 		for (ChangedFile changedFile : fileSetDelta.getChangedFiles()) {
+			JavaFileDelta javaFileDelta = javaFileDeltaProvider
+					.getDeltaFor(changedFile);
 			if (!formatationChecker
-					.foundJavaFormatationChangesOnly(changedFile)) {
+					.foundJavaFormatationChangesOnly(javaFileDelta)) {
 				return null;
 			}
 		}

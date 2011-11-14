@@ -19,12 +19,14 @@ public class FormattedJavaFileCMF implements ICommitMessageFactory {
 
 	@Override
 	public String createMessage() throws IOException {
-		ChangedFile changedFile = singleChangedJavaFileView.getChangedFile();
-		if (changedFile == null) {
+		JavaFileDelta javaFileDelta = singleChangedJavaFileView.getDelta();
+		if (javaFileDelta == null) {
 			return null;
 		}
 
-		if (!formatationChecker.foundJavaFormatationChangesOnly(changedFile)) {
+		ChangedFile changedFile = javaFileDelta.getChangedFile();
+
+		if (!formatationChecker.foundJavaFormatationChangesOnly(javaFileDelta)) {
 			return null;
 		}
 

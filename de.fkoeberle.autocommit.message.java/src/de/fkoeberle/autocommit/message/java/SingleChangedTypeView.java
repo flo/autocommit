@@ -11,12 +11,13 @@ public class SingleChangedTypeView extends AbstractViewWithCache<TypeDelta> {
 
 	@Override
 	protected TypeDelta determineCachableValue() throws IOException {
-		DeclarationListDelta declarationListDelta = view
-				.getDeclarationListDelta();
-		if (declarationListDelta == null) {
+		JavaFileDelta javaFileDelta = view.getDelta();
+		if (javaFileDelta == null) {
 			return null;
 		}
-		return findTypeDeltaAtAnyDepth(view.getDeclarationListDelta());
+		DeclarationListDelta declarationListDelta = javaFileDelta
+				.getDeclarationListDelta();
+		return findTypeDeltaAtAnyDepth(declarationListDelta);
 	}
 
 	private TypeDelta findTypeDeltaAtAnyDepth(

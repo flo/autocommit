@@ -39,7 +39,6 @@ public class FormattedJavaTypeCMF implements ICommitMessageFactory {
 	@InjectedBySession
 	private FileContentReader reader;
 
-
 	@Override
 	public String createMessage() throws IOException {
 		AbstractTypeDeclaration formattedType = determineFormattedType();
@@ -73,14 +72,15 @@ public class FormattedJavaTypeCMF implements ICommitMessageFactory {
 	 * @throws IOException
 	 */
 	private AbstractTypeDeclaration determineFormattedType() throws IOException {
-		ChangedFile changedFile = singleChangedJavaFileView.getChangedFile();
-		if (changedFile == null) {
+		JavaFileDelta javaFileDelta = singleChangedJavaFileView.getDelta();
+		if (javaFileDelta == null) {
 			return null;
 		}
 
-		if (!formatationChecker.foundJavaFormatationChangesOnly(changedFile)) {
+		if (!formatationChecker.foundJavaFormatationChangesOnly(javaFileDelta)) {
 			return null;
 		}
+		ChangedFile changedFile = javaFileDelta.getChangedFile();
 
 		String oldFile = reader.getStringFor(changedFile.getOldContent());
 		String newFile = reader.getStringFor(changedFile.getNewContent());
@@ -90,8 +90,7 @@ public class FormattedJavaTypeCMF implements ICommitMessageFactory {
 
 		// TODO reduce interval to non whitespace
 
-		CompilationUnit newCompilationUnit = singleChangedJavaFileView
-				.getNewCompilationUnit();
+		CompilationUnit newCompilationUnit = javaFileDelta.getNewDeclaration();
 		if (newCompilationUnit == null) {
 			return null;
 		}

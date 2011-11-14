@@ -8,14 +8,8 @@ import java.util.Map;
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import de.fkoeberle.autocommit.message.ChangedFile;
-import de.fkoeberle.autocommit.message.InjectedBySession;
-
 public class JavaFormatationChecker {
-	private SoftReference<Map<ChangedFile, Boolean>> cache;
-
-	@InjectedBySession
-	private CachingJavaFileContentParser parser;
+	private SoftReference<Map<JavaFileDelta, Boolean>> cache;
 
 	/**
 	 * 
@@ -24,23 +18,21 @@ public class JavaFormatationChecker {
 	 *         changes and false otherwise.
 	 * @throws IOException
 	 */
-	public boolean foundJavaFormatationChangesOnly(ChangedFile changedFile)
+	public boolean foundJavaFormatationChangesOnly(JavaFileDelta javaFileDelta)
 			throws IOException {
 
-		Map<ChangedFile, Boolean> map = null;
+		Map<JavaFileDelta, Boolean> map = null;
 		if (cache != null) {
 			map = cache.get();
 		}
 		if (map == null) {
-			map = new HashMap<ChangedFile, Boolean>();
-			cache = new SoftReference<Map<ChangedFile, Boolean>>(map);
+			map = new HashMap<JavaFileDelta, Boolean>();
+			cache = new SoftReference<Map<JavaFileDelta, Boolean>>(map);
 		}
-		Boolean result = map.get(changedFile);
+		Boolean result = map.get(javaFileDelta);
 		if (result == null) {
-			CompilationUnit oldContent = parser.getInstanceFor(changedFile
-					.getOldContent());
-			CompilationUnit newContent = parser.getInstanceFor(changedFile
-					.getNewContent());
+			CompilationUnit oldContent = javaFileDelta.getOldDeclaration();
+			CompilationUnit newContent = javaFileDelta.getNewDeclaration();
 
 			if (containsProblems(oldContent)) {
 				return false;
@@ -51,7 +43,7 @@ public class JavaFormatationChecker {
 			boolean match = oldContent.subtreeMatch(new ASTMatcher(true),
 					newContent);
 			result = Boolean.valueOf(match);
-			map.put(changedFile, result);
+			map.put(javaFileDelta, result);
 		}
 
 		return result.booleanValue();
