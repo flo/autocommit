@@ -68,12 +68,12 @@ public final class MethodDelta extends DeclarationDelta<MethodDeclaration> {
 	private boolean containsReturnTypeChanges() {
 		Type oldType = oldDeclaration.getReturnType2();
 		Type newType = newDeclaration.getReturnType2();
-		return astNodesDiffer(oldType, newType);
+		return ASTCompareUtil.astNodesDiffer(oldType, newType);
 	}
 
 	private boolean containsBodyChanges() {
 		Block oldBody = oldDeclaration.getBody();
 		Block newBody = newDeclaration.getBody();
-		return astNodesDiffer(oldBody, newBody);
+		return ASTCompareUtil.astNodesDiffer(oldBody, newBody);
 	}
 }

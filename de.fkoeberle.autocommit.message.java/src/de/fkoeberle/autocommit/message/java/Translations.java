@@ -1,4 +1,5 @@
 package de.fkoeberle.autocommit.message.java;
+
 import org.eclipse.osgi.util.NLS;
 
 public class Translations extends NLS {
@@ -43,6 +44,10 @@ public class Translations extends NLS {
 	public static String AddedGettersAndSettersCMF_addedAGetterAndSetters;
 	public static String AddedGettersAndSettersCMF_addedGettersAndASetter;
 	public static String AddedGettersAndSettersCMF_addedAGettersAndSetter;
+	public static String DocumentedPackageCMF_documentedSourceInTheDefaultPackage;
+	public static String DocumentedPackageCMF_documentedSourceInPackage;
+	public static String DocumentedPackageCMF_documentedSourceInSubPackagesOf;
+	public static String DocumentedPackageCMF_documentedSource;
 
 	static {
 		initializeMessages(BASE_NAME, Translations.class);

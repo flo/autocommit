@@ -87,13 +87,13 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 			EnumDeclaration newEnum) {
 		List<?> oldDeclarations = oldEnum.enumConstants();
 		List<?> newDeclarations = newEnum.enumConstants();
-		return listsOfASTNodesDiffer(oldDeclarations, newDeclarations);
+		return ASTCompareUtil.listsOfASTNodesDiffer(oldDeclarations, newDeclarations);
 	}
 
 	private boolean containsDeclarationListChange() {
 		List<?> oldDeclarations = oldDeclaration.bodyDeclarations();
 		List<?> newDeclarations = newDeclaration.bodyDeclarations();
-		return listsOfASTNodesDiffer(oldDeclarations, newDeclarations);
+		return ASTCompareUtil.listsOfASTNodesDiffer(oldDeclarations, newDeclarations);
 	}
 
 	private boolean isTypeOfTypeChange() {
@@ -118,7 +118,7 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 			TypeDeclaration newTypeDeclaration) {
 		Type oldSuperClass = oldTypeDeclaration.getSuperclassType();
 		Type newSuperClass = newTypeDeclaration.getSuperclassType();
-		return astNodesDiffer(oldSuperClass, newSuperClass);
+		return ASTCompareUtil.astNodesDiffer(oldSuperClass, newSuperClass);
 	}
 
 	private static boolean isSuperInterfaceListChange(
@@ -126,7 +126,7 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 			TypeDeclaration newTypeDeclaration) {
 		List<?> oldInterfaces = oldTypeDeclaration.superInterfaceTypes();
 		List<?> newInterfaces = newTypeDeclaration.superInterfaceTypes();
-		return listsOfASTNodesDiffer(oldInterfaces, newInterfaces);
+		return ASTCompareUtil.listsOfASTNodesDiffer(oldInterfaces, newInterfaces);
 	}
 
 	private static boolean isSuperInterfaceListChange(
@@ -134,7 +134,7 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 			EnumDeclaration newTypeDeclaration) {
 		List<?> oldInterfaces = oldTypeDeclaration.superInterfaceTypes();
 		List<?> newInterfaces = newTypeDeclaration.superInterfaceTypes();
-		return listsOfASTNodesDiffer(oldInterfaces, newInterfaces);
+		return ASTCompareUtil.listsOfASTNodesDiffer(oldInterfaces, newInterfaces);
 	}
 
 	public String getSimpleTypeName() {

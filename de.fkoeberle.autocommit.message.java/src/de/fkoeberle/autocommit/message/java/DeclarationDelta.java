@@ -4,11 +4,11 @@ import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTMatcher;
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.Javadoc;
 
-public abstract class DeclarationDelta<T extends BodyDeclaration> {
+public abstract class DeclarationDelta<T extends BodyDeclaration> implements
+		IDelta {
 	protected final T oldDeclaration;
 	protected final T newDeclaration;
 	private EnumSet<BodyDeclarationChangeType> changeTypes;
@@ -26,49 +26,14 @@ public abstract class DeclarationDelta<T extends BodyDeclaration> {
 		return newDeclaration;
 	}
 
-	protected static boolean listsOfASTNodesDiffer(List<?> oldList,
-			List<?> newList) {
-		if (oldList.size() != newList.size()) {
-			return true;
-		}
-		int size = oldList.size();
-		for (int i = 0; i < size; i++) {
-			ASTNode oldInterface = (ASTNode) (oldList.get(i));
-			ASTNode newInterface = (ASTNode) (newList.get(i));
-			boolean matches = oldInterface.subtreeMatch(new ASTMatcher(true),
-					newInterface);
-			if (!matches) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 
-	 * @param oldNode
-	 *            can be null.
-	 * @param newNode
-	 *            can be null.
-	 * @return true if and only if the nodes match when compared with a
-	 *         {@link ASTMatcher}.
-	 */
-	protected static boolean astNodesDiffer(ASTNode oldNode, ASTNode newNode) {
-		if (oldNode == null || newNode == null) {
-			return oldNode != newNode;
-		}
-		boolean sameReturnType = (oldNode.subtreeMatch(new ASTMatcher(true),
-				newNode));
-		return !sameReturnType;
-	}
-
 	private final boolean containsModifierChanges() {
 		if (oldDeclaration.getModifiers() != newDeclaration.getModifiers()) {
 			return true;
 		}
 		List<?> oldModifieres = oldDeclaration.modifiers();
 		List<?> newModifieres = newDeclaration.modifiers();
-		return listsOfASTNodesDiffer(oldModifieres, newModifieres);
+		return ASTCompareUtil.listsOfASTNodesDiffer(oldModifieres,
+				newModifieres);
 	}
 
 	/**
@@ -104,11 +69,7 @@ public abstract class DeclarationDelta<T extends BodyDeclaration> {
 	 */
 	protected abstract EnumSet<BodyDeclarationChangeType> determineOtherChangeTypes();
 
-	/**
-	 * 
-	 * @return which kind of changes this delta represents. The result must not
-	 *         be modified.
-	 */
+	@Override
 	public EnumSet<BodyDeclarationChangeType> getChangeTypes() {
 		if (changeTypes == null) {
 			changeTypes = determineChangeTypes();

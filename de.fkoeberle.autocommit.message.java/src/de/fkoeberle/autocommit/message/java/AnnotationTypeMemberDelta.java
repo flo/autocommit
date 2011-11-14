@@ -37,13 +37,13 @@ public final class AnnotationTypeMemberDelta extends
 	private boolean containsTypeChanges() {
 		Type oldType = oldDeclaration.getType();
 		Type newType = newDeclaration.getType();
-		return astNodesDiffer(oldType, newType);
+		return ASTCompareUtil.astNodesDiffer(oldType, newType);
 	}
 
 	private boolean containsDefaultChanges() {
 		Expression oldExpression = oldDeclaration.getDefault();
 		Expression newExpression = newDeclaration.getDefault();
-		return astNodesDiffer(oldExpression, newExpression);
+		return ASTCompareUtil.astNodesDiffer(oldExpression, newExpression);
 	}
 
 }
