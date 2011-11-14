@@ -49,6 +49,11 @@ public class Translations extends NLS {
 	public static String DocumentedPackageCMF_documentedSourceInSubPackagesOf;
 	public static String DocumentedPackageCMF_documentedSource;
 
+	public static String OrganizedImportsOfTypeCMF_organizedImportsOfAnnotation;
+	public static String OrganizedImportsOfTypeCMF_organizedImportsOfClass;
+	public static String OrganizedImportsOfTypeCMF_organizedImportsOfEnum;
+	public static String OrganizedImportsOfTypeCMF_organizedImportsOfInterface;
+
 	static {
 		initializeMessages(BASE_NAME, Translations.class);
 	}
