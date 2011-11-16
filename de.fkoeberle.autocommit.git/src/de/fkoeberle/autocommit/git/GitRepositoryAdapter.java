@@ -37,8 +37,10 @@ import org.eclipse.jgit.treewalk.filter.SkipWorkTreeFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
 import de.fkoeberle.autocommit.IRepository;
+import de.fkoeberle.autocommit.message.CommitMessageBuilder;
 import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
 import de.fkoeberle.autocommit.message.ICommitMessageBuilder;
+import de.fkoeberle.autocommit.message.Profile;
 
 /**
  * Enhances and existing git repository to match the interface
@@ -173,8 +175,10 @@ public class GitRepositoryAdapter implements IRepository {
 
 	private String buildCommitMessage(Repository repository)
 			throws IOException, NoHeadException {
-		final ICommitMessageBuilder messageBuilder = CommitMessageBuilderPluginActivator
-				.getDefault().createBuilder();
+		final Profile profile = CommitMessageBuilderPluginActivator
+				.getDefaultProfile();
+		final ICommitMessageBuilder messageBuilder = new CommitMessageBuilder(
+				profile);
 		final ObjectReader reader = repository.newObjectReader();
 		FileSetDeltaVisitor FileDeltaToMessageBuilderAdder = new FileDeltaToMessageBuilderAdder(
 				reader, messageBuilder);

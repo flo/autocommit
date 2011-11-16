@@ -37,8 +37,7 @@ public class CommitMessageBuilderPluginActivator extends Plugin {
 		return plugin;
 	}
 
-	public ICommitMessageBuilder createBuilder() {
-		return new CommitMessageBuilder(profileManager);
+	public static Profile getDefaultProfile() {
+		return plugin.profileManager.getDefault();
 	}
-
 }

@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommitMessageBuilder implements ICommitMessageBuilder {
-	private final ProfileManager profileManager;
+	private final Profile profile;
 	private boolean dirty;
 	private final List<ChangedFile> changedFiles;
 	private final List<AddedFile> addedFiles;
 	private final List<RemovedFile> removedFiles;
 	private final Session session;
 
-	CommitMessageBuilder(ProfileManager factoryManager) {
-		this.profileManager = factoryManager;
+	public CommitMessageBuilder(Profile profile) {
+		this.profile = profile;
 		this.session = new Session();
 		this.changedFiles = new ArrayList<ChangedFile>();
 		this.addedFiles = new ArrayList<AddedFile>();
@@ -54,11 +54,8 @@ public class CommitMessageBuilder implements ICommitMessageBuilder {
 		FileSetDelta delta = new FileSetDelta(changedFiles, addedFiles,
 				removedFiles);
 
-		List<ICommitMessageFactory> factories = profileManager
-				.getFirstProfileFactories();
-
 		session.add(delta);
-		for (ICommitMessageFactory factory : factories) {
+		for (ICommitMessageFactory factory : profile) {
 			session.injectSessionData(factory);
 			String message = factory.createMessage();
 			if (message != null) {

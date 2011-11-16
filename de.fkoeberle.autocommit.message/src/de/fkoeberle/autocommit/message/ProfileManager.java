@@ -34,14 +34,12 @@ public class ProfileManager {
 	}
 
 	public ProfileManager() throws CoreException {
-		lastProfile = new SoftReference<ProfileManager.ProfileData>(
-				null);
+		lastProfile = new SoftReference<ProfileManager.ProfileData>(null);
 
 		factoryExtensionPointListener = new RegistryEventListener();
 		profileExtensionPointListener = new RegistryEventListener();
 		Platform.getExtensionRegistry().addListener(
-				factoryExtensionPointListener,
-				FACTORY_EXTENSION_POINT_ID);
+				factoryExtensionPointListener, FACTORY_EXTENSION_POINT_ID);
 		Platform.getExtensionRegistry().addListener(
 				profileExtensionPointListener, PROFILE_EXTENSION_POINT_ID);
 	}
@@ -81,7 +79,7 @@ public class ProfileManager {
 			profile = createFirstProfile();
 			lastProfile = new SoftReference<ProfileManager.ProfileData>(profile);
 		}
-		
+
 		return Collections.unmodifiableList(profile.getFactories());
 	}
 
@@ -142,6 +140,11 @@ public class ProfileManager {
 			facotoryConfigMap.put(id, element);
 		}
 		return facotoryConfigMap;
+	}
+
+	public Profile getDefault() {
+		// TODO stub: real version should load profiles in in new format
+		return new Profile(getFirstProfileFactories());
 	}
 
 }
