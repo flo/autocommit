@@ -43,6 +43,14 @@
             class="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF"
             id="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF">
       </factory>
+      <factory
+            class="de.fkoeberle.autocommit.message.java.OrganizedImportsOfTypeCMF"
+            id="de.fkoeberle.autocommit.message.java.OrganizedImportsOfTypeCMF">
+      </factory>
+      <factory
+            class="de.fkoeberle.autocommit.message.java.DocumentedPackageCMF"
+            id="de.fkoeberle.autocommit.message.java.DocumentedPackageCMF">
+      </factory>
    </extension>
    <extension
          point="de.fkoeberle.autocommit.message.profile">
@@ -63,6 +71,9 @@
                id="de.fkoeberle.autocommit.message.java.DocumentedTypeCMF">
          </factory>
          <factory
+               id="de.fkoeberle.autocommit.message.java.DocumentedPackageCMF">
+         </factory>
+         <factory
                id="de.fkoeberle.autocommit.message.java.AddedMethodCMF">
          </factory>
          <factory
@@ -70,6 +81,9 @@
          </factory>
          <factory
                id="de.fkoeberle.autocommit.message.java.WorkedOnMethodCMF"></factory>
+         <factory
+               id="de.fkoeberle.autocommit.message.java.OrganizedImportsOfTypeCMF">
+         </factory>
          <factory
                id="de.fkoeberle.autocommit.message.java.WorkedOnTypeCMF">
          </factory>
@@ -82,6 +96,14 @@
                id="de.fkoeberle.autocommit.message.WorkedOnPathCMF">
          </factory>
       </profile>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.fkoeberle.autocommit.message.ui.CommitMessageConfigEditor"
+            id="de.fkoeberle.autocommit.message.ui.CommitMessageConfigEditor"
+            name="New EditorPart">
+      </editor>
    </extension>
 
 </plugin>
