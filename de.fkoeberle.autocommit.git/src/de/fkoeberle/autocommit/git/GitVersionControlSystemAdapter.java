@@ -25,7 +25,6 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 		// TODO Auto-generated constructor stub
 	}
 
-
 	private Map<Repository, Set<IProject>> getRepositoryToProjectSetMap() {
 		Map<Repository, Set<IProject>> map = new HashMap<Repository, Set<IProject>>();
 
@@ -51,7 +50,6 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 		List<IRepository> adapterList = new ArrayList<IRepository>();
 		for (Repository repository : getRepositoryToProjectSetMap().keySet()) {
 			GitRepositoryAdapter adapter = repositoryAdapterMap.get(repository);
-			;
 			if (adapter == null) {
 				adapter = new GitRepositoryAdapter(repository);
 				repositoryAdapterMap.put(repository, adapter);

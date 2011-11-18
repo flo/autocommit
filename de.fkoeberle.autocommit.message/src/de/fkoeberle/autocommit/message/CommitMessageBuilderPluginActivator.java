@@ -1,5 +1,6 @@
 package de.fkoeberle.autocommit.message;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.Plugin;
@@ -41,5 +42,10 @@ public class CommitMessageBuilderPluginActivator extends Plugin {
 
 	public static Profile getDefaultProfile() throws IOException {
 		return plugin.profileManager.getDefault();
+	}
+
+	public static Profile getProfile(File commitMessagesFile)
+			throws IOException {
+		return plugin.profileManager.getProfile(commitMessagesFile);
 	}
 }

@@ -1,5 +1,6 @@
 package de.fkoeberle.autocommit.git;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -175,8 +176,13 @@ public class GitRepositoryAdapter implements IRepository {
 
 	private String buildCommitMessage(Repository repository)
 			throws IOException, NoHeadException {
+		File repositoryDirectory = repository.getWorkTree();
+		// TODO handle case no working tree
+		final File commitMessagesFile = new File(repositoryDirectory,
+				".commitmessages");
 		final Profile profile = CommitMessageBuilderPluginActivator
-				.getDefaultProfile();
+				.getProfile(commitMessagesFile);
+
 		final ICommitMessageBuilder messageBuilder = new CommitMessageBuilder(
 				profile);
 		final ObjectReader reader = repository.newObjectReader();

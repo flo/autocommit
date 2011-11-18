@@ -1,7 +1,9 @@
 package de.fkoeberle.autocommit.message;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,6 +96,18 @@ public class ProfileManager {
 		}
 		ProfileXml profileXml = ProfileXml.createFrom(resource);
 		return profileXml;
+	}
+
+	public Profile getProfile(File commitMessagesFile) throws IOException {
+		URL resource;
+		try {
+			resource = commitMessagesFile.toURI().toURL();
+		} catch (MalformedURLException e) {
+			throw new IOException(e);
+		}
+		ProfileXml profileXml = ProfileXml.createFrom(resource);
+		CMFFactory cmfFactory = new CMFFactory();
+		return profileXml.createProfile(cmfFactory);
 	}
 
 	public Profile getDefault() throws IOException {
