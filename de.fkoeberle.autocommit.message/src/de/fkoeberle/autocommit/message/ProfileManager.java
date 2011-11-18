@@ -1,10 +1,9 @@
 package de.fkoeberle.autocommit.message;
 
+import java.io.IOException;
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
@@ -13,28 +12,17 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 
 public class ProfileManager {
 	private static final String PROFILE_EXTENSION_POINT_ID = "de.fkoeberle.autocommit.message.profile";
 	private static final String FACTORY_EXTENSION_POINT_ID = "de.fkoeberle.autocommit.message.factory";
-	private SoftReference<ProfileData> lastProfile;
+	private final SoftReference<Profile> defaultProfile;
 	private final IRegistryEventListener factoryExtensionPointListener;
 	private final IRegistryEventListener profileExtensionPointListener;
 
-	private static final class ProfileData {
-		private final List<ICommitMessageFactory> factories;
-
-		public ProfileData(List<ICommitMessageFactory> factories) {
-			this.factories = factories;
-		}
-
-		public List<ICommitMessageFactory> getFactories() {
-			return factories;
-		}
-	}
-
 	public ProfileManager() throws CoreException {
-		lastProfile = new SoftReference<ProfileManager.ProfileData>(null);
+		defaultProfile = new SoftReference<Profile>(null);
 
 		factoryExtensionPointListener = new RegistryEventListener();
 		profileExtensionPointListener = new RegistryEventListener();
@@ -54,12 +42,12 @@ public class ProfileManager {
 	private final class RegistryEventListener implements IRegistryEventListener {
 		@Override
 		public void added(IExtension[] extensions) {
-			lastProfile.clear();
+			defaultProfile.clear();
 		}
 
 		@Override
 		public void removed(IExtension[] extensions) {
-			lastProfile.clear();
+			defaultProfile.clear();
 		}
 
 		@Override
@@ -73,19 +61,7 @@ public class ProfileManager {
 		}
 	}
 
-	public List<ICommitMessageFactory> getFirstProfileFactories() {
-		ProfileData profile = lastProfile.get();
-		if (profile == null) {
-			profile = createFirstProfile();
-			lastProfile = new SoftReference<ProfileManager.ProfileData>(profile);
-		}
-
-		return Collections.unmodifiableList(profile.getFactories());
-	}
-
-	public ProfileData createFirstProfile() {
-		Map<String, IConfigurationElement> facotoryConfigMap = getFactoryConfigurations();
-
+	public Profile createFirstProfile() throws IOException {
 		IExtensionPoint profileExtensionPoint = Platform.getExtensionRegistry()
 				.getExtensionPoint(PROFILE_EXTENSION_POINT_ID);
 		IConfigurationElement[] profileConfigurations = profileExtensionPoint
@@ -94,40 +70,37 @@ public class ProfileManager {
 			throw new RuntimeException("No profile found");
 		}
 		IConfigurationElement firstProfileConfiguration = profileConfigurations[0];
-		List<ICommitMessageFactory> factories = createFactories(
-				firstProfileConfiguration, facotoryConfigMap);
-		return new ProfileData(factories);
+		return createProfileFor(firstProfileConfiguration);
 
 	}
 
-	private List<ICommitMessageFactory> createFactories(
-			IConfigurationElement firstProfileConfiguration,
-			Map<String, IConfigurationElement> facotoryConfigMap) {
-		List<ICommitMessageFactory> factories = new ArrayList<ICommitMessageFactory>();
-		for (IConfigurationElement factoryIdConfig : firstProfileConfiguration
-				.getChildren()) {
-			final String factoryId = factoryIdConfig.getAttribute("id");
-			IConfigurationElement factoryConfig = facotoryConfigMap
-					.get(factoryId);
-			if (factoryConfig == null) {
-				// TODO log info about missing factory
-			} else {
-				Object o;
-				try {
-					o = factoryConfig.createExecutableExtension("class");
-					if (o instanceof ICommitMessageFactory) {
-						factories.add((ICommitMessageFactory) o);
-					}
-				} catch (CoreException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+	private Profile createProfileFor(IConfigurationElement configurationElement)
+			throws IOException {
+		ProfileXml profileXml = createProfileXmlFor(configurationElement);
+		CMFFactory cmfFactory = new CMFFactory();
+		return profileXml.createProfile(cmfFactory);
+	}
+
+	private ProfileXml createProfileXmlFor(
+			IConfigurationElement configurationElement) throws IOException {
+		String path = configurationElement.getAttribute("path");
+		String contributorName = configurationElement.getContributor()
+				.getName();
+		Bundle contributorBundle = Platform.getBundle(contributorName);
+		URL resource = contributorBundle.getResource(path);
+		if (resource == null) {
+			throw new RuntimeException("Unable to read resource " + path
+					+ " of bundle " + contributorName);
 		}
-		return factories;
+		ProfileXml profileXml = ProfileXml.createFrom(resource);
+		return profileXml;
 	}
 
-	private Map<String, IConfigurationElement> getFactoryConfigurations() {
+	public Profile getDefault() throws IOException {
+		return createFirstProfile();
+	}
+
+	private Map<String, IConfigurationElement> createFactoryIdToConfigurationMap() {
 		IExtensionPoint factoryExtensionPoint = Platform.getExtensionRegistry()
 				.getExtensionPoint(FACTORY_EXTENSION_POINT_ID);
 		IConfigurationElement[] factoryConfigurations = factoryExtensionPoint
@@ -142,9 +115,27 @@ public class ProfileManager {
 		return facotoryConfigMap;
 	}
 
-	public Profile getDefault() {
-		// TODO stub: real version should load profiles in in new format
-		return new Profile(getFirstProfileFactories());
+	private class CMFFactory implements ICommitMessageFactoryFactory {
+		Map<String, IConfigurationElement> map = createFactoryIdToConfigurationMap();
+
+		@Override
+		public ICommitMessageFactory createFactory(String id) {
+			if (id == null) {
+				throw new NullPointerException("id must not be null");
+			}
+			IConfigurationElement element = map.get(id);
+			if (element == null) {
+				throw new RuntimeException("There is no factory with the id "
+						+ id);
+			}
+			Object object;
+			try {
+				object = element.createExecutableExtension("class");
+			} catch (CoreException e) {
+				throw new RuntimeException(e);
+			}
+			return (ICommitMessageFactory) object;
+		}
 	}
 
 }

@@ -1,5 +1,7 @@
 package de.fkoeberle.autocommit.message;
 
+import java.io.IOException;
+
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -37,7 +39,7 @@ public class CommitMessageBuilderPluginActivator extends Plugin {
 		return plugin;
 	}
 
-	public static Profile getDefaultProfile() {
+	public static Profile getDefaultProfile() throws IOException {
 		return plugin.profileManager.getDefault();
 	}
 }

@@ -56,54 +56,9 @@
          point="de.fkoeberle.autocommit.message.profile">
       <profile
             id="de.fkoeberle.autocommit.message.profile.java.default"
-            name="Default Java Profile">
-         <factory
-               id="de.fkoeberle.autocommit.message.refactor.RefactoringCommentCMF">
-         </factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.FormattedJavaTypeCMF"></factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.FormattedJavaFilesOfPackageCMF">
-         </factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.DocumentedMethodCMF"></factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.DocumentedTypeCMF">
-         </factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.DocumentedPackageCMF">
-         </factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.AddedMethodCMF">
-         </factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF">
-         </factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.WorkedOnMethodCMF"></factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.OrganizedImportsOfTypeCMF">
-         </factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.WorkedOnTypeCMF">
-         </factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.AddedClassCMF">
-         </factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF"></factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.WorkedOnPathCMF">
-         </factory>
+            name="Default Java Profile"
+            path="java.commitmessages">
       </profile>
-   </extension>
-   <extension
-         point="org.eclipse.ui.editors">
-      <editor
-            class="de.fkoeberle.autocommit.message.ui.CommitMessageConfigEditor"
-            id="de.fkoeberle.autocommit.message.ui.CommitMessageConfigEditor"
-            name="New EditorPart">
-      </editor>
    </extension>
 
 </plugin>

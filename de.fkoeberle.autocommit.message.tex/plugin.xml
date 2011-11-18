@@ -12,13 +12,8 @@
          point="de.fkoeberle.autocommit.message.profile">
       <profile
             id="de.fkoeberle.autocommit.message.tex.TexProfile"
-            name="Tex Profile">
-         <factory
-               id="de.fkoeberle.autocommit.message.tex.WorkedOnHeadlineCMF">
-         </factory>
-         <factory
-               id="de.fkoeberle.autocommit.message.WorkedOnPathCMF">
-         </factory>
+            name="Tex Profile"
+            path="tex.commitmessages">
       </profile>
    </extension>
 
