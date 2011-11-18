@@ -1,5 +1,18 @@
 <commit-message-factories>
 	<factory>
-		<id>de.fkoeberle.autocommit.message.WorkedOnPathCMF</id>
+		<id>dummy1</id>
+	</factory>
+	<factory>
+		<id>dummy2</id>
+		<commit-message-templates>
+			<template>
+				<field>messageA</field>
+				<value>value for A</value>
+			</template>
+			<template>
+				<field>messageB</field>
+				<value>value for B</value>
+			</template>
+		</commit-message-templates>
 	</factory>
 </commit-message-factories>

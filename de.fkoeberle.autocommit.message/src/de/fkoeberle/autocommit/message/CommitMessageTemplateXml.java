@@ -11,9 +11,17 @@ public class CommitMessageTemplateXml {
 		return fieldName;
 	}
 
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
+	}
+
 	@XmlElement(name = "value")
 	public String getValue() {
 		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 }
