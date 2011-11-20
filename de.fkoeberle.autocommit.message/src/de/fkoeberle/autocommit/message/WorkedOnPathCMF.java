@@ -1,9 +1,6 @@
 package de.fkoeberle.autocommit.message;
 
-
-
 public final class WorkedOnPathCMF implements ICommitMessageFactory {
-	StringBuilder stringBuilder = new StringBuilder();
 
 	@InjectedBySession
 	private FileSetDelta delta;
@@ -11,7 +8,6 @@ public final class WorkedOnPathCMF implements ICommitMessageFactory {
 	@CommitMessage
 	public CommitMessageTemplate workedOn = new CommitMessageTemplate(
 			Translations.WorkedOnPathCMF_workedOn);
-
 
 	@Override
 	public String createMessage() {
@@ -32,6 +28,5 @@ public final class WorkedOnPathCMF implements ICommitMessageFactory {
 		}
 		return finder.getCommonPath();
 	}
-
 
 }
