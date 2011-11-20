@@ -98,6 +98,12 @@ public class ProfileManager {
 		return profileXml;
 	}
 
+	public Profile getProfile(URL resource) throws IOException {
+		ProfileXml profileXml = ProfileXml.createFrom(resource);
+		CMFFactory cmfFactory = new CMFFactory();
+		return profileXml.createProfile(cmfFactory);
+	}
+
 	public Profile getProfile(File commitMessagesFile) throws IOException {
 		URL resource;
 		try {
@@ -105,9 +111,7 @@ public class ProfileManager {
 		} catch (MalformedURLException e) {
 			throw new IOException(e);
 		}
-		ProfileXml profileXml = ProfileXml.createFrom(resource);
-		CMFFactory cmfFactory = new CMFFactory();
-		return profileXml.createProfile(cmfFactory);
+		return getProfile(resource);
 	}
 
 	public Profile getDefault() throws IOException {

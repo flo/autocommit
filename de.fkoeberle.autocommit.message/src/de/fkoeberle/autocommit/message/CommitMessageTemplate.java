@@ -31,4 +31,11 @@ public final class CommitMessageTemplate {
 		return NLS.bind(value, args);
 	}
 
+	public static CommitMessageTemplate copyOf(CommitMessageTemplate original) {
+		CommitMessageTemplate copy = new CommitMessageTemplate(
+				original.getDefaultValue());
+		copy.setValue(original.getValue());
+		return copy;
+	}
+
 }
