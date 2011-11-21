@@ -13,12 +13,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.fkoeberle.autocommit.message.CommitMessageDescription;
+import de.fkoeberle.autocommit.message.ProfileDescription;
 
 public class CommitMessageComposite extends Composite {
 	private final DataBindingContext m_bindingContext;
 	private final Text field;
 	private final Label captionLabel;
-	private String defaultMessage;
+	private final Button resetButton;
 
 	/**
 	 * Create the composite.
@@ -28,13 +29,12 @@ public class CommitMessageComposite extends Composite {
 	 * @param messageDescription
 	 */
 	public CommitMessageComposite(Composite parent, int style,
-			final Controller controller, final int factoryIndex,
-			final int messageIndex) {
+			final ProfileDescription model, final Controller controller,
+			final int factoryIndex, final int messageIndex) {
 		super(parent, style);
 		setLayout(new GridLayout(1, false));
-		final CommitMessageDescription messageDescription = controller
+		final CommitMessageDescription messageDescription = model
 				.getMessageDescription(factoryIndex, messageIndex);
-
 		Composite headerComposite = new Composite(this, SWT.NONE);
 		headerComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
@@ -45,7 +45,6 @@ public class CommitMessageComposite extends Composite {
 		headerComposite.setLayout(gl_headerComposite);
 
 		captionLabel = new Label(headerComposite, SWT.NONE);
-		captionLabel.setText("Replacement for \"Added Class {0}\":");
 
 		Composite bodyComposite = new Composite(this, SWT.NONE);
 		bodyComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -59,7 +58,7 @@ public class CommitMessageComposite extends Composite {
 		field.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
 
-		Button resetButton = new Button(bodyComposite, SWT.NONE);
+		resetButton = new Button(bodyComposite, SWT.NONE);
 		resetButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -86,14 +85,12 @@ public class CommitMessageComposite extends Composite {
 		field.setText(text);
 	}
 
-	public String getDefaultMessage() {
-		return defaultMessage;
+	public void setResetEnabled(boolean value) {
+		resetButton.setEnabled(value);
 	}
 
-	public void setDefaultMessage(String value) {
-		this.defaultMessage = value;
-		captionLabel.setText(NLS
-				.bind("Replacement of \"{0}\":", defaultMessage));
+	private void setDefaultMessage(String value) {
+		captionLabel.setText(NLS.bind("Replacement of \"{0}\":", value));
 	}
 
 	@Override

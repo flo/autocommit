@@ -6,7 +6,6 @@ import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 
-import de.fkoeberle.autocommit.message.CommitMessageDescription;
 import de.fkoeberle.autocommit.message.ProfileDescription;
 
 public class Controller {
@@ -22,6 +21,7 @@ public class Controller {
 			int messageIndex) {
 		ResetCommitMessageOperation operation = new ResetCommitMessageOperation(
 				model, view, factoryIndex, messageIndex);
+		operation.addContext(view.getUndoContext());
 		IOperationHistory operationHistory = OperationHistoryFactory
 				.getOperationHistory();
 		try {
@@ -32,10 +32,7 @@ public class Controller {
 		}
 	}
 
-	// TODO remove this method:
-	@Deprecated
-	public CommitMessageDescription getMessageDescription(int factoryIndex,
-			int messageIndex) {
-		return model.getMessageDescription(factoryIndex, messageIndex);
+	public void handleLeftFactorySelection(int[] indices) {
+		view.setRightFactorySelection(indices);
 	}
 }

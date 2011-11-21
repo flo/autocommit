@@ -6,20 +6,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
 import de.fkoeberle.autocommit.message.CommitMessageDescription;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
-import de.fkoeberle.autocommit.message.WorkedOnPathCMF;
+import de.fkoeberle.autocommit.message.ProfileDescription;
 
 public class CommitMessageFactoryComposite extends Composite {
-	CommitMessageFactoryDescription factoryDescription = new CommitMessageFactoryDescription(
-			new WorkedOnPathCMF());
-
+	private final ProfileDescription model;
 	private final Controller controller;
-	private int factoryIndex; // TODO add getter and setter and call setter
+	private int factoryIndex;
 	private final Composite argumentsComposite;
 	private final Composite messagesComposite;
 	private final Label descriptionLabel;
@@ -29,30 +26,33 @@ public class CommitMessageFactoryComposite extends Composite {
 	 * Constructor only used for preview
 	 */
 	public CommitMessageFactoryComposite(Composite parent, int style) {
-		this(null, parent, style);
+		this(parent, style, null, null, 0);
 	}
 
 	/**
 	 * Create the composite.
 	 * 
 	 */
-	public CommitMessageFactoryComposite(Controller controller,
-			Composite parent, int style) {
+	public CommitMessageFactoryComposite(Composite parent, int style,
+			ProfileDescription model, Controller controller, int factoryIndex) {
 		super(parent, SWT.NONE);
+		this.model = model;
 		this.controller = controller;
+		this.factoryIndex = factoryIndex;
+		CommitMessageFactoryDescription factoryDescription = model
+				.getFactoryDescriptions().get(factoryIndex);
 		setLayout(new GridLayout(1, false));
 		grpFactory = new Group(this, SWT.NONE);
 		grpFactory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
-		grpFactory.setText("DocumentatedJavaTypeCMF");
+		grpFactory.setText(factoryDescription.getTitle());
 		grpFactory.setLayout(new GridLayout(1, false));
 
 		descriptionLabel = new Label(grpFactory, SWT.WRAP);
 		descriptionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true,
 				false, 1, 1));
 		descriptionLabel.setBounds(0, 0, 100, 100);
-		descriptionLabel
-				.setText("This is a very long description placeholder, which should show that very long descriptions are possible. Even multiple lines should be possible");
+		descriptionLabel.setText(factoryDescription.getDescription());
 
 		Label argumentsLabel = new Label(grpFactory, SWT.NONE);
 		argumentsLabel.setText("Available Placeholders:");
@@ -62,35 +62,21 @@ public class CommitMessageFactoryComposite extends Composite {
 				true, false, 1, 1));
 		argumentsComposite.setLayout(new GridLayout(2, false));
 
-		Label argumentNameLabel = new Label(argumentsComposite, SWT.NONE);
-		argumentNameLabel.setText("{0}");
-
-		Label argumentDescriptionLabel = new Label(argumentsComposite, SWT.WRAP);
-		argumentDescriptionLabel
-				.setText("This is a very long description placeholder, which should show that very long descriptions are possible. Even multiple lines should be possible");
-		argumentDescriptionLabel.setBounds(0, 0, 474, 51);
-
 		Label messagesLabel = new Label(grpFactory, SWT.NONE);
 		messagesLabel.setText("Generated Messages:");
+		createArgumentDescriptions(factoryDescription);
 
 		messagesComposite = new Composite(grpFactory, SWT.NONE);
 		messagesComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 				true, false, 1, 1));
 		messagesComposite.setLayout(new GridLayout(1, false));
+		createMessageDescriptions(factoryDescription);
 
-	}
-
-	public CommitMessageFactoryDescription getFactoryDescription() {
-		return factoryDescription;
 	}
 
 	public void setFactoryDescription(
 			CommitMessageFactoryDescription factoryDescription) {
-		this.factoryDescription = factoryDescription;
-		grpFactory.setText(factoryDescription.getTitle());
-		descriptionLabel.setText(factoryDescription.getDescription());
-		updateArgumentDescriptions();
-		updateMessageDescriptions();
+
 		/*
 		 * all==true argument at layout call is needed, otherwise the argument
 		 * list update does not work if the new factory has the same arguments
@@ -99,10 +85,8 @@ public class CommitMessageFactoryComposite extends Composite {
 
 	}
 
-	void updateArgumentDescriptions() {
-		for (Control control : argumentsComposite.getChildren()) {
-			control.dispose();
-		}
+	void createArgumentDescriptions(
+			CommitMessageFactoryDescription factoryDescription) {
 		List<String> argumentDescriptions = factoryDescription
 				.getArgumentDescriptions();
 		for (int i = 0; i < argumentDescriptions.size(); i++) {
@@ -118,15 +102,14 @@ public class CommitMessageFactoryComposite extends Composite {
 		}
 	}
 
-	void updateMessageDescriptions() {
-		for (Control control : messagesComposite.getChildren()) {
-			control.dispose();
-		}
+	void createMessageDescriptions(
+			CommitMessageFactoryDescription factoryDescription) {
 		List<CommitMessageDescription> messageDescriptions = factoryDescription
 				.getCommitMessageDescriptions();
 		for (int i = 0; i < messageDescriptions.size(); i++) {
 			CommitMessageComposite messageComposite = new CommitMessageComposite(
-					messagesComposite, SWT.NONE, controller, factoryIndex, i);
+					messagesComposite, SWT.NONE, model, controller,
+					factoryIndex, i);
 
 			messageComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 					true, false, 1, 1));
@@ -144,6 +127,14 @@ public class CommitMessageFactoryComposite extends Composite {
 
 	public CommitMessageComposite getCommitMessageComposite(int messageIndex) {
 		return (CommitMessageComposite) (messagesComposite.getChildren()[messageIndex]);
+	}
+
+	public void setFactoryIndex(int factoryIndex) {
+		this.factoryIndex = factoryIndex;
+	}
+
+	public int getFactoryIndex() {
+		return factoryIndex;
 	}
 
 }
