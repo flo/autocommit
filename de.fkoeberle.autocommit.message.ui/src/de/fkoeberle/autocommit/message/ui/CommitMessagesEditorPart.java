@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.ObjectUndoContext;
@@ -17,7 +15,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -26,14 +23,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.operations.RedoActionHandler;
+import org.eclipse.ui.operations.UndoActionHandler;
 import org.eclipse.ui.part.EditorPart;
 
 import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
-import de.fkoeberle.autocommit.message.CommitMessageDescription;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.Profile;
@@ -49,7 +49,6 @@ public class CommitMessagesEditorPart extends EditorPart {
 	private TableViewer tableViewer;
 	private Composite factoriesComposite;
 	private final IUndoContext undoContext = new ObjectUndoContext(this);
-	Map<Integer, CommitMessageFactoryComposite> factoryIndexToCompositeMap = new HashMap<Integer, CommitMessageFactoryComposite>();
 
 	public CommitMessagesEditorPart() {
 		ArrayList<ICommitMessageFactory> factories = new ArrayList<ICommitMessageFactory>();
@@ -83,8 +82,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 		Button btnAdd = new Button(leftHeader, SWT.NONE);
 		btnAdd.setText("Add..");
 
-		tableViewer = new TableViewer(leftComposite, SWT.BORDER
-				| SWT.FULL_SELECTION);
+		tableViewer = new TableViewer(leftComposite, SWT.BORDER | SWT.MULTI);
 		table = tableViewer.getTable();
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		tableViewer
@@ -109,33 +107,39 @@ public class CommitMessagesEditorPart extends EditorPart {
 		// init gets called first thus model is not null:
 		tableViewer.setInput(model.getFactoryDescriptions());
 
-		ScrolledComposite rightComposite = new ScrolledComposite(sashForm,
-				SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		rightComposite.setExpandHorizontal(true);
-		rightComposite.setExpandVertical(true);
-		rightComposite.setToolTipText("right");
-
-		factoriesComposite = new Composite(rightComposite, SWT.BORDER);
-		rightComposite.setContent(factoriesComposite);
+		// TODO ScrolledComposite rightComposite = new
+		// ScrolledComposite(sashForm,
+		// TODO SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		// TODO rightComposite.setExpandHorizontal(true);
+		// TODO rightComposite.setExpandVertical(true);
+		// TODO rightComposite.setToolTipText("right");
+		factoriesComposite = new Composite(sashForm, SWT.BORDER);
+		// TODO rightComposite.setContent(factoriesComposite);
 		factoriesComposite.setLayout(new GridLayout(1, false));
 		sashForm.setWeights(new int[] { 318, 502 });
 	}
 
 	public void setRightFactorySelection(int[] indices) {
-		factoryIndexToCompositeMap.clear();
 		for (Control child : factoriesComposite.getChildren()) {
 			child.dispose();
 		}
 		for (int factoryIndex : indices) {
+			CommitMessageFactoryDescription factory = (CommitMessageFactoryDescription) model
+					.getFactoryDescriptions().get(factoryIndex);
 			CommitMessageFactoryComposite factoryComposite = new CommitMessageFactoryComposite(
-					factoriesComposite, SWT.NONE, model, controller,
-					factoryIndex);
-			factoryIndexToCompositeMap.put(Integer.valueOf(factoryIndex),
-					factoryComposite);
+					factoriesComposite, SWT.NONE, controller, factory);
 			factoryComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP,
 					true, false, 1, 1));
 		}
 		factoriesComposite.layout(true, true);
+	}
+
+	private void createUndoAndRedoActionHandlers() {
+		IActionBars actionBars = getEditorSite().getActionBars();
+		actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
+				new UndoActionHandler(this.getSite(), undoContext));
+		actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
+				new RedoActionHandler(this.getSite(), undoContext));
 	}
 
 	@Override
@@ -171,11 +175,12 @@ public class CommitMessagesEditorPart extends EditorPart {
 		try {
 			Profile p = CommitMessageBuilderPluginActivator.getProfile(url);
 			this.model = new ProfileDescription(p);
-			this.controller = new Controller(model, this);
+			this.controller = new Controller(this);
 		} catch (IOException e) {
 			throw new PartInitException("An IOException occured while loading",
 					e);
 		}
+		createUndoAndRedoActionHandlers();
 		// Initialize the editor part
 	}
 
@@ -191,22 +196,6 @@ public class CommitMessagesEditorPart extends EditorPart {
 
 	public ProfileDescription getProfile() {
 		return model;
-	}
-
-	public void setCommitMessageValue(int factoryIndex, int messageIndex,
-			String oldMessage) {
-		CommitMessageFactoryComposite factoryComposite = factoryIndexToCompositeMap
-				.get(Integer.valueOf(factoryIndex));
-		if (factoryComposite != null) {
-			CommitMessageComposite commitMessageComposite = factoryComposite
-					.getCommitMessageComposite(messageIndex);
-			CommitMessageDescription commitMessageDescription = model
-					.getFactoryDescriptions().get(factoryIndex)
-					.getCommitMessageDescriptions().get(messageIndex);
-
-			String currentValue = commitMessageDescription.getCurrentValue();
-			commitMessageComposite.setCurrentMessage(currentValue);
-		}
 	}
 
 	public IUndoContext getUndoContext() {

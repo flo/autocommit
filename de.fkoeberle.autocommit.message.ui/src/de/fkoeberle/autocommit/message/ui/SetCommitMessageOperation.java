@@ -9,21 +9,23 @@ import org.eclipse.core.runtime.Status;
 
 import de.fkoeberle.autocommit.message.CommitMessageDescription;
 
-public class ResetCommitMessageOperation extends AbstractOperation {
+public class SetCommitMessageOperation extends AbstractOperation {
 	private final CommitMessageDescription messageDescription;
+	private final String newMessage;
 	private String oldMessage;
 
-	public ResetCommitMessageOperation(
-			CommitMessageDescription messageDescription) {
-		super("Reset Commit Message");
+	public SetCommitMessageOperation(
+			CommitMessageDescription messageDescription, String value) {
+		super("Set Commit Message");
 		this.messageDescription = messageDescription;
+		this.newMessage = value;
 	}
 
 	@Override
 	public IStatus execute(IProgressMonitor monitor, IAdaptable info)
 			throws ExecutionException {
 		this.oldMessage = messageDescription.getCurrentValue();
-		messageDescription.reset();
+		messageDescription.setCurrentValue(newMessage);
 		return Status.OK_STATUS;
 	}
 
@@ -39,4 +41,5 @@ public class ResetCommitMessageOperation extends AbstractOperation {
 		messageDescription.setCurrentValue(oldMessage);
 		return Status.OK_STATUS;
 	}
+
 }

@@ -2,25 +2,41 @@ package de.fkoeberle.autocommit.message.ui;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
-import de.fkoeberle.autocommit.message.ProfileDescription;
+import de.fkoeberle.autocommit.message.CommitMessageDescription;
 
 public class Controller {
-	private final ProfileDescription model;
 	private final CommitMessagesEditorPart view;
 
-	public Controller(ProfileDescription model, CommitMessagesEditorPart view) {
-		this.model = model;
+	public Controller(CommitMessagesEditorPart view) {
 		this.view = view;
 	}
 
-	public void resetMessage(Composite requestSource, int factoryIndex,
-			int messageIndex) {
+	public void resetMessage(Composite requestSource,
+			CommitMessageDescription messageDescription) {
 		ResetCommitMessageOperation operation = new ResetCommitMessageOperation(
-				model, view, factoryIndex, messageIndex);
+				messageDescription);
+		runOperation(requestSource, operation);
+	}
+
+	public void handleLeftFactorySelection(int[] indices) {
+		view.setRightFactorySelection(indices);
+	}
+
+	public void setMessage(Control requestSource,
+			CommitMessageDescription messageDescription, String value) {
+		SetCommitMessageOperation operation = new SetCommitMessageOperation(
+				messageDescription, value);
+		runOperation(requestSource, operation);
+	}
+
+	private void runOperation(Control requestSource,
+			IUndoableOperation operation) {
 		operation.addContext(view.getUndoContext());
 		IOperationHistory operationHistory = OperationHistoryFactory
 				.getOperationHistory();
@@ -30,9 +46,5 @@ public class Controller {
 			MessageDialog.openError(requestSource.getShell(),
 					"Failed to Reset", e.getLocalizedMessage());
 		}
-	}
-
-	public void handleLeftFactorySelection(int[] indices) {
-		view.setRightFactorySelection(indices);
 	}
 }

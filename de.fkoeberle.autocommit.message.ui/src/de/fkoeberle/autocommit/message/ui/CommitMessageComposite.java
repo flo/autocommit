@@ -1,8 +1,11 @@
 package de.fkoeberle.autocommit.message.ui;
 
-import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -13,13 +16,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.fkoeberle.autocommit.message.CommitMessageDescription;
-import de.fkoeberle.autocommit.message.ProfileDescription;
 
 public class CommitMessageComposite extends Composite {
-	private final DataBindingContext m_bindingContext;
 	private final Text field;
 	private final Label captionLabel;
 	private final Button resetButton;
+	private final CommitMessageDescription messageDescription;
+	private final MessageListener messageListener;
 
 	/**
 	 * Create the composite.
@@ -29,12 +32,11 @@ public class CommitMessageComposite extends Composite {
 	 * @param messageDescription
 	 */
 	public CommitMessageComposite(Composite parent, int style,
-			final ProfileDescription model, final Controller controller,
-			final int factoryIndex, final int messageIndex) {
+			final Controller controller,
+			CommitMessageDescription messageDescription) {
 		super(parent, style);
+		this.messageDescription = messageDescription;
 		setLayout(new GridLayout(1, false));
-		final CommitMessageDescription messageDescription = model
-				.getMessageDescription(factoryIndex, messageIndex);
 		Composite headerComposite = new Composite(this, SWT.NONE);
 		headerComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
@@ -57,24 +59,75 @@ public class CommitMessageComposite extends Composite {
 		field = new Text(bodyComposite, SWT.BORDER);
 		field.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
+		ModifyListener modifyListener = new TextModificationListener(controller);
+		field.addModifyListener(modifyListener);
 
 		resetButton = new Button(bodyComposite, SWT.NONE);
-		resetButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (controller != null) {
-					controller.resetMessage(CommitMessageComposite.this,
-							factoryIndex, messageIndex);
-				}
-			}
-		});
+		resetButton.addSelectionListener(new ResetButtonClickListener(
+				controller));
 		resetButton
 				.setToolTipText("Resets the replacement to the default value");
 		resetButton.setText("Reset");
 
 		setDefaultMessage(messageDescription.getDefaultValue());
 		setCurrentMessage(messageDescription.getCurrentValue());
-		m_bindingContext = initDataBindings();
+
+		messageListener = new MessageListener();
+		addDisposeListener(new SelfDisposeListener());
+		messageDescription.addListener(messageListener);
+		messageListener.handleMessageChanged();
+	}
+
+	/**
+	 * Overriding dispose() will not work since it does not get called when the
+	 * widget gets disposed by parent.
+	 */
+	private final class SelfDisposeListener implements DisposeListener {
+		@Override
+		public void widgetDisposed(DisposeEvent e) {
+			messageDescription.removeListener(messageListener);
+		}
+	}
+
+	private final class TextModificationListener implements ModifyListener {
+		private final Controller controller;
+
+		private TextModificationListener(Controller controller) {
+			this.controller = controller;
+		}
+
+		@Override
+		public void modifyText(ModifyEvent e) {
+			if (!field.getText().equals(messageDescription.getCurrentValue())) {
+				controller.setMessage(CommitMessageComposite.this,
+						messageDescription, field.getText());
+			}
+		}
+	}
+
+	private final class ResetButtonClickListener extends SelectionAdapter {
+		private final Controller controller;
+
+		private ResetButtonClickListener(Controller controller) {
+			this.controller = controller;
+		}
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			if (controller != null) {
+				controller.resetMessage(CommitMessageComposite.this,
+						messageDescription);
+			}
+		}
+	}
+
+	private class MessageListener implements CommitMessageDescription.IListener {
+
+		@Override
+		public void handleMessageChanged() {
+			setCurrentMessage(messageDescription.getCurrentValue());
+			setResetEnabled(messageDescription.isResetPossible());
+		}
 	}
 
 	public String getCurrentMessage() {
@@ -93,18 +146,4 @@ public class CommitMessageComposite extends Composite {
 		captionLabel.setText(NLS.bind("Replacement of \"{0}\":", value));
 	}
 
-	@Override
-	public void dispose() {
-		try {
-			m_bindingContext.dispose();
-		} finally {
-			super.dispose();
-		}
-	}
-
-	protected DataBindingContext initDataBindings() {
-		DataBindingContext bindingContext = new DataBindingContext();
-		//
-		return bindingContext;
-	}
 }

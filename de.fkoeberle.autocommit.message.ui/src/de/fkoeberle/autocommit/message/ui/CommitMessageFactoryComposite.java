@@ -11,12 +11,9 @@ import org.eclipse.swt.widgets.Label;
 
 import de.fkoeberle.autocommit.message.CommitMessageDescription;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
-import de.fkoeberle.autocommit.message.ProfileDescription;
 
 public class CommitMessageFactoryComposite extends Composite {
-	private final ProfileDescription model;
 	private final Controller controller;
-	private int factoryIndex;
 	private final Composite argumentsComposite;
 	private final Composite messagesComposite;
 	private final Label descriptionLabel;
@@ -26,7 +23,7 @@ public class CommitMessageFactoryComposite extends Composite {
 	 * Constructor only used for preview
 	 */
 	public CommitMessageFactoryComposite(Composite parent, int style) {
-		this(parent, style, null, null, 0);
+		this(parent, style, null, null);
 	}
 
 	/**
@@ -34,13 +31,10 @@ public class CommitMessageFactoryComposite extends Composite {
 	 * 
 	 */
 	public CommitMessageFactoryComposite(Composite parent, int style,
-			ProfileDescription model, Controller controller, int factoryIndex) {
+			Controller controller,
+			CommitMessageFactoryDescription factoryDescription) {
 		super(parent, SWT.NONE);
-		this.model = model;
 		this.controller = controller;
-		this.factoryIndex = factoryIndex;
-		CommitMessageFactoryDescription factoryDescription = model
-				.getFactoryDescriptions().get(factoryIndex);
 		setLayout(new GridLayout(1, false));
 		grpFactory = new Group(this, SWT.NONE);
 		grpFactory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -106,10 +100,9 @@ public class CommitMessageFactoryComposite extends Composite {
 			CommitMessageFactoryDescription factoryDescription) {
 		List<CommitMessageDescription> messageDescriptions = factoryDescription
 				.getCommitMessageDescriptions();
-		for (int i = 0; i < messageDescriptions.size(); i++) {
+		for (CommitMessageDescription messageDescription : messageDescriptions) {
 			CommitMessageComposite messageComposite = new CommitMessageComposite(
-					messagesComposite, SWT.NONE, model, controller,
-					factoryIndex, i);
+					messagesComposite, SWT.NONE, controller, messageDescription);
 
 			messageComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 					true, false, 1, 1));
@@ -129,12 +122,8 @@ public class CommitMessageFactoryComposite extends Composite {
 		return (CommitMessageComposite) (messagesComposite.getChildren()[messageIndex]);
 	}
 
-	public void setFactoryIndex(int factoryIndex) {
-		this.factoryIndex = factoryIndex;
+	@Override
+	public void dispose() {
+		super.dispose();
 	}
-
-	public int getFactoryIndex() {
-		return factoryIndex;
-	}
-
 }
