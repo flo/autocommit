@@ -7,7 +7,19 @@
          point="de.fkoeberle.autocommit.message.factory">
       <factory
             class="de.fkoeberle.autocommit.message.WorkedOnPathCMF"
+            description="Provides a commit message for every kind of commit by telling the user in which file or directory has changed. If a single file got changed that file will be reported. If two files get changed the most specific folder will be reported that contains the changed files."
             id="de.fkoeberle.autocommit.message.WorkedOnPathCMF">
+         <arguments>
+            <argument
+                  description="The changed path relative to the repository.">
+            </argument>
+         </arguments>
+         <messages>
+            <message
+                  defaultValue="Worked on {0}"
+                  fieldName="workedOn">
+            </message>
+         </messages>
       </factory>
    </extension>
 

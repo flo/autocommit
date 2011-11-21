@@ -49,6 +49,10 @@
 
    <element name="factory">
       <complexType>
+         <sequence>
+            <element ref="arguments" minOccurs="0" maxOccurs="1"/>
+            <element ref="messages" minOccurs="0" maxOccurs="1"/>
+         </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
@@ -66,6 +70,69 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":de.fkoeberle.autocommit.message.ICommitMessageFactory"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="message">
+      <complexType>
+         <attribute name="fieldName" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="defaultValue" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="messages">
+      <complexType>
+         <sequence>
+            <element ref="message" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+      </complexType>
+   </element>
+
+   <element name="arguments">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="argument"/>
+         </sequence>
+      </complexType>
+   </element>
+
+   <element name="argument">
+      <complexType>
+         <attribute name="description" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
                </appinfo>
             </annotation>
          </attribute>
