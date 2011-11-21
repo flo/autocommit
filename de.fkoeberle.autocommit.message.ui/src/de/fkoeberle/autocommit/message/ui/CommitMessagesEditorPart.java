@@ -34,6 +34,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
 import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
+import de.fkoeberle.autocommit.message.CommitMessageDescription;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.Profile;
@@ -44,7 +45,8 @@ public class CommitMessagesEditorPart extends EditorPart {
 	private DataBindingContext m_bindingContext;
 
 	public static final String ID = "de.fkoeberle.autocommit.message.ui.CommitMessagesEditorPart"; //$NON-NLS-1$
-	private ProfileDescription profile;
+	private ProfileDescription model;
+	private Controller controller;
 	private Table table;
 	private TableViewer tableViewer;
 	private CommitMessageFactoryComposite factoryComposite;
@@ -52,7 +54,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 	public CommitMessagesEditorPart() {
 		ArrayList<ICommitMessageFactory> factories = new ArrayList<ICommitMessageFactory>();
 		factories.add(new WorkedOnPathCMF());
-		profile = new ProfileDescription(new Profile(factories));
+		model = new ProfileDescription(new Profile(factories));
 	}
 
 	/**
@@ -96,8 +98,8 @@ public class CommitMessagesEditorPart extends EditorPart {
 
 		Composite rightComposite = new Composite(sashForm, SWT.BORDER);
 		rightComposite.setLayout(new GridLayout(1, false));
-		factoryComposite = new CommitMessageFactoryComposite(rightComposite,
-				SWT.NONE);
+		factoryComposite = new CommitMessageFactoryComposite(controller,
+				rightComposite, SWT.NONE);
 		factoryComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true,
 				false, 1, 1));
 
@@ -146,7 +148,8 @@ public class CommitMessagesEditorPart extends EditorPart {
 		}
 		try {
 			Profile p = CommitMessageBuilderPluginActivator.getProfile(url);
-			this.profile = new ProfileDescription(p);
+			this.model = new ProfileDescription(p);
+			this.controller = new Controller(model, this);
 		} catch (IOException e) {
 			throw new PartInitException("An IOException occured while loading",
 					e);
@@ -177,7 +180,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 				.setLabelProvider(new ObservableMapLabelProvider(observeMap));
 		//
 		IObservableList profileFactoryDescriptionsObserveList = PojoObservables
-				.observeList(Realm.getDefault(), profile, "factoryDescriptions");
+				.observeList(Realm.getDefault(), model, "factoryDescriptions");
 		tableViewer.setInput(profileFactoryDescriptionsObserveList);
 		//
 		IObservableValue factoryFactoryDescriptionObserveValue = PojoObservables
@@ -188,6 +191,23 @@ public class CommitMessagesEditorPart extends EditorPart {
 				tableViewerObserveSingleSelection_1, null, null);
 		//
 		return bindingContext;
+	}
+
+	public ProfileDescription getProfile() {
+		return model;
+	}
+
+	public void setCommitMessageValue(int factoryIndex, int messageIndex,
+			String oldMessage) {
+		if (tableViewer.getTable().getSelectionIndex() == factoryIndex) {
+			CommitMessageComposite commitMessageComposite = factoryComposite
+					.getCommitMessageComposite(messageIndex);
+			CommitMessageDescription commitMessageDescription = model
+					.getFactoryDescriptions().get(factoryIndex)
+					.getCommitMessageDescriptions().get(messageIndex);
+			commitMessageComposite.setCurrentMessage(commitMessageDescription
+					.getCurrentValue());
+		}
 	}
 
 }

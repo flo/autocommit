@@ -3,6 +3,8 @@ package de.fkoeberle.autocommit.message.ui;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -26,9 +28,12 @@ public class CommitMessageComposite extends Composite {
 	 * @param messageDescription
 	 */
 	public CommitMessageComposite(Composite parent, int style,
-			final CommitMessageDescription messageDescription) {
+			final Controller controller, final int factoryIndex,
+			final int messageIndex) {
 		super(parent, style);
 		setLayout(new GridLayout(1, false));
+		final CommitMessageDescription messageDescription = controller
+				.getMessageDescription(factoryIndex, messageIndex);
 
 		Composite headerComposite = new Composite(this, SWT.NONE);
 		headerComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -55,6 +60,15 @@ public class CommitMessageComposite extends Composite {
 				1));
 
 		Button resetButton = new Button(bodyComposite, SWT.NONE);
+		resetButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (controller != null) {
+					controller.resetMessage(CommitMessageComposite.this,
+							factoryIndex, messageIndex);
+				}
+			}
+		});
 		resetButton
 				.setToolTipText("Resets the replacement to the default value");
 		resetButton.setText("Reset");

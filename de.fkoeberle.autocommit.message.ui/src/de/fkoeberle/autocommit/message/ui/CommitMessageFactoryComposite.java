@@ -17,19 +17,29 @@ import de.fkoeberle.autocommit.message.WorkedOnPathCMF;
 public class CommitMessageFactoryComposite extends Composite {
 	CommitMessageFactoryDescription factoryDescription = new CommitMessageFactoryDescription(
 			new WorkedOnPathCMF());
+
+	private final Controller controller;
+	private int factoryIndex; // TODO add getter and setter and call setter
 	private final Composite argumentsComposite;
 	private final Composite messagesComposite;
 	private final Label descriptionLabel;
 	private final Group grpFactory;
 
 	/**
-	 * Create the composite.
-	 * 
-	 * @param parent
-	 * @param style
+	 * Constructor only used for preview
 	 */
 	public CommitMessageFactoryComposite(Composite parent, int style) {
+		this(null, parent, style);
+	}
+
+	/**
+	 * Create the composite.
+	 * 
+	 */
+	public CommitMessageFactoryComposite(Controller controller,
+			Composite parent, int style) {
 		super(parent, SWT.NONE);
+		this.controller = controller;
 		setLayout(new GridLayout(1, false));
 		grpFactory = new Group(this, SWT.NONE);
 		grpFactory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -115,10 +125,8 @@ public class CommitMessageFactoryComposite extends Composite {
 		List<CommitMessageDescription> messageDescriptions = factoryDescription
 				.getCommitMessageDescriptions();
 		for (int i = 0; i < messageDescriptions.size(); i++) {
-			CommitMessageDescription messageDescription = messageDescriptions
-					.get(i);
 			CommitMessageComposite messageComposite = new CommitMessageComposite(
-					messagesComposite, SWT.NONE, messageDescription);
+					messagesComposite, SWT.NONE, controller, factoryIndex, i);
 
 			messageComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 					true, false, 1, 1));
@@ -132,6 +140,10 @@ public class CommitMessageFactoryComposite extends Composite {
 	public void setFactoryTitle(String text_1) {
 		System.out.println("title got set");
 		grpFactory.setText(text_1);
+	}
+
+	public CommitMessageComposite getCommitMessageComposite(int messageIndex) {
+		return (CommitMessageComposite) (messagesComposite.getChildren()[messageIndex]);
 	}
 
 }
