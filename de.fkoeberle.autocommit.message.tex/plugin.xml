@@ -8,13 +8,5 @@
             id="de.fkoeberle.autocommit.message.tex.WorkedOnHeadlineCMF">
       </factory>
    </extension>
-   <extension
-         point="de.fkoeberle.autocommit.message.profile">
-      <profile
-            id="de.fkoeberle.autocommit.message.tex.TexProfile"
-            name="Tex Profile"
-            path="tex.commitmessages">
-      </profile>
-   </extension>
 
 </plugin>

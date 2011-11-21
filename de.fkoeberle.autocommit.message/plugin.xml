@@ -2,7 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="de.fkoeberle.autocommit.message.factory" name="Commit Message Factory" schema="schema/de.fkoeberle.autocommit.message.factory.exsd"/>
-   <extension-point id="de.fkoeberle.autocommit.message.profile" name="Commit Message Generation Profile" schema="schema/de.fkoeberle.autocommit.message.profile.exsd"/>
    <extension
          name="test"
          point="de.fkoeberle.autocommit.message.factory">
