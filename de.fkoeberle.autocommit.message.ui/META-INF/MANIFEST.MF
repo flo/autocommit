@@ -15,6 +15,5 @@ Require-Bundle: org.eclipse.ui,
  com.ibm.icu
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: .,
- swing2swt.jar
+Bundle-ClassPath: .
 Import-Package: org.eclipse.ui
