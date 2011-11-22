@@ -3,25 +3,21 @@ package de.fkoeberle.autocommit.message;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.databinding.observable.list.WritableList;
-
 public class ProfileDescription {
-	private final List<CommitMessageFactoryDescription> unobservedFactoryDescriptions;
-	private final WritableList factoryDescriptions;
+	private final List<CommitMessageFactoryDescription> factoryDescriptions;
 
 	public ProfileDescription(List<CommitMessageFactoryDescription> list) {
-		this.unobservedFactoryDescriptions = list;
-		this.factoryDescriptions = new WritableList(list,
-				CommitMessageFactoryDescription.class);
+		this.factoryDescriptions = list;
+
 	}
 
-	public WritableList getFactoryDescriptions() {
+	public List<CommitMessageFactoryDescription> getFactoryDescriptions() {
 		return factoryDescriptions;
 	}
 
 	public Profile createProfile() {
 		List<ICommitMessageFactory> factories = new ArrayList<ICommitMessageFactory>();
-		for (CommitMessageFactoryDescription factoryDescription : unobservedFactoryDescriptions) {
+		for (CommitMessageFactoryDescription factoryDescription : factoryDescriptions) {
 			ICommitMessageFactory factory = factoryDescription.createFactory();
 			factories.add(factory);
 		}

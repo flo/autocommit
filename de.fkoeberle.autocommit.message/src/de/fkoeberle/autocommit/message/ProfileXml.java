@@ -21,6 +21,34 @@ public class ProfileXml {
 
 	private List<CommitMessageFactoryXml> factories;
 
+	public ProfileXml() {
+		// used by JAXB to create an instance of this class
+	}
+
+	public ProfileXml(ProfileDescription profileDescription) {
+		List<CommitMessageFactoryDescription> factoryDescriptions = profileDescription
+				.getFactoryDescriptions();
+		factories = new ArrayList<CommitMessageFactoryXml>();
+		for (CommitMessageFactoryDescription factoryDescription : factoryDescriptions) {
+			CommitMessageFactoryXml factoryXml = new CommitMessageFactoryXml();
+			factoryXml.setId(factoryDescription.getId());
+			List<CommitMessageDescription> commitMessageDescriptions = factoryDescription
+					.getCommitMessageDescriptions();
+			List<CommitMessageTemplateXml> messageXmlList = new ArrayList<CommitMessageTemplateXml>(
+					commitMessageDescriptions.size());
+			for (CommitMessageDescription messageDescription : commitMessageDescriptions) {
+				if (messageDescription.isResetPossible()) {
+					CommitMessageTemplateXml messageXml = new CommitMessageTemplateXml();
+					messageXml.setFieldName(messageDescription.getField()
+							.getName());
+					messageXml.setValue(messageDescription.getCurrentValue());
+					messageXmlList.add(messageXml);
+				}
+			}
+			factoryXml.setTemplates(messageXmlList);
+		}
+	}
+
 	@XmlElement(name = "factory")
 	public List<CommitMessageFactoryXml> getFactories() {
 		if (factories == null) {
@@ -80,5 +108,9 @@ public class ProfileXml {
 		} finally {
 			inputStream.close();
 		}
+	}
+
+	public void setFactories(List<CommitMessageFactoryXml> factories) {
+		this.factories = factories;
 	}
 }

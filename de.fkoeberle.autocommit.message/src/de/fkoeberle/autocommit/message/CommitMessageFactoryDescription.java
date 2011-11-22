@@ -54,4 +54,8 @@ public class CommitMessageFactoryDescription {
 	public Class<? extends ICommitMessageFactory> getFactoryClass() {
 		return factoryClass;
 	}
+
+	public String getId() {
+		return factoryClass.getCanonicalName();
+	}
 }

@@ -1,12 +1,7 @@
 package de.fkoeberle.autocommit.message.ui;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
-import org.eclipse.core.commands.operations.IUndoContext;
-import org.eclipse.core.commands.operations.ObjectUndoContext;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -23,37 +18,29 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.operations.RedoActionHandler;
-import org.eclipse.ui.operations.UndoActionHandler;
 import org.eclipse.ui.part.EditorPart;
 
-import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
-import de.fkoeberle.autocommit.message.ProfileDescription;
 import de.fkoeberle.autocommit.message.WorkedOnPathCMF;
 
 public class CommitMessagesEditorPart extends EditorPart {
 
 	public static final String ID = "de.fkoeberle.autocommit.message.ui.CommitMessagesEditorPart"; //$NON-NLS-1$
-	private ProfileDescription model;
-	private Controller controller;
+	private final Model model;
+	private final Controller controller;
 	private Table table;
 	private TableViewer tableViewer;
 	private Composite factoriesComposite;
-	private final IUndoContext undoContext = new ObjectUndoContext(this);
 
 	public CommitMessagesEditorPart() {
 		ArrayList<ICommitMessageFactory> factories = new ArrayList<ICommitMessageFactory>();
 		factories.add(new WorkedOnPathCMF());
-		model = null;
-		controller = null;
+		model = new Model();
+		controller = new Controller(this, model);
 	}
 
 	/**
@@ -133,22 +120,15 @@ public class CommitMessagesEditorPart extends EditorPart {
 		factoriesComposite.layout(true, true);
 	}
 
-	private void createUndoAndRedoActionHandlers() {
-		IActionBars actionBars = getEditorSite().getActionBars();
-		actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
-				new UndoActionHandler(this.getSite(), undoContext));
-		actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
-				new RedoActionHandler(this.getSite(), undoContext));
-	}
-
 	@Override
 	public void setFocus() {
 		// Set the focus
+
 	}
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		// Do the Save operation
+		controller.save(monitor);
 	}
 
 	@Override
@@ -161,43 +141,16 @@ public class CommitMessagesEditorPart extends EditorPart {
 			throws PartInitException {
 		setSite(site);
 		setInput(input);
-		if (!(input instanceof IURIEditorInput)) {
-			throw new PartInitException("Input type not supported");
-
-		}
-		URL url;
-		try {
-			url = ((IURIEditorInput) input).getURI().toURL();
-		} catch (MalformedURLException e) {
-			throw new PartInitException("Unble to handle input as an url", e);
-		}
-		try {
-			this.model = CommitMessageBuilderPluginActivator
-					.createProfileDescription(url);
-			this.controller = new Controller(this);
-		} catch (IOException e) {
-			throw new PartInitException("An IOException occured while loading",
-					e);
-		}
-		createUndoAndRedoActionHandlers();
-		// Initialize the editor part
+		controller.initEditor(site, input);
 	}
 
 	@Override
 	public boolean isDirty() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isSaveAsAllowed() {
 		return false;
-	}
-
-	public ProfileDescription getProfile() {
-		return model;
-	}
-
-	public IUndoContext getUndoContext() {
-		return undoContext;
 	}
 }
