@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -27,29 +30,56 @@ public class ProfileXmlTest {
 	}
 
 	@Test
-	public void testCreateProfile() throws IOException {
+	public void testCreateProfileDescription() throws IOException {
 		URL resource = getClass().getResource("testcase1.commitmessages");
 		ProfileXml profileXml = ProfileXml.createFrom(resource);
-		Profile profile = profileXml.createProfile(new DummyCMFFactory());
-		assertEquals(2, profile.getFactories().size());
-		ICommitMessageFactory factory1 = profile.getFactories().get(0);
-		assertEquals(Dummy1CMF.class, factory1.getClass());
-		ICommitMessageFactory factory2 = profile.getFactories().get(1);
-		assertEquals(Dummy2CMF.class, factory2.getClass());
-		Dummy2CMF dummy2 = (Dummy2CMF) factory2;
-		assertEquals("value for A", dummy2.messageA.getValue());
-		assertEquals("value for B", dummy2.messageB.getValue());
+		ProfileDescription profile = profileXml
+				.createProfileDescription(new DummyCMFFactory());
+		assertEquals(2, profile.getFactoryDescriptions().size());
+		CommitMessageFactoryDescription factory1 = (CommitMessageFactoryDescription) profile
+				.getFactoryDescriptions().get(0);
+		assertEquals(Dummy1CMF.class, factory1.getFactoryClass());
+		CommitMessageFactoryDescription factory2 = (CommitMessageFactoryDescription) profile
+				.getFactoryDescriptions().get(1);
+		assertEquals(Dummy2CMF.class, factory2.getFactoryClass());
+		List<CommitMessageDescription> factory2MessageDescriptions = factory2
+				.getCommitMessageDescriptions();
+		assertEquals(2, factory2MessageDescriptions.size());
+		CommitMessageDescription messageA = factory2MessageDescriptions.get(0);
+		assertEquals("value for A", messageA
+				.getCurrentValue());
+		CommitMessageDescription messageB = factory2MessageDescriptions.get(1);
+		assertEquals("value for B", messageB
+				.getCurrentValue());
 
 	}
 
-	private final class DummyCMFFactory implements ICommitMessageFactoryFactory {
+	private final class DummyCMFFactory implements ICMFDescriptionFactory {
 		@Override
-		public ICommitMessageFactory createFactory(String id) {
+		public CommitMessageFactoryDescription createFactoryDescription(
+				String id) {
 			if (FACTORY_1_ID.equals(id)) {
-				return new Dummy1CMF();
+				return new CommitMessageFactoryDescription(Dummy1CMF.class, "",
+						Arrays.asList(""),
+						new ArrayList<CommitMessageDescription>());
 			}
 			if (FACTORY_2_ID.equals(id)) {
-				return new Dummy2CMF();
+				ArrayList<CommitMessageDescription> messageDescriptions = new ArrayList<CommitMessageDescription>();
+				try {
+					messageDescriptions.add(new CommitMessageDescription(
+							Dummy2CMF.class.getField("messageA"),
+							"message a default", "value for A"));
+					messageDescriptions.add(new CommitMessageDescription(
+							Dummy2CMF.class.getField("messageB"),
+							"message a default", "value for B"));
+				} catch (SecurityException e) {
+					throw new RuntimeException(e);
+				} catch (NoSuchFieldException e) {
+					throw new RuntimeException(e);
+				}
+
+				return new CommitMessageFactoryDescription(Dummy2CMF.class, "",
+						Arrays.asList(""), messageDescriptions);
 			}
 			return null;
 		}
@@ -65,9 +95,11 @@ public class ProfileXmlTest {
 	}
 
 	private static class Dummy2CMF implements ICommitMessageFactory {
+		// fields are obtained via reflection:
+		@SuppressWarnings("unused")
 		public final CommitMessageTemplate messageA = new CommitMessageTemplate(
 				"old default value");
-
+		@SuppressWarnings("unused")
 		public final CommitMessageTemplate messageB = new CommitMessageTemplate(
 				"old default value");
 

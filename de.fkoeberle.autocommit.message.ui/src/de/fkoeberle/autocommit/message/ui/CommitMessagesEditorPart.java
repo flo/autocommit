@@ -36,7 +36,6 @@ import org.eclipse.ui.part.EditorPart;
 import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
-import de.fkoeberle.autocommit.message.Profile;
 import de.fkoeberle.autocommit.message.ProfileDescription;
 import de.fkoeberle.autocommit.message.WorkedOnPathCMF;
 
@@ -173,8 +172,8 @@ public class CommitMessagesEditorPart extends EditorPart {
 			throw new PartInitException("Unble to handle input as an url", e);
 		}
 		try {
-			Profile p = CommitMessageBuilderPluginActivator.getProfile(url);
-			this.model = new ProfileDescription(p);
+			this.model = CommitMessageBuilderPluginActivator
+					.createProfileDescription(url);
 			this.controller = new Controller(this);
 		} catch (IOException e) {
 			throw new PartInitException("An IOException occured while loading",

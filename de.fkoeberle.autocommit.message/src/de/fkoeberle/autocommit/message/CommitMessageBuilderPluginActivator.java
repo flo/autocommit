@@ -41,16 +41,17 @@ public class CommitMessageBuilderPluginActivator extends Plugin {
 		return plugin;
 	}
 
-	public static Profile getDefaultProfile() throws IOException {
-		return plugin.profileManager.getDefault();
-	}
-
 	public static Profile getProfile(File commitMessagesFile)
 			throws IOException {
-		return plugin.profileManager.getProfile(commitMessagesFile);
+		return plugin.profileManager.getProfileFor(commitMessagesFile);
 	}
 
 	public static Profile getProfile(URL url) throws IOException {
-		return plugin.profileManager.getProfile(url);
+		return plugin.profileManager.getProfileFor(url);
+	}
+
+	public static ProfileDescription createProfileDescription(URL url)
+			throws IOException {
+		return plugin.profileManager.createProfileDescriptionFor(url);
 	}
 }

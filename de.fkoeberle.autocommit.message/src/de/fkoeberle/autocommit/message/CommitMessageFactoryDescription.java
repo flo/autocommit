@@ -1,30 +1,21 @@
 package de.fkoeberle.autocommit.message;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CommitMessageFactoryDescription {
-	private final Class<?> factoryClass;
+	private final Class<? extends ICommitMessageFactory> factoryClass;
+	private final String description;
+	private final List<String> argumentDescriptions;
 	private final List<CommitMessageDescription> commitMessageDescriptions;
 
-	public CommitMessageFactoryDescription(ICommitMessageFactory factory) {
-		this.factoryClass = factory.getClass();
-		this.commitMessageDescriptions = new ArrayList<CommitMessageDescription>();
-		for (Field field : factoryClass.getFields()) {
-			if (field.getType().equals(CommitMessageTemplate.class)) {
-				Object templateObject;
-				try {
-					templateObject = field.get(factory);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-				CommitMessageTemplate originalTemplate = (CommitMessageTemplate) templateObject;
-				commitMessageDescriptions.add(new CommitMessageDescription(
-						originalTemplate));
-			}
-		}
+	public CommitMessageFactoryDescription(
+			Class<? extends ICommitMessageFactory> factoryClass,
+			String description, List<String> argumentDescriptions,
+			List<CommitMessageDescription> messageDescriptions) {
+		this.description = description;
+		this.factoryClass = factoryClass;
+		this.argumentDescriptions = argumentDescriptions;
+		this.commitMessageDescriptions = messageDescriptions;
 	}
 
 	public String getTitle() {
@@ -32,18 +23,35 @@ public class CommitMessageFactoryDescription {
 	}
 
 	public String getDescription() {
-		return "dummy description";
+		return description;
 	}
 
 	public List<String> getArgumentDescriptions() {
-		if (factoryClass.getName().contains("A")) {
-			return Arrays.asList("dummy 1", "dummy 2", "addional dummy");
-		} else {
-			return Arrays.asList("dummy 1", "dummy 2");
-		}
+		return argumentDescriptions;
 	}
 
 	public List<CommitMessageDescription> getCommitMessageDescriptions() {
 		return commitMessageDescriptions;
+	}
+
+	public ICommitMessageFactory createFactory() {
+		ICommitMessageFactory factory;
+		try {
+			factory = factoryClass.newInstance();
+			for (CommitMessageDescription messageDescription : commitMessageDescriptions) {
+				messageDescription.injectCurrentValueTo(factory);
+			}
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (InstantiationException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+		return factory;
+	}
+
+	public Class<? extends ICommitMessageFactory> getFactoryClass() {
+		return factoryClass;
 	}
 }

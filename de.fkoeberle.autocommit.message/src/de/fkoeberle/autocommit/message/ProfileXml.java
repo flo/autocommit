@@ -2,10 +2,11 @@ package de.fkoeberle.autocommit.message;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -28,28 +29,34 @@ public class ProfileXml {
 		return factories;
 	}
 
-	public Profile createProfile(ICommitMessageFactoryFactory cmfFactory)
-			throws IOException {
-		List<ICommitMessageFactory> createdFactories = new ArrayList<ICommitMessageFactory>();
+	public ProfileDescription createProfileDescription(
+			ICMFDescriptionFactory cmfFactory) throws IOException {
+		List<CommitMessageFactoryDescription> createdFactories = new ArrayList<CommitMessageFactoryDescription>();
 		for (CommitMessageFactoryXml factoryXml : factories) {
-			ICommitMessageFactory factory;
+			CommitMessageFactoryDescription factory;
 			try {
-				factory = cmfFactory.createFactory(factoryXml.getId());
-				Class<?> factoryClass = factory.getClass();
+				factory = cmfFactory.createFactoryDescription(factoryXml
+						.getId());
+				Map<String, CommitMessageDescription> fieldNameToMessageDescriptionMap = new HashMap<String, CommitMessageDescription>();
+				for (CommitMessageDescription messageDescription : factory
+						.getCommitMessageDescriptions()) {
+					fieldNameToMessageDescriptionMap.put(messageDescription
+							.getField().getName(), messageDescription);
+				}
 				for (CommitMessageTemplateXml templateXml : factoryXml
 						.getTemplates()) {
 					String fieldName = templateXml.getFieldName();
-					Field field = factoryClass.getField(fieldName);
-					Object fieldValue = field.get(factory);
-					CommitMessageTemplate template = (CommitMessageTemplate) fieldValue;
-					template.setValue(templateXml.getValue());
+					CommitMessageDescription commitMessageDescription = fieldNameToMessageDescriptionMap
+							.get(fieldName);
+					commitMessageDescription.setCurrentValue(templateXml
+							.getValue());
 				}
 			} catch (Exception e) {
 				throw new IOException("Failed to load CMF", e);
 			}
 			createdFactories.add(factory);
 		}
-		return new Profile(createdFactories);
+		return new ProfileDescription(createdFactories);
 	}
 
 	public static ProfileXml createFrom(URL resource) throws IOException {

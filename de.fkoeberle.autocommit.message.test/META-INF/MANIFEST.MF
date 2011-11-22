@@ -7,3 +7,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: de.fkoeberle.autocommit.message;bundle-version="0.0.1",
  org.junit
 Export-Package: de.fkoeberle.autocommit.message
+Import-Package: org.eclipse.core.databinding.observable.list

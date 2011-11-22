@@ -1,16 +1,20 @@
 package de.fkoeberle.autocommit.message;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommitMessageDescription {
 	private final List<IListener> listenerList = new ArrayList<IListener>(1);
+	private final Field field;
 	private final String defaultValue;
 	private String currentValue;
 
-	public CommitMessageDescription(CommitMessageTemplate template) {
-		this.defaultValue = template.getDefaultValue();
-		this.currentValue = template.getValue();
+	public CommitMessageDescription(Field field, String defaultValue,
+			String currentValue) {
+		this.field = field;
+		this.defaultValue = defaultValue;
+		this.currentValue = currentValue;
 		if (currentValue == null) {
 			throw new NullPointerException();
 		}
@@ -49,5 +53,16 @@ public class CommitMessageDescription {
 
 	public void removeListener(IListener listener) {
 		listenerList.remove(listener);
+	}
+
+	public void injectCurrentValueTo(ICommitMessageFactory factory)
+			throws IllegalArgumentException, IllegalAccessException {
+		CommitMessageTemplate template = (CommitMessageTemplate) field
+				.get(factory);
+		template.setValue(currentValue);
+	}
+
+	public Field getField() {
+		return field;
 	}
 }

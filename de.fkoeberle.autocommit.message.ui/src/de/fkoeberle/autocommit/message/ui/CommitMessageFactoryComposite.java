@@ -46,7 +46,11 @@ public class CommitMessageFactoryComposite extends Composite {
 		descriptionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true,
 				false, 1, 1));
 		descriptionLabel.setBounds(0, 0, 100, 100);
-		descriptionLabel.setText(factoryDescription.getDescription());
+		String description = factoryDescription.getDescription();
+		if (description == null) {
+			description = "placeholder description";
+		}
+		descriptionLabel.setText(description);
 
 		Label argumentsLabel = new Label(grpFactory, SWT.NONE);
 		argumentsLabel.setText("Available Placeholders:");
@@ -122,8 +126,4 @@ public class CommitMessageFactoryComposite extends Composite {
 		return (CommitMessageComposite) (messagesComposite.getChildren()[messageIndex]);
 	}
 
-	@Override
-	public void dispose() {
-		super.dispose();
-	}
 }
