@@ -34,25 +34,24 @@ public class ProfileXml {
 		List<CommitMessageFactoryDescription> createdFactories = new ArrayList<CommitMessageFactoryDescription>();
 		for (CommitMessageFactoryXml factoryXml : factories) {
 			CommitMessageFactoryDescription factory;
-			try {
-				factory = cmfFactory.createFactoryDescription(factoryXml
-						.getId());
-				Map<String, CommitMessageDescription> fieldNameToMessageDescriptionMap = new HashMap<String, CommitMessageDescription>();
-				for (CommitMessageDescription messageDescription : factory
-						.getCommitMessageDescriptions()) {
-					fieldNameToMessageDescriptionMap.put(messageDescription
-							.getField().getName(), messageDescription);
+			factory = cmfFactory.createFactoryDescription(factoryXml.getId());
+			Map<String, CommitMessageDescription> fieldNameToMessageDescriptionMap = new HashMap<String, CommitMessageDescription>();
+			for (CommitMessageDescription messageDescription : factory
+					.getCommitMessageDescriptions()) {
+				fieldNameToMessageDescriptionMap.put(messageDescription
+						.getField().getName(), messageDescription);
+			}
+			for (CommitMessageTemplateXml templateXml : factoryXml
+					.getTemplates()) {
+				String fieldName = templateXml.getFieldName();
+				CommitMessageDescription commitMessageDescription = fieldNameToMessageDescriptionMap
+						.get(fieldName);
+				if (commitMessageDescription == null) {
+					throw new IOException(String.format("%s has no field %s",
+							factory.getFactoryClass().getName(), fieldName));
 				}
-				for (CommitMessageTemplateXml templateXml : factoryXml
-						.getTemplates()) {
-					String fieldName = templateXml.getFieldName();
-					CommitMessageDescription commitMessageDescription = fieldNameToMessageDescriptionMap
-							.get(fieldName);
-					commitMessageDescription.setCurrentValue(templateXml
-							.getValue());
-				}
-			} catch (Exception e) {
-				throw new IOException("Failed to load CMF", e);
+				commitMessageDescription
+						.setCurrentValue(templateXml.getValue());
 			}
 			createdFactories.add(factory);
 		}
