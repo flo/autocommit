@@ -49,7 +49,31 @@
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.FormattedJavaTypeCMF"
+            description="Describes either whitespace changes within a single java type or within java file with a single type."
             id="de.fkoeberle.autocommit.message.java.FormattedJavaTypeCMF">
+         <arguments>
+            <argument
+                  description="The type with the whitespace changes. It is either an class, interface, enum or an annotation)">
+            </argument>
+         </arguments>
+         <messages>
+            <message
+                  defaultValue="Formatted class {0}"
+                  fieldName="formattedClassMessage">
+            </message>
+            <message
+                  defaultValue="Formatted interface {0}"
+                  fieldName="formattedInterfaceMessage">
+            </message>
+            <message
+                  defaultValue="Formatted enum {0}"
+                  fieldName="formattedEnumMessage">
+            </message>
+            <message
+                  defaultValue="Formatted annotation {0}"
+                  fieldName="formattedAnnotationMessage">
+            </message>
+         </messages>
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.AddedMethodCMF"
