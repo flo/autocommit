@@ -33,7 +33,35 @@
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.AddedClassCMF"
+            description="Generates a commit message for the case that only a single file got added which contains a single type. The commit message depends on the kind of type."
             id="de.fkoeberle.autocommit.message.java.AddedClassCMF">
+         <arguments>
+            <argument
+                  description="The full name of the added type.">
+            </argument>
+         </arguments>
+         <messages>
+            <message
+                  defaultValue="Added a class called {0}"
+                  fieldName="addedClassMessage">
+            </message>
+            <message
+                  defaultValue="Added an interface called {0}"
+                  fieldName="addedInterfaceMessage">
+            </message>
+            <message
+                  defaultValue="Added an enum called {0}"
+                  fieldName="addedEnumMessage">
+            </message>
+            <message
+                  defaultValue="Added an annotation type called {0}"
+                  fieldName="addedAnotationMessage">
+            </message>
+            <message
+                  defaultValue="Added a stub version of the class {0}"
+                  fieldName="addedStubClassMessage">
+            </message>
+         </messages>
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF"
