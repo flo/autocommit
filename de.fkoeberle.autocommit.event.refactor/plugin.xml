@@ -11,7 +11,22 @@
          point="de.fkoeberle.autocommit.message.factory">
       <factory
             class="de.fkoeberle.autocommit.message.refactor.RefactoringCommentCMF"
+            description="Generates a message which describes the refactoring which was last executed if it was the only change sine the last commit."
             id="de.fkoeberle.autocommit.message.refactor.RefactoringCommentCMF">
+         <arguments>
+            <argument
+                  description="The comment property of refactorings which is usually one summary line fllowed by details in keynotes form.">
+            </argument>
+            <argument
+                  description="The first line of the comments property of refactorings.">
+            </argument>
+         </arguments>
+         <messages>
+            <message
+                  defaultValue="{0}"
+                  fieldName="message">
+            </message>
+         </messages>
       </factory>
    </extension>
 
