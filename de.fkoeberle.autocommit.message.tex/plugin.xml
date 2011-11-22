@@ -5,7 +5,31 @@
          point="de.fkoeberle.autocommit.message.factory">
       <factory
             class="de.fkoeberle.autocommit.message.tex.WorkedOnHeadlineCMF"
+            description="Generates a message for changes in *.tex files by telling the user which chapter, section, subsection or subsubsection has changed."
             id="de.fkoeberle.autocommit.message.tex.WorkedOnHeadlineCMF">
+         <arguments>
+            <argument
+                  description="The title of the changed chapter, section, subsection or subsubsection.">
+            </argument>
+         </arguments>
+         <messages>
+            <message
+                  defaultValue="Worked on chapter &quot;{0}&quot;"
+                  fieldName="workedOnChapterMessage">
+            </message>
+            <message
+                  defaultValue="Worked on section &quot;{0}&quot;"
+                  fieldName="workedOnSectionMessage">
+            </message>
+            <message
+                  defaultValue="Worked on subsection &quot;{0}&quot;"
+                  fieldName="workedOnSubsectionMessage">
+            </message>
+            <message
+                  defaultValue="Worked on subsubsection &quot;{0}&quot;"
+                  fieldName="workedOnSubsubsectionMessage">
+            </message>
+         </messages>
       </factory>
    </extension>
 
