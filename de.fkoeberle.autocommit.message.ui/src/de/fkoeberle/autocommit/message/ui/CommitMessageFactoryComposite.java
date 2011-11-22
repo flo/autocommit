@@ -93,7 +93,7 @@ public class CommitMessageFactoryComposite extends Composite {
 			numberLabel.setText(String.format("{%d}", i));
 			numberLabel.setLayoutData(new GridData(SWT.TOP, SWT.TOP, false,
 					false, 1, 1));
-			Label descriptionLabel = new Label(argumentsComposite, SWT.NONE);
+			Label descriptionLabel = new Label(argumentsComposite, SWT.WRAP);
 			descriptionLabel.setText(argumentDescription);
 			descriptionLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 					true, false, 1, 1));
