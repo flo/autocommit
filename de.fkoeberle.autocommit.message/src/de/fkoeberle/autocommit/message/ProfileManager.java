@@ -138,9 +138,8 @@ public class ProfileManager {
 				String defaultValue = messageElement
 						.getAttribute("defaultValue");
 				Field field = fieldMap.get(fieldName);
-				fieldsMissingInDoc.remove(field);
+				fieldsMissingInDoc.remove(fieldName);
 				if (field == null) {
-					// TODO better exception message
 					throw new RuntimeException(
 							String.format(
 									"Class %s has no field %s as declared in it's extension",
