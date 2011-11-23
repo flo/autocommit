@@ -65,7 +65,27 @@
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF"
+            description="Generates a commit message for all changes that affect only java files."
             id="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF">
+         <arguments>
+            <argument
+                  description="The java package which contains the changes, or when multiple java files got modified the &quot;parent&quot; package that contains the other packages. e.g. if there were changes in the package org.example.a and org.example.b then this argument will be org.example.">
+            </argument>
+         </arguments>
+         <messages>
+            <message
+                  defaultValue="Worked on the default package"
+                  fieldName="workedOnDefaultPackage">
+            </message>
+            <message
+                  defaultValue="Worked on package {0}"
+                  fieldName="workedOnPackage">
+            </message>
+            <message
+                  defaultValue="Worked on sub-packages of {0}"
+                  fieldName="workedOnSubPackages">
+            </message>
+         </messages>
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.WorkedOnTypeCMF"
