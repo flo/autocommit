@@ -10,6 +10,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -35,6 +39,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 	private Table table;
 	private TableViewer tableViewer;
 	private Composite factoriesComposite;
+	private ScrolledComposite rightComposite;
 
 	public CommitMessagesEditorPart() {
 		ArrayList<ICommitMessageFactory> factories = new ArrayList<ICommitMessageFactory>();
@@ -93,15 +98,24 @@ public class CommitMessagesEditorPart extends EditorPart {
 		// init gets called first thus model is not null:
 		tableViewer.setInput(model.getFactoryDescriptions());
 
-		// TODO ScrolledComposite rightComposite = new
-		// ScrolledComposite(sashForm,
-		// TODO SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		// TODO rightComposite.setExpandHorizontal(true);
-		// TODO rightComposite.setExpandVertical(true);
-		// TODO rightComposite.setToolTipText("right");
-		factoriesComposite = new Composite(sashForm, SWT.BORDER);
-		// TODO rightComposite.setContent(factoriesComposite);
-		factoriesComposite.setLayout(new GridLayout(1, false));
+		rightComposite = new ScrolledComposite(sashForm, SWT.V_SCROLL
+				| SWT.BORDER);
+		factoriesComposite = new Composite(rightComposite, SWT.NONE);
+		rightComposite.setContent(factoriesComposite);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		factoriesComposite.setLayout(layout);
+		rightComposite.addControlListener(new ControlAdapter() {
+			@Override
+			public void controlResized(ControlEvent e) {
+				Rectangle r = rightComposite.getClientArea();
+				factoriesComposite.setSize(factoriesComposite.computeSize(
+						r.width, SWT.DEFAULT));
+				factoriesComposite.layout();
+			}
+		});
+		rightComposite.setAlwaysShowScrollBars(true);
+
 		sashForm.setWeights(new int[] { 318, 502 });
 	}
 
@@ -117,7 +131,10 @@ public class CommitMessagesEditorPart extends EditorPart {
 			factoryComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP,
 					true, false, 1, 1));
 		}
+
 		factoriesComposite.layout(true, true);
+		factoriesComposite.setSize(factoriesComposite.computeSize(
+				factoriesComposite.getSize().x, SWT.DEFAULT));
 	}
 
 	@Override
@@ -153,4 +170,5 @@ public class CommitMessagesEditorPart extends EditorPart {
 	public boolean isSaveAsAllowed() {
 		return false;
 	}
+
 }
