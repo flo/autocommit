@@ -2,16 +2,10 @@ package de.fkoeberle.autocommit.message.ui;
 
 import java.io.IOException;
 
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.operations.IOperationHistory;
-import org.eclipse.core.commands.operations.IUndoableOperation;
-import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -31,35 +25,8 @@ public class Controller {
 		this.model = model;
 	}
 
-	public void resetMessage(Composite requestSource,
-			CommitMessageDescription messageDescription) {
-		ResetCommitMessageOperation operation = new ResetCommitMessageOperation(
-				messageDescription);
-		runOperation(requestSource, operation);
-	}
-
 	public void handleLeftFactorySelection(int[] indices) {
 		view.setRightFactorySelection(indices);
-	}
-
-	public void setMessage(Control requestSource,
-			CommitMessageDescription messageDescription, String value) {
-		SetCommitMessageOperation operation = new SetCommitMessageOperation(
-				messageDescription, value);
-		runOperation(requestSource, operation);
-	}
-
-	private void runOperation(Control requestSource,
-			IUndoableOperation operation) {
-		operation.addContext(model.getUndoContext());
-		IOperationHistory operationHistory = OperationHistoryFactory
-				.getOperationHistory();
-		try {
-			operationHistory.execute(operation, null, null);
-		} catch (ExecutionException e) {
-			MessageDialog.openError(requestSource.getShell(),
-					"Failed to Reset", e.getLocalizedMessage());
-		}
 	}
 
 	public void initEditor(IEditorSite site, IEditorInput input)
@@ -96,5 +63,19 @@ public class Controller {
 				.getLog()
 				.log(new Status(Status.ERROR, Activator.PLUGIN_ID, Status.OK,
 						message, e));
+	}
+
+	public void setMessage(CommitMessageComposite requestSource,
+			CommitMessageDescription messageDescription, String value) {
+		model.setMessage(requestSource, messageDescription, value);
+	}
+
+	public void resetMessage(CommitMessageComposite requestSource,
+			CommitMessageDescription messageDescription) {
+		model.resetMessage(requestSource, messageDescription);
+	}
+
+	public void dispose() {
+		model.dispose();
 	}
 }

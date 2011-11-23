@@ -13,6 +13,8 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -30,6 +32,7 @@ import org.eclipse.ui.part.EditorPart;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.WorkedOnPathCMF;
+import de.fkoeberle.autocommit.message.ui.Model.IDirtyPropertyListener;
 
 public class CommitMessagesEditorPart extends EditorPart {
 
@@ -117,6 +120,21 @@ public class CommitMessagesEditorPart extends EditorPart {
 		rightComposite.setAlwaysShowScrollBars(true);
 
 		sashForm.setWeights(new int[] { 318, 502 });
+
+		model.addDirtyPropertyListener(new IDirtyPropertyListener() {
+
+			@Override
+			public void handleDirtyPropertyChange() {
+				firePropertyChange(PROP_DIRTY);
+			}
+		});
+		container.addDisposeListener(new DisposeListener() {
+
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				controller.dispose();
+			}
+		});
 	}
 
 	public void setRightFactorySelection(int[] indices) {
@@ -163,7 +181,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 
 	@Override
 	public boolean isDirty() {
-		return true;
+		return model.isDirty();
 	}
 
 	@Override

@@ -13,12 +13,21 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IOperationHistoryListener;
 import org.eclipse.core.commands.operations.IUndoContext;
+import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.commands.operations.ObjectUndoContext;
+import org.eclipse.core.commands.operations.OperationHistoryEvent;
+import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IURIEditorInput;
@@ -35,11 +44,36 @@ public class Model {
 	private final WritableList usedFactories;;
 	private IEditorInput editorInput;
 	private final IUndoContext undoContext;
+	private IUndoableOperation undoableOperationAtSave;
+	private boolean dirty;
+	private final List<IDirtyPropertyListener> dirtyPropertyListenerList = new ArrayList<Model.IDirtyPropertyListener>();
+	private final IOperationHistoryListener operationHistoryListener;
 
 	public Model() {
 		this.usedFactories = new WritableList(Realm.getDefault(),
 				Collections.emptySet(), CommitMessageFactoryDescription.class);
 		this.undoContext = new ObjectUndoContext(this);
+		undoableOperationAtSave = null;
+
+		operationHistoryListener = new IOperationHistoryListener() {
+
+			@Override
+			public void historyNotification(OperationHistoryEvent event) {
+				switch (event.getEventType()) {
+				case OperationHistoryEvent.DONE:
+				case OperationHistoryEvent.REDONE:
+				case OperationHistoryEvent.UNDONE:
+				case OperationHistoryEvent.OPERATION_ADDED:
+				case OperationHistoryEvent.OPERATION_REMOVED:
+					IUndoableOperation undoableOperation = getUndoableOperation();
+					setDirty(undoableOperation != undoableOperationAtSave);
+				}
+
+			}
+		};
+		IOperationHistory operationHistory = OperationHistoryFactory
+				.getOperationHistory();
+		operationHistory.addOperationHistoryListener(operationHistoryListener);
 	}
 
 	public WritableList getFactoryDescriptions() {
@@ -49,7 +83,6 @@ public class Model {
 	public void load(IEditorInput editorInput) throws IOException {
 		if (!(editorInput instanceof IURIEditorInput)) {
 			throw new IOException("Input type not supported");
-
 		}
 		URL url;
 		try {
@@ -92,6 +125,9 @@ public class Model {
 			} catch (CoreException e) {
 				throw new IOException(e);
 			}
+
+			undoableOperationAtSave = getUndoableOperation();
+			setDirty(false);
 		} else {
 			throw new RuntimeException(
 					"Saving is not supported for this input type. Editing should not have been possible!");
@@ -145,4 +181,76 @@ public class Model {
 	public IUndoContext getUndoContext() {
 		return undoContext;
 	}
+
+	public void resetMessage(Composite requestSource,
+			CommitMessageDescription messageDescription) {
+		ResetCommitMessageOperation operation = new ResetCommitMessageOperation(
+				messageDescription);
+		runOperation(requestSource, operation);
+	}
+
+	public void setDirty(boolean newValue) {
+		if (this.dirty != newValue) {
+			this.dirty = newValue;
+			fireDirtyPropertyHasChanged();
+		}
+	}
+
+	public boolean isDirty() {
+		return dirty;
+	}
+
+	private void fireDirtyPropertyHasChanged() {
+		for (IDirtyPropertyListener listener : dirtyPropertyListenerList) {
+			listener.handleDirtyPropertyChange();
+		}
+	}
+
+	public void addDirtyPropertyListener(IDirtyPropertyListener listener) {
+		dirtyPropertyListenerList.add(listener);
+	}
+
+	public void removeDirtyPropertyListener(IDirtyPropertyListener listener) {
+		dirtyPropertyListenerList.add(listener);
+	}
+
+	public void setMessage(Control requestSource,
+			CommitMessageDescription messageDescription, String value) {
+		SetCommitMessageOperation operation = new SetCommitMessageOperation(
+				messageDescription, value);
+		runOperation(requestSource, operation);
+	}
+
+	private void runOperation(Control requestSource,
+			IUndoableOperation operation) {
+		operation.addContext(undoContext);
+		IOperationHistory operationHistory = OperationHistoryFactory
+				.getOperationHistory();
+		try {
+			operationHistory.execute(operation, null, null);
+		} catch (ExecutionException e) {
+			MessageDialog.openError(requestSource.getShell(),
+					"Failed to Reset", e.getLocalizedMessage());
+		}
+	}
+
+	private IUndoableOperation getUndoableOperation() {
+		IOperationHistory operationHistory = OperationHistoryFactory
+				.getOperationHistory();
+		IUndoableOperation undoableOperation = operationHistory
+				.getUndoOperation(undoContext);
+		return undoableOperation;
+	}
+
+	public interface IDirtyPropertyListener {
+		void handleDirtyPropertyChange();
+	}
+
+	public void dispose() {
+		IOperationHistory operationHistory = OperationHistoryFactory
+				.getOperationHistory();
+		operationHistory
+				.removeOperationHistoryListener(operationHistoryListener);
+	}
+
 }
