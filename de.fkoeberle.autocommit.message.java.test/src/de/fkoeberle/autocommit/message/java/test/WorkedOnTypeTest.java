@@ -29,8 +29,8 @@ public class WorkedOnTypeTest {
 
 		WorkedOnTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
-		final String expected = factory.workedOnClass
-				.createMessageWithArgs("Test");
+		final String expected = factory.workedOnClassMessage
+				.createMessageWithArgs("Test", "Test");
 		assertEquals(expected, message);
 	}
 
@@ -44,8 +44,8 @@ public class WorkedOnTypeTest {
 
 		WorkedOnTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
-		final String expected = factory.workedOnInnerClass
-				.createMessageWithArgs("MyInnerClass", "Test");
+		final String expected = factory.workedOnClassMessage
+				.createMessageWithArgs("MyInnerClass", "Test.MyInnerClass");
 		assertEquals(expected, message);
 	}
 
@@ -59,8 +59,8 @@ public class WorkedOnTypeTest {
 
 		WorkedOnTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
-		final String expected = factory.workedOnClass
-				.createMessageWithArgs("Test");
+		final String expected = factory.workedOnClassMessage
+				.createMessageWithArgs("Test", "Test");
 		assertEquals(expected, message);
 	}
 
@@ -74,8 +74,9 @@ public class WorkedOnTypeTest {
 
 		WorkedOnTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
-		final String expected = factory.workedOnInnerClass
-				.createMessageWithArgs("MyInnerClass", "Hello.World");
+		final String expected = factory.workedOnClassMessage
+				.createMessageWithArgs("MyInnerClass",
+						"Hello.World.MyInnerClass");
 		assertEquals(expected, message);
 	}
 
@@ -88,8 +89,8 @@ public class WorkedOnTypeTest {
 
 		WorkedOnTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
-		final String expected = factory.workedOnEnum
-				.createMessageWithArgs("MyEnum");
+		final String expected = factory.workedOnEnumMessage
+				.createMessageWithArgs("MyEnum", "MyEnum");
 		assertEquals(expected, message);
 	}
 
@@ -102,8 +103,8 @@ public class WorkedOnTypeTest {
 
 		WorkedOnTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
-		final String expected = factory.workedOnInnerEnum
-				.createMessageWithArgs("MyEnum", "Hello");
+		final String expected = factory.workedOnEnumMessage
+				.createMessageWithArgs("MyEnum", "Hello.MyEnum");
 		assertEquals(expected, message);
 	}
 
@@ -116,8 +117,8 @@ public class WorkedOnTypeTest {
 
 		WorkedOnTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
-		final String expected = factory.workedOnAnnotation
-				.createMessageWithArgs("MyAnnotation");
+		final String expected = factory.workedOnAnnotationMessage
+				.createMessageWithArgs("MyAnnotation", "MyAnnotation");
 		assertEquals(expected, message);
 	}
 
@@ -131,8 +132,8 @@ public class WorkedOnTypeTest {
 
 		WorkedOnTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
-		final String expected = factory.workedOnInnerAnnotation
-				.createMessageWithArgs("MyAnnotation", "Hello");
+		final String expected = factory.workedOnAnnotationMessage
+				.createMessageWithArgs("MyAnnotation", "Hello.MyAnnotation");
 		assertEquals(expected, message);
 	}
 
@@ -145,8 +146,8 @@ public class WorkedOnTypeTest {
 
 		WorkedOnTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
-		final String expected = factory.workedOnInterface
-				.createMessageWithArgs("Test");
+		final String expected = factory.workedOnInterfaceMessage
+				.createMessageWithArgs("Test", "Test");
 		assertEquals(expected, message);
 	}
 
@@ -160,9 +161,8 @@ public class WorkedOnTypeTest {
 
 		WorkedOnTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
-		final String expected = factory.workedOnInnerInterface
-.createMessageWithArgs(
-				"Test", "Hello");
+		final String expected = factory.workedOnInterfaceMessage
+				.createMessageWithArgs("Test", "Hello.Test");
 		assertEquals(expected, message);
 	}
 }
