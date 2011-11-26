@@ -3,6 +3,7 @@ package de.fkoeberle.autocommit.message;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
@@ -53,5 +54,11 @@ public class CommitMessageBuilderPluginActivator extends Plugin {
 	public static ProfileDescription createProfileDescription(URL url)
 			throws IOException {
 		return plugin.profileManager.createProfileDescriptionFor(url);
+	}
+
+	public static Collection<CommitMessageFactoryDescription> findMissingFactories(
+			ProfileDescription profileDescription) {
+
+		return plugin.profileManager.findMissingFactories(profileDescription);
 	}
 }

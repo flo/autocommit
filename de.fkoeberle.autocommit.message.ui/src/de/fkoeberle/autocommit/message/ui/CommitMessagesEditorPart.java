@@ -3,7 +3,7 @@ package de.fkoeberle.autocommit.message.ui;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -19,7 +19,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -36,13 +35,22 @@ import de.fkoeberle.autocommit.message.ui.Model.IDirtyPropertyListener;
 
 public class CommitMessagesEditorPart extends EditorPart {
 
+	private final class FactoryLabelProvider extends LabelProvider {
+		@Override
+		public String getText(Object element) {
+			CommitMessageFactoryDescription factoryDescription = (CommitMessageFactoryDescription) element;
+			return factoryDescription.getTitle();
+		}
+	}
+
 	public static final String ID = "de.fkoeberle.autocommit.message.ui.CommitMessagesEditorPart"; //$NON-NLS-1$
 	private final Model model;
 	private final Controller controller;
-	private Table table;
-	private TableViewer tableViewer;
+	private Table usedFactoriesTable;
+	private TableViewer usedFactoriesTableViewer;
 	private Composite factoriesComposite;
 	private ScrolledComposite rightComposite;
+	private Table unusedFactoriesTable;
 
 	public CommitMessagesEditorPart() {
 		ArrayList<ICommitMessageFactory> factories = new ArrayList<ICommitMessageFactory>();
@@ -68,38 +76,50 @@ public class CommitMessagesEditorPart extends EditorPart {
 		leftComposite.setLayout(new GridLayout(1, false));
 
 		Composite leftHeader = new Composite(leftComposite, SWT.NONE);
-		leftHeader.setLayout(new GridLayout(2, false));
+		leftHeader.setLayout(new GridLayout(1, false));
 
 		Label lblCommitMessageFactories = new Label(leftHeader, SWT.NONE);
-		lblCommitMessageFactories.setText("Used Commit Message Factories:");
+		lblCommitMessageFactories.setText("Used:");
 
-		Button btnAdd = new Button(leftHeader, SWT.NONE);
-		btnAdd.setText("Add..");
-
-		tableViewer = new TableViewer(leftComposite, SWT.BORDER | SWT.MULTI);
-		table = tableViewer.getTable();
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		tableViewer
+		usedFactoriesTableViewer = new TableViewer(leftComposite, SWT.BORDER
+				| SWT.MULTI);
+		usedFactoriesTable = usedFactoriesTableViewer.getTable();
+		usedFactoriesTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, 1, 1));
+		usedFactoriesTableViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 
 					@Override
 					public void selectionChanged(SelectionChangedEvent event) {
-						int[] indices = tableViewer.getTable()
+						int[] indices = usedFactoriesTableViewer.getTable()
 								.getSelectionIndices();
 						controller.handleLeftFactorySelection(indices);
 					}
 				});
-		tableViewer.setContentProvider(new ArrayContentProvider());
-		tableViewer.setLabelProvider(new LabelProvider() {
-			@Override
-			public String getText(Object element) {
-				CommitMessageFactoryDescription factoryDescription = (CommitMessageFactoryDescription) element;
-				return factoryDescription.getTitle();
-			}
+		usedFactoriesTableViewer
+				.setContentProvider(new ObservableListContentProvider());
+		usedFactoriesTableViewer.setLabelProvider(new FactoryLabelProvider());
+		usedFactoriesTableViewer.setInput(model.getFactoryDescriptions());
 
-		});
-		// init gets called first thus model is not null:
-		tableViewer.setInput(model.getFactoryDescriptions());
+		Composite middleComposite = new Composite(sashForm, SWT.BORDER);
+		middleComposite.setLayout(new GridLayout(1, false));
+
+		Composite middleHeader = new Composite(middleComposite, SWT.NONE);
+		middleHeader.setLayout(new GridLayout(1, false));
+
+		Label lblUnused = new Label(middleHeader, SWT.NONE);
+		lblUnused.setText("Unused:");
+
+		TableViewer unusedFactoriesTableViewer = new TableViewer(
+				middleComposite, SWT.BORDER | SWT.MULTI);
+		unusedFactoriesTable = unusedFactoriesTableViewer.getTable();
+		unusedFactoriesTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+				true, true, 1, 1));
+		unusedFactoriesTableViewer
+				.setContentProvider(new ObservableListContentProvider());
+		unusedFactoriesTableViewer.setLabelProvider(new FactoryLabelProvider());
+		unusedFactoriesTableViewer.setInput(model
+				.getUnusedFactoryDescriptions());
 
 		rightComposite = new ScrolledComposite(sashForm, SWT.V_SCROLL
 				| SWT.BORDER);
@@ -118,8 +138,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 			}
 		});
 		rightComposite.setAlwaysShowScrollBars(true);
-
-		sashForm.setWeights(new int[] { 318, 502 });
+		sashForm.setWeights(new int[] { 200, 200, 350 });
 
 		model.addDirtyPropertyListener(new IDirtyPropertyListener() {
 

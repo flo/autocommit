@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -221,4 +222,13 @@ public class ProfileManager {
 		}
 	}
 
+	public Collection<CommitMessageFactoryDescription> findMissingFactories(
+			ProfileDescription profileDescription) {
+		Map<String, CommitMessageFactoryDescription> map = createFactoryIdToDescriptionMap();
+		for (CommitMessageFactoryDescription factory : profileDescription
+				.getFactoryDescriptions()) {
+			map.remove(factory.getId());
+		}
+		return map.values();
+	}
 }

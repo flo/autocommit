@@ -42,6 +42,7 @@ import de.fkoeberle.autocommit.message.ProfileXml;
 
 public class Model {
 	private final WritableList usedFactories;;
+	private final WritableList unusedFactories;;
 	private IEditorInput editorInput;
 	private final IUndoContext undoContext;
 	private IUndoableOperation undoableOperationAtSave;
@@ -51,6 +52,8 @@ public class Model {
 
 	public Model() {
 		this.usedFactories = new WritableList(Realm.getDefault(),
+				Collections.emptySet(), CommitMessageFactoryDescription.class);
+		this.unusedFactories = new WritableList(Realm.getDefault(),
 				Collections.emptySet(), CommitMessageFactoryDescription.class);
 		this.undoContext = new ObjectUndoContext(this);
 		undoableOperationAtSave = null;
@@ -94,6 +97,10 @@ public class Model {
 				.createProfileDescription(url);
 		usedFactories.clear();
 		usedFactories.addAll(profileDescription.getFactoryDescriptions());
+		unusedFactories.clear();
+		unusedFactories.addAll(CommitMessageBuilderPluginActivator
+				.findMissingFactories(profileDescription));
+
 		this.editorInput = editorInput;
 
 	}
@@ -253,4 +260,7 @@ public class Model {
 				.removeOperationHistoryListener(operationHistoryListener);
 	}
 
+	public WritableList getUnusedFactoryDescriptions() {
+		return unusedFactories;
+	}
 }
