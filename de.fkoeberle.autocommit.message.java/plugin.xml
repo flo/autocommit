@@ -69,7 +69,7 @@
             id="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF">
          <arguments>
             <argument
-                  description="The java package which contains the changes, or when multiple java files got modified the &quot;parent&quot; package that contains the other packages. e.g. if there were changes in the package org.example.a and org.example.b then this argument will be org.example.">
+                  description="The java package which contains the changes, or when multiple java files got modified the &quot;parent&quot; package that contains the other packages. e.g. if there were changes in the package org.example.a and org.example.b then this argument will be org.example. It doesn&apos;t have an usable value if the changes are in the default pacakge or in packages which have no parent package in common.">
             </argument>
          </arguments>
          <messages>
