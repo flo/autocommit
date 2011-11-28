@@ -206,7 +206,31 @@
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.DocumentedTypeCMF"
+            description="Generates a commit message when all existing changes are javadoc changes of a single type."
             id="de.fkoeberle.autocommit.message.java.DocumentedTypeCMF">
+         <arguments>
+            <argument
+                  description="The name of documented type prefixed with the outer types. Example: &quot;OuterClass.MiddleClass.InnerClass&quot;.">
+            </argument>
+         </arguments>
+         <messages>
+            <message
+                  defaultValue="Documented class {0}"
+                  fieldName="documentedClassMessage">
+            </message>
+            <message
+                  defaultValue="Documented interface {0}"
+                  fieldName="documentedInterfaceMessage">
+            </message>
+            <message
+                  defaultValue="Documented enum {0}"
+                  fieldName="documentedEnumMessage">
+            </message>
+            <message
+                  defaultValue="Documented annotation {0}"
+                  fieldName="documentedAnnotationMessage">
+            </message>
+         </messages>
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.DocumentedMethodCMF"
