@@ -86,7 +86,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 		header.setLayout(new GridLayout(3, false));
 
 		Label generateLabel = new Label(header, SWT.NONE);
-		generateLabel.setText("Generate: ");
+		generateLabel.setText("Generate:");
 		Combo combo = new Combo(header, SWT.NONE);
 		combo.setItems(new String[] { "Custom commit messages",
 				"Commit messages for Java code",
@@ -108,7 +108,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 		leftHeader.setLayout(new GridLayout(1, false));
 
 		Label lblCommitMessageFactories = new Label(leftHeader, SWT.NONE);
-		lblCommitMessageFactories.setText("Used:");
+		lblCommitMessageFactories.setText("Used commit message factories:");
 
 		final TableViewer usedFactoriesTableViewer = new TableViewer(
 				leftComposite, SWT.BORDER | SWT.MULTI);
@@ -127,7 +127,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 		middleHeader.setLayout(new GridLayout(1, false));
 
 		Label lblUnused = new Label(middleHeader, SWT.NONE);
-		lblUnused.setText("Unused:");
+		lblUnused.setText("Unused commit message factories:");
 
 		TableViewer unusedFactoriesTableViewer = new TableViewer(
 				middleComposite, SWT.BORDER | SWT.MULTI);
@@ -159,7 +159,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 		rightHeader.setLayout(new GridLayout(1, false));
 
 		Label lblSelected = new Label(rightHeader, SWT.NONE);
-		lblSelected.setText("Selected:");
+		lblSelected.setText("Selected commit message factories:");
 
 		final ScrolledComposite scrolledComposite = new ScrolledComposite(
 				rightComposite, SWT.V_SCROLL | SWT.BORDER);
@@ -180,7 +180,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 			}
 		});
 		scrolledComposite.setAlwaysShowScrollBars(true);
-		sashForm.setWeights(new int[] { 200, 200, 350 });
+		sashForm.setWeights(new int[] { 180, 180, 350 });
 
 		model.addDirtyPropertyListener(new IDirtyPropertyListener() {
 
