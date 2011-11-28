@@ -40,4 +40,23 @@ public class DocumentedMethodCMFTest {
 		assertEquals("Inner", typeName);
 	}
 
+	@Test
+	public void testAddedJavaDocToConstructor() throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile(
+				"/project1/org/example/Test.java",
+				"package org.example;\n\nclass Test {class Inner{Inner(String s, int i) {}}}",
+				"package org.example;\n\nclass Test {class Inner{/** New Docu*/ Inner(String s, int i) {}}}");
+		DocumentedMethodCMF factory = createFactory(builder.build());
+
+		String actualMessage = factory.createMessage();
+		String expectedMessage = factory.documentedConstructorMessage
+				.createMessageWithArgs("Test.Inner", "Inner", "String, int");
+
+		assertEquals(expectedMessage, actualMessage);
+
+		factory.documentedConstructorMessage.setValue("{3}");
+		final String typeName = factory.createMessage();
+		assertEquals("Inner", typeName);
+	}
 }

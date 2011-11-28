@@ -234,7 +234,32 @@
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.DocumentedMethodCMF"
+            description="Generates a commit message when a javadoc tag of a method or constructor got modified or added."
             id="de.fkoeberle.autocommit.message.java.DocumentedMethodCMF">
+          <arguments>
+            <argument
+                  description="The name of documented type prefixed with the outer types. Example: &quot;OuterClass.MiddleClass.InnerClass&quot;.">
+            </argument>
+            <argument
+                  description="The name of the documented method or constructor">
+            </argument>
+            <argument
+                  description="An comma seperated list of the parameter types of the documented method or constructor like &quot;String, int&quot;">
+            </argument>
+            <argument
+                  description="The name of the documented type without any prefix">
+            </argument>
+         </arguments>
+          <messages>
+             <message
+                   defaultValue="Documented method {0}\#{1}({2})"
+                   fieldName="documentedMethodMessage">
+             </message>
+             <message
+                   defaultValue="Documented constructor {0}\#{1}({2})"
+                   fieldName="documentedConstructorMessage">
+             </message>
+             </messages>
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF"

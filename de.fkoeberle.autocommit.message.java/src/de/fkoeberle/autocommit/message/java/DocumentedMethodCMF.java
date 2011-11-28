@@ -11,6 +11,10 @@ public class DocumentedMethodCMF implements ICommitMessageFactory {
 
 	public final CommitMessageTemplate documentedMethodMessage = new CommitMessageTemplate(
 			Translations.DocumentedMethodCMF_documentedMethod);
+
+	public final CommitMessageTemplate documentedConstructorMessage = new CommitMessageTemplate(
+			Translations.DocumentedMethodCMF_documentedConstructor);
+
 	@InjectedBySession
 	SingleChangedBodyDeclarationView singleChangedMethodView;
 
@@ -24,12 +28,17 @@ public class DocumentedMethodCMF implements ICommitMessageFactory {
 				EnumSet.of(BodyDeclarationChangeType.JAVADOC))) {
 			return null;
 		}
-
+		CommitMessageTemplate message;
+		if (methodDelta.getNewDeclaration().isConstructor()) {
+			message = documentedConstructorMessage;
+		} else {
+			message = documentedMethodMessage;
+		}
 		String fullTypeName = methodDelta.getFullTypeName();
 		String methodName = methodDelta.getMethodName();
 		String parameterTypes = methodDelta.getParameterTypes();
 		String typeName = methodDelta.getSimpleTypeName();
-		return documentedMethodMessage.createMessageWithArgs(fullTypeName,
-				methodName, parameterTypes, typeName);
+		return message.createMessageWithArgs(fullTypeName, methodName,
+				parameterTypes, typeName);
 	}
 }
