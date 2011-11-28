@@ -24,10 +24,12 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -78,9 +80,26 @@ public class CommitMessagesEditorPart extends EditorPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		Composite container = new Composite(parent, SWT.NONE);
-		container.setLayout(new FillLayout(SWT.HORIZONTAL));
+		container.setLayout(new GridLayout(1, false));
+
+		Composite header = new Composite(container, SWT.NONE);
+		header.setLayout(new GridLayout(3, false));
+
+		Label generateLabel = new Label(header, SWT.NONE);
+		generateLabel.setText("Generate: ");
+		Combo combo = new Combo(header, SWT.NONE);
+		combo.setItems(new String[] { "Custom commit messages",
+				"Commit messages for Java code",
+				"Commit messages for LaTeX code",
+				"Commit messages for refactorings only" });
+		combo.select(0);
+
+		Point comboSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		combo.setLayoutData(new GridData(300, comboSize.y));
 
 		SashForm sashForm = new SashForm(container, SWT.NONE);
+		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+				1));
 
 		Composite leftComposite = new Composite(sashForm, SWT.BORDER);
 		leftComposite.setLayout(new GridLayout(1, false));
