@@ -263,7 +263,39 @@
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF"
+            description="Generates a commit message when getters or setters got added to a class."
             id="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF">
+         <arguments>
+            <argument
+                  description="The name of changed type prefixed with the outer types. Example: &quot;OuterClass.MiddleClass.InnerClass&quot;.">
+            </argument>
+         </arguments>
+         <messages>
+            <message
+                  defaultValue="Added getters to {0}"
+                  fieldName="addedGettersMessage">
+            </message>
+            <message
+                  defaultValue="Added setters to {0}"
+                  fieldName="Added setters to {0}">
+            </message>
+            <message
+                  defaultValue="Added getters and setters to {0}"
+                  fieldName="addedGettersAndSettersMessage">
+            </message>
+            <message
+                  defaultValue="Added a getter and setters to {0}"
+                  fieldName="addedAGetterAndSettersMessage">
+            </message>
+            <message
+                  defaultValue="Added getters and a setter {0}"
+                  fieldName="addedGettersAndASetterMessage">
+            </message>
+            <message
+                  defaultValue="Added a getter and setter to {0}"
+                  fieldName="addedAGetterAndSetterMessage">
+            </message>
+         </messages>
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.OrganizedImportsOfTypeCMF"
