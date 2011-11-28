@@ -58,4 +58,9 @@ public class CommitMessageFactoryDescription {
 	public String getId() {
 		return factoryClass.getCanonicalName();
 	}
+
+	@Override
+	public String toString() {
+		return getId();
+	}
 }

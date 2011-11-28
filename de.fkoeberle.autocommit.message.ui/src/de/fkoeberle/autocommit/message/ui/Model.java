@@ -25,9 +25,6 @@ import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IURIEditorInput;
@@ -189,11 +186,11 @@ public class Model {
 		return undoContext;
 	}
 
-	public void resetMessage(Composite requestSource,
-			CommitMessageDescription messageDescription) {
+	public void resetMessage(CommitMessageDescription messageDescription)
+			throws ExecutionException {
 		ResetCommitMessageOperation operation = new ResetCommitMessageOperation(
 				messageDescription);
-		runOperation(requestSource, operation);
+		runOperation(operation);
 	}
 
 	public void setDirty(boolean newValue) {
@@ -221,24 +218,19 @@ public class Model {
 		dirtyPropertyListenerList.add(listener);
 	}
 
-	public void setMessage(Control requestSource,
-			CommitMessageDescription messageDescription, String value) {
+	public void setMessage(CommitMessageDescription messageDescription,
+			String value) throws ExecutionException {
 		SetCommitMessageOperation operation = new SetCommitMessageOperation(
 				messageDescription, value);
-		runOperation(requestSource, operation);
+		runOperation(operation);
 	}
 
-	private void runOperation(Control requestSource,
-			IUndoableOperation operation) {
+	private void runOperation(IUndoableOperation operation)
+			throws ExecutionException {
 		operation.addContext(undoContext);
 		IOperationHistory operationHistory = OperationHistoryFactory
 				.getOperationHistory();
-		try {
-			operationHistory.execute(operation, null, null);
-		} catch (ExecutionException e) {
-			MessageDialog.openError(requestSource.getShell(),
-					"Failed to Reset", e.getLocalizedMessage());
-		}
+		operationHistory.execute(operation, null, null);
 	}
 
 	private IUndoableOperation getUndoableOperation() {
@@ -263,4 +255,27 @@ public class Model {
 	public WritableList getUnusedFactoryDescriptions() {
 		return unusedFactories;
 	}
+
+	public enum CMFList {
+		UNUSED, USED;
+	}
+
+	public WritableList getList(CMFList targetListType) {
+		switch (targetListType) {
+		case USED:
+			return usedFactories;
+		case UNUSED:
+			return unusedFactories;
+		}
+		throw new IllegalArgumentException();
+	}
+
+	public void moveFactories(CMFList sourceListType, CMFList targetListType,
+			int[] selectionIndices, int insertIndex) throws ExecutionException {
+		MoveFactoriesOperation operation = new MoveFactoriesOperation(
+				getList(sourceListType), getList(targetListType),
+				selectionIndices, insertIndex);
+		runOperation(operation);
+	}
+
 }

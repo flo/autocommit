@@ -1,6 +1,9 @@
 package de.fkoeberle.autocommit.message.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
@@ -11,6 +14,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -31,6 +36,7 @@ import org.eclipse.ui.part.EditorPart;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.WorkedOnPathCMF;
+import de.fkoeberle.autocommit.message.ui.Model.CMFList;
 import de.fkoeberle.autocommit.message.ui.Model.IDirtyPropertyListener;
 
 public class CommitMessagesEditorPart extends EditorPart {
@@ -47,7 +53,6 @@ public class CommitMessagesEditorPart extends EditorPart {
 	private final Model model;
 	private final Controller controller;
 	private Table usedFactoriesTable;
-	private TableViewer usedFactoriesTableViewer;
 	private Composite factoriesComposite;
 	private ScrolledComposite rightComposite;
 	private Table unusedFactoriesTable;
@@ -81,8 +86,8 @@ public class CommitMessagesEditorPart extends EditorPart {
 		Label lblCommitMessageFactories = new Label(leftHeader, SWT.NONE);
 		lblCommitMessageFactories.setText("Used:");
 
-		usedFactoriesTableViewer = new TableViewer(leftComposite, SWT.BORDER
-				| SWT.MULTI);
+		final TableViewer usedFactoriesTableViewer = new TableViewer(
+				leftComposite, SWT.BORDER | SWT.MULTI);
 		usedFactoriesTable = usedFactoriesTableViewer.getTable();
 		usedFactoriesTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true, 1, 1));
@@ -121,6 +126,9 @@ public class CommitMessagesEditorPart extends EditorPart {
 		unusedFactoriesTableViewer.setInput(model
 				.getUnusedFactoryDescriptions());
 
+		addDragAndDropSupport(usedFactoriesTableViewer,
+				unusedFactoriesTableViewer);
+
 		rightComposite = new ScrolledComposite(sashForm, SWT.V_SCROLL
 				| SWT.BORDER);
 		factoriesComposite = new Composite(rightComposite, SWT.NONE);
@@ -154,6 +162,34 @@ public class CommitMessagesEditorPart extends EditorPart {
 				controller.dispose();
 			}
 		});
+	}
+
+	private void addDragAndDropSupport(
+			final TableViewer usedFactoriesTableViewer,
+			TableViewer unusedFactoriesTableViewer) {
+		Transfer[] transfers = new Transfer[] { UniqueIdTransfer.INSTANCE };
+
+		Map<Long, Model.CMFList> listIdToTypeMap = new HashMap<Long, Model.CMFList>();
+		Long usedListId = Long.valueOf(new Random().nextLong());
+		Long unusedListId = Long.valueOf(usedListId.longValue() + 1);
+		listIdToTypeMap.put(usedListId, CMFList.USED);
+		listIdToTypeMap.put(unusedListId, CMFList.UNUSED);
+
+		Map<CMFList, TableViewer> listIdToTableViewerMap = new HashMap<CMFList, TableViewer>();
+		listIdToTableViewerMap.put(CMFList.USED, usedFactoriesTableViewer);
+		listIdToTableViewerMap.put(CMFList.UNUSED, unusedFactoriesTableViewer);
+
+		unusedFactoriesTableViewer.addDragSupport(DND.DROP_MOVE, transfers,
+				new CMFDragSource(unusedFactoriesTableViewer, unusedListId));
+		unusedFactoriesTableViewer.addDropSupport(DND.DROP_MOVE, transfers,
+				new CMFDropAdapter(Model.CMFList.UNUSED, model, controller,
+						listIdToTypeMap, listIdToTableViewerMap));
+
+		usedFactoriesTableViewer.addDragSupport(DND.DROP_MOVE, transfers,
+				new CMFDragSource(usedFactoriesTableViewer, usedListId));
+		usedFactoriesTableViewer.addDropSupport(DND.DROP_MOVE, transfers,
+				new CMFDropAdapter(Model.CMFList.USED, model, controller,
+						listIdToTypeMap, listIdToTableViewerMap));
 	}
 
 	public void setRightFactorySelection(int[] indices) {

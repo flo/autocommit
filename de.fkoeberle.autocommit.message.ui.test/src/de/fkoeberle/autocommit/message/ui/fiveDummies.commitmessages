@@ -1,0 +1,17 @@
+<commit-message-factories>
+	<factory>
+		<id>de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory0</id>
+	</factory>
+	<factory>
+		<id>de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory1</id>
+	</factory>
+	<factory>
+		<id>de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory2</id>
+	</factory>
+	<factory>
+		<id>de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory3</id>
+	</factory>
+	<factory>
+		<id>de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory4</id>
+	</factory>
+</commit-message-factories>

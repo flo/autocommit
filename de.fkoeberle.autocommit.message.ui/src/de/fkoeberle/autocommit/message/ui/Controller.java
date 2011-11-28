@@ -2,10 +2,12 @@ package de.fkoeberle.autocommit.message.ui;
 
 import java.io.IOException;
 
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -15,6 +17,7 @@ import org.eclipse.ui.operations.RedoActionHandler;
 import org.eclipse.ui.operations.UndoActionHandler;
 
 import de.fkoeberle.autocommit.message.CommitMessageDescription;
+import de.fkoeberle.autocommit.message.ui.Model.CMFList;
 
 public class Controller {
 	private final CommitMessagesEditorPart view;
@@ -67,12 +70,30 @@ public class Controller {
 
 	public void setMessage(CommitMessageComposite requestSource,
 			CommitMessageDescription messageDescription, String value) {
-		model.setMessage(requestSource, messageDescription, value);
+		try {
+			model.setMessage(messageDescription, value);
+		} catch (ExecutionException e) {
+			reportError("Failed to set message", e);
+		}
 	}
 
 	public void resetMessage(CommitMessageComposite requestSource,
 			CommitMessageDescription messageDescription) {
-		model.resetMessage(requestSource, messageDescription);
+		try {
+			model.resetMessage(messageDescription);
+		} catch (ExecutionException e) {
+			reportError("Failed to reset message", e);
+		}
+	}
+
+	public void moveFactories(Control requestSource, CMFList sourceListType,
+			CMFList targetListType, int[] selectionIndices, int insertIndex) {
+		try {
+			model.moveFactories(sourceListType, targetListType,
+					selectionIndices, insertIndex);
+		} catch (ExecutionException e) {
+			reportError("Failed to move factories", e);
+		}
 	}
 
 	public void dispose() {
