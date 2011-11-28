@@ -114,18 +114,18 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
-				// TODO ensure that it runs on UI thread:
-				// example when it's necessary: extracting a variable
-				IWorkbenchWindow window = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow();
-				IWorkbenchPage page = window.getActivePage();
-				IEditorPart[] dirtyEditors = page.getDirtyEditors();
-				if (dirtyEditors.length > 0) {
-					logInfo(String
-							.format("Not committing since there unsaved changes"));
-					return Status.OK_STATUS;
-				}
 
+				for (IWorkbenchWindow window : PlatformUI.getWorkbench()
+						.getWorkbenchWindows()) {
+					for (IWorkbenchPage page : window.getPages()) {
+						IEditorPart[] dirtyEditors = page.getDirtyEditors();
+						if (dirtyEditors.length > 0) {
+							logInfo(String
+									.format("Not committing since there unsaved changes"));
+							return Status.OK_STATUS;
+						}
+					}
+				}
 				IWorkspace workspace = ResourcesPlugin.getWorkspace();
 				IWorkspaceRoot root = workspace.getRoot();
 				int maxProblemServity;
