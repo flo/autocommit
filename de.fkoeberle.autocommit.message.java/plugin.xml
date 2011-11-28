@@ -175,5 +175,13 @@
             id="de.fkoeberle.autocommit.message.java.DocumentedPackageCMF">
       </factory>
    </extension>
+   <extension
+         point="de.fkoeberle.autocommit.message.profile">
+      <profile
+            id="de.fkoeberle.autocommit.message.profile.java.default"
+            name="Default Java Profile"
+            path="java.commitmessages">
+      </profile>
+   </extension>
 
 </plugin>
