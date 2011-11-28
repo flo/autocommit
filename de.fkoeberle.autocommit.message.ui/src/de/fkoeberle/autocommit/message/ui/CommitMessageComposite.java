@@ -1,5 +1,6 @@
 package de.fkoeberle.autocommit.message.ui;
 
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -32,8 +33,8 @@ public class CommitMessageComposite extends Composite {
 	 * @param messageDescription
 	 */
 	public CommitMessageComposite(Composite parent, int style,
-			final Controller controller,
-			CommitMessageDescription messageDescription) {
+
+	CommitMessageDescription messageDescription, final Model model) {
 		super(parent, style);
 		this.messageDescription = messageDescription;
 		setLayout(new GridLayout(1, false));
@@ -59,12 +60,11 @@ public class CommitMessageComposite extends Composite {
 		field = new Text(bodyComposite, SWT.BORDER);
 		field.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
-		ModifyListener modifyListener = new TextModificationListener(controller);
+		ModifyListener modifyListener = new TextModificationListener(model);
 		field.addModifyListener(modifyListener);
 
 		resetButton = new Button(bodyComposite, SWT.NONE);
-		resetButton.addSelectionListener(new ResetButtonClickListener(
-				controller));
+		resetButton.addSelectionListener(new ResetButtonClickListener(model));
 		resetButton
 				.setToolTipText("Resets the replacement to the default value");
 		resetButton.setText("Reset");
@@ -90,34 +90,44 @@ public class CommitMessageComposite extends Composite {
 	}
 
 	private final class TextModificationListener implements ModifyListener {
-		private final Controller controller;
+		private final Model model;
 
-		private TextModificationListener(Controller controller) {
-			this.controller = controller;
+		private TextModificationListener(Model model) {
+			this.model = model;
 		}
 
 		@Override
-		public void modifyText(ModifyEvent e) {
+		public void modifyText(ModifyEvent event) {
 			if (!field.getText().equals(messageDescription.getCurrentValue())) {
-				controller.setMessage(CommitMessageComposite.this,
-						messageDescription, field.getText());
+				try {
+					model.setMessage(messageDescription, field.getText());
+				} catch (ExecutionException ex) {
+					CommitMessagesEditorPart.reportError(
+							CommitMessageComposite.this.getShell(),
+							"Failed to set commit message", ex);
+				}
 			}
 		}
 	}
 
 	private final class ResetButtonClickListener extends SelectionAdapter {
-		private final Controller controller;
+		private final Model model;
 
-		private ResetButtonClickListener(Controller controller) {
-			this.controller = controller;
+		private ResetButtonClickListener(Model model) {
+			this.model = model;
 		}
 
 		@Override
-		public void widgetSelected(SelectionEvent e) {
-			if (controller != null) {
-				controller.resetMessage(CommitMessageComposite.this,
-						messageDescription);
+		public void widgetSelected(SelectionEvent event) {
+
+			try {
+				model.resetMessage(messageDescription);
+			} catch (ExecutionException e) {
+				CommitMessagesEditorPart.reportError(
+						CommitMessageComposite.this.getShell(),
+						"Failed to reset commit message", e);
 			}
+
 		}
 	}
 

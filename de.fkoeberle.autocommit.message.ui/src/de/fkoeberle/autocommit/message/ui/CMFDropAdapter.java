@@ -2,6 +2,7 @@ package de.fkoeberle.autocommit.message.ui;
 
 import java.util.Map;
 
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.TransferData;
@@ -10,20 +11,18 @@ import de.fkoeberle.autocommit.message.ui.Model.CMFList;
 
 public class CMFDropAdapter extends ViewerDropAdapter {
 	private final Model model;
-	private final Controller controller;
 	private final TableViewer targetTable;
 	private final CMFList targetListType;
 	private final Map<Long, CMFList> listIdToTypeMap;
 	private final Map<CMFList, TableViewer> listTypeToTableViewerMap;
 
 	public CMFDropAdapter(CMFList targetListType, Model model,
-			Controller controller, Map<Long, CMFList> listIdToTypeMap,
+			Map<Long, CMFList> listIdToTypeMap,
 			Map<CMFList, TableViewer> listTypeToTableViewerMap) {
 		super(listTypeToTableViewerMap.get(targetListType));
 		this.model = model;
 		this.targetTable = listTypeToTableViewerMap.get(targetListType);
 		this.targetListType = targetListType;
-		this.controller = controller;
 		this.listIdToTypeMap = listIdToTypeMap;
 		this.listTypeToTableViewerMap = listTypeToTableViewerMap;
 	}
@@ -61,9 +60,14 @@ public class CMFDropAdapter extends ViewerDropAdapter {
 		}
 		TableViewer sourceTable = listTypeToTableViewerMap.get(sourceListType);
 		int insertIndex = determineInsertIndex();
-		controller.moveFactories(targetTable.getTable(), sourceListType,
-				targetListType, sourceTable.getTable().getSelectionIndices(),
-				insertIndex);
+		try {
+			model.moveFactories(sourceListType, targetListType, sourceTable
+					.getTable().getSelectionIndices(), insertIndex);
+		} catch (ExecutionException e) {
+			CommitMessagesEditorPart.reportError(targetTable.getTable()
+					.getShell(), "Drop failed", e);
+			return false;
+		}
 
 		return true;
 	}

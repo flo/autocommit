@@ -1,16 +1,20 @@
 package de.fkoeberle.autocommit.message.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -27,10 +31,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.operations.RedoActionHandler;
+import org.eclipse.ui.operations.UndoActionHandler;
 import org.eclipse.ui.part.EditorPart;
 
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
@@ -40,7 +49,6 @@ import de.fkoeberle.autocommit.message.ui.Model.CMFList;
 import de.fkoeberle.autocommit.message.ui.Model.IDirtyPropertyListener;
 
 public class CommitMessagesEditorPart extends EditorPart {
-
 	private final class FactoryLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
@@ -51,7 +59,6 @@ public class CommitMessagesEditorPart extends EditorPart {
 
 	public static final String ID = "de.fkoeberle.autocommit.message.ui.CommitMessagesEditorPart"; //$NON-NLS-1$
 	private final Model model;
-	private final Controller controller;
 	private Table usedFactoriesTable;
 	private Composite factoriesComposite;
 	private ScrolledComposite rightComposite;
@@ -61,7 +68,6 @@ public class CommitMessagesEditorPart extends EditorPart {
 		ArrayList<ICommitMessageFactory> factories = new ArrayList<ICommitMessageFactory>();
 		factories.add(new WorkedOnPathCMF());
 		model = new Model();
-		controller = new Controller(this, model);
 	}
 
 	/**
@@ -92,16 +98,6 @@ public class CommitMessagesEditorPart extends EditorPart {
 		usedFactoriesTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true, 1, 1));
 		usedFactoriesTableViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-
-					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
-						int[] indices = usedFactoriesTableViewer.getTable()
-								.getSelectionIndices();
-						controller.handleLeftFactorySelection(indices);
-					}
-				});
-		usedFactoriesTableViewer
 				.setContentProvider(new ObservableListContentProvider());
 		usedFactoriesTableViewer.setLabelProvider(new FactoryLabelProvider());
 		usedFactoriesTableViewer.setInput(model.getFactoryDescriptions());
@@ -128,6 +124,15 @@ public class CommitMessagesEditorPart extends EditorPart {
 
 		addDragAndDropSupport(usedFactoriesTableViewer,
 				unusedFactoriesTableViewer);
+
+		usedFactoriesTableViewer
+				.addSelectionChangedListener(new FactoriesSelectionListener(
+						CMFList.USED, usedFactoriesTableViewer,
+						unusedFactoriesTableViewer));
+		unusedFactoriesTableViewer
+				.addSelectionChangedListener(new FactoriesSelectionListener(
+						CMFList.UNUSED, unusedFactoriesTableViewer,
+						usedFactoriesTableViewer));
 
 		rightComposite = new ScrolledComposite(sashForm, SWT.V_SCROLL
 				| SWT.BORDER);
@@ -159,7 +164,7 @@ public class CommitMessagesEditorPart extends EditorPart {
 
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				controller.dispose();
+				model.dispose();
 			}
 		});
 	}
@@ -182,25 +187,48 @@ public class CommitMessagesEditorPart extends EditorPart {
 		unusedFactoriesTableViewer.addDragSupport(DND.DROP_MOVE, transfers,
 				new CMFDragSource(unusedFactoriesTableViewer, unusedListId));
 		unusedFactoriesTableViewer.addDropSupport(DND.DROP_MOVE, transfers,
-				new CMFDropAdapter(Model.CMFList.UNUSED, model, controller,
+				new CMFDropAdapter(Model.CMFList.UNUSED, model,
 						listIdToTypeMap, listIdToTableViewerMap));
 
 		usedFactoriesTableViewer.addDragSupport(DND.DROP_MOVE, transfers,
 				new CMFDragSource(usedFactoriesTableViewer, usedListId));
 		usedFactoriesTableViewer.addDropSupport(DND.DROP_MOVE, transfers,
-				new CMFDropAdapter(Model.CMFList.USED, model, controller,
-						listIdToTypeMap, listIdToTableViewerMap));
+				new CMFDropAdapter(Model.CMFList.USED, model, listIdToTypeMap,
+						listIdToTableViewerMap));
 	}
 
-	public void setRightFactorySelection(int[] indices) {
+	private final class FactoriesSelectionListener implements
+			ISelectionChangedListener {
+		private final CMFList listType;
+		private final TableViewer tableViewer;
+		private final TableViewer otherTableViewer;
+
+		private FactoriesSelectionListener(CMFList listType,
+				TableViewer tableViewer, TableViewer otherTableViewer) {
+			this.listType = listType;
+			this.tableViewer = tableViewer;
+			this.otherTableViewer = otherTableViewer;
+		}
+
+		@Override
+		public void selectionChanged(SelectionChangedEvent event) {
+			int[] indices = tableViewer.getTable().getSelectionIndices();
+			if (indices.length != 0) {
+				setRightFactorySelection(listType, indices);
+				otherTableViewer.getTable().setSelection(new int[] {});
+			}
+		}
+	}
+
+	public void setRightFactorySelection(CMFList list, int[] indices) {
 		for (Control child : factoriesComposite.getChildren()) {
 			child.dispose();
 		}
 		for (int factoryIndex : indices) {
 			CommitMessageFactoryDescription factory = (CommitMessageFactoryDescription) model
-					.getFactoryDescriptions().get(factoryIndex);
+					.getList(list).get(factoryIndex);
 			CommitMessageFactoryComposite factoryComposite = new CommitMessageFactoryComposite(
-					factoriesComposite, SWT.NONE, controller, factory);
+					factoriesComposite, SWT.NONE, model, factory);
 			factoryComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP,
 					true, false, 1, 1));
 		}
@@ -218,7 +246,11 @@ public class CommitMessagesEditorPart extends EditorPart {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		controller.save(monitor);
+		try {
+			model.save(monitor);
+		} catch (IOException e) {
+			reportError(getEditorSite().getShell(), "Saving failed", e);
+		}
 	}
 
 	@Override
@@ -231,7 +263,13 @@ public class CommitMessagesEditorPart extends EditorPart {
 			throws PartInitException {
 		setSite(site);
 		setInput(input);
-		controller.initEditor(site, input);
+		try {
+			model.load(input);
+		} catch (IOException e) {
+			reportError(this.getSite().getShell(),
+					"Loading failed. See error log for details", e);
+		}
+		createUndoAndRedoActionHandlers(site);
 	}
 
 	@Override
@@ -244,4 +282,21 @@ public class CommitMessagesEditorPart extends EditorPart {
 		return false;
 	}
 
+	private void createUndoAndRedoActionHandlers(IEditorSite site) {
+		IActionBars actionBars = site.getActionBars();
+		actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
+				new UndoActionHandler(site, model.getUndoContext()));
+		actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
+				new RedoActionHandler(site, model.getUndoContext()));
+	}
+
+	public static void reportError(Shell shell, String message, Exception e) {
+		MessageDialog.openError(shell, message,
+				NLS.bind("{0}: See error log for details", message));
+		Activator
+				.getDefault()
+				.getLog()
+				.log(new Status(Status.ERROR, Activator.PLUGIN_ID, Status.OK,
+						message, e));
+	}
 }

@@ -13,11 +13,11 @@ import de.fkoeberle.autocommit.message.CommitMessageDescription;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 
 public class CommitMessageFactoryComposite extends Composite {
-	private final Controller controller;
 	private final Composite argumentsComposite;
 	private final Composite messagesComposite;
 	private final Label descriptionLabel;
 	private final Group grpFactory;
+	private final Model model;
 
 	/**
 	 * Constructor only used for preview
@@ -31,10 +31,9 @@ public class CommitMessageFactoryComposite extends Composite {
 	 * 
 	 */
 	public CommitMessageFactoryComposite(Composite parent, int style,
-			Controller controller,
-			CommitMessageFactoryDescription factoryDescription) {
+			Model model, CommitMessageFactoryDescription factoryDescription) {
 		super(parent, SWT.NONE);
-		this.controller = controller;
+		this.model = model;
 		setLayout(new GridLayout(1, false));
 		grpFactory = new Group(this, SWT.NONE);
 		grpFactory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -106,7 +105,7 @@ public class CommitMessageFactoryComposite extends Composite {
 				.getCommitMessageDescriptions();
 		for (CommitMessageDescription messageDescription : messageDescriptions) {
 			CommitMessageComposite messageComposite = new CommitMessageComposite(
-					messagesComposite, SWT.NONE, controller, messageDescription);
+					messagesComposite, SWT.NONE, messageDescription, model);
 
 			messageComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 					true, false, 1, 1));
