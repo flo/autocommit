@@ -58,7 +58,8 @@ public class ProfileXml {
 	}
 
 	public ProfileDescription createProfileDescription(
-			ICMFDescriptionFactory cmfFactory) throws IOException {
+			ICMFDescriptionFactory cmfFactory, String defaultProfileId)
+			throws IOException {
 		List<CommitMessageFactoryDescription> createdFactories = new ArrayList<CommitMessageFactoryDescription>();
 		for (CommitMessageFactoryXml factoryXml : factories) {
 			CommitMessageFactoryDescription factory;
@@ -83,26 +84,31 @@ public class ProfileXml {
 			}
 			createdFactories.add(factory);
 		}
-		return new ProfileDescription(createdFactories);
+		return new ProfileDescription(createdFactories, defaultProfileId);
 	}
 
-	public static ProfileXml createFrom(URL resource) throws IOException {
+	/**
+	 * 
+	 * @param resource
+	 *            the resource to load the {@link ProfileXml} or
+	 *            {@link ProfileReferenceXml} from.
+	 * @return the loaded {@link ProfileXml} or {@link ProfileReferenceXml}
+	 *         instance.
+	 */
+	public static Object loadProfileFile(URL resource) throws IOException {
 		InputStream inputStream = resource.openStream();
 		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(ProfileXml.class);
+			JAXBContext jaxbContext = JAXBContext.newInstance(ProfileXml.class,
+					ProfileReferenceXml.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			ProfileXml profileXml = (ProfileXml) unmarshaller
-					.unmarshal(inputStream);
 			unmarshaller.setEventHandler(new ValidationEventHandler() {
 
 				@Override
 				public boolean handleEvent(ValidationEvent event) {
-					// TODO Auto-generated method stub
 					return false;
 				}
 			});
-			return profileXml;
-
+			return unmarshaller.unmarshal(inputStream);
 		} catch (JAXBException e) {
 			throw new IOException(e);
 		} finally {

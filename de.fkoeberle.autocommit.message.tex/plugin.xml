@@ -35,7 +35,7 @@
    <extension
          point="de.fkoeberle.autocommit.message.profile">
       <profile
-            id="de.fkoeberle.autocommit.message.tex.TexProfile"
+            id="de.fkoeberle.autocommit.message.tex"
             name="Tex Profile"
             path="tex.commitmessages">
       </profile>

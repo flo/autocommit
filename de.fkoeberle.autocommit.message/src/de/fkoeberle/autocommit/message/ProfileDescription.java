@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileDescription {
+	private final String defaultProfileId;
 	private final List<CommitMessageFactoryDescription> factoryDescriptions;
 
-	public ProfileDescription(List<CommitMessageFactoryDescription> list) {
+	public ProfileDescription(List<CommitMessageFactoryDescription> list,
+			String defaultProfileId) {
 		this.factoryDescriptions = list;
-
+		this.defaultProfileId = defaultProfileId;
 	}
 
 	public List<CommitMessageFactoryDescription> getFactoryDescriptions() {
@@ -24,4 +26,7 @@ public class ProfileDescription {
 		return new Profile(factories);
 	}
 
+	public String getDefaultProfileId() {
+		return defaultProfileId;
+	}
 }

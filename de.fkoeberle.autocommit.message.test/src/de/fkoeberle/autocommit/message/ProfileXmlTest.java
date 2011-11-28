@@ -18,7 +18,8 @@ public class ProfileXmlTest {
 	@Test
 	public void testCreateFrom() throws IOException {
 		URL resource = getClass().getResource("testcase1.commitmessages");
-		ProfileXml profileXml = ProfileXml.createFrom(resource);
+		ProfileXml profileXml = (ProfileXml) ProfileXml
+				.loadProfileFile(resource);
 		assertEquals(2, profileXml.getFactories().size());
 		CommitMessageFactoryXml factoryXml1 = profileXml.getFactories().get(0);
 		assertEquals(FACTORY_1_ID, factoryXml1.getId());
@@ -32,25 +33,24 @@ public class ProfileXmlTest {
 	@Test
 	public void testCreateProfileDescription() throws IOException {
 		URL resource = getClass().getResource("testcase1.commitmessages");
-		ProfileXml profileXml = ProfileXml.createFrom(resource);
-		ProfileDescription profile = profileXml
-				.createProfileDescription(new DummyCMFFactory());
+		ProfileXml profileXml = (ProfileXml) ProfileXml
+				.loadProfileFile(resource);
+		ProfileDescription profile = profileXml.createProfileDescription(
+				new DummyCMFFactory(), "");
 		assertEquals(2, profile.getFactoryDescriptions().size());
-		CommitMessageFactoryDescription factory1 = (CommitMessageFactoryDescription) profile
+		CommitMessageFactoryDescription factory1 = profile
 				.getFactoryDescriptions().get(0);
 		assertEquals(Dummy1CMF.class, factory1.getFactoryClass());
-		CommitMessageFactoryDescription factory2 = (CommitMessageFactoryDescription) profile
+		CommitMessageFactoryDescription factory2 = profile
 				.getFactoryDescriptions().get(1);
 		assertEquals(Dummy2CMF.class, factory2.getFactoryClass());
 		List<CommitMessageDescription> factory2MessageDescriptions = factory2
 				.getCommitMessageDescriptions();
 		assertEquals(2, factory2MessageDescriptions.size());
 		CommitMessageDescription messageA = factory2MessageDescriptions.get(0);
-		assertEquals("value for A", messageA
-				.getCurrentValue());
+		assertEquals("value for A", messageA.getCurrentValue());
 		CommitMessageDescription messageB = factory2MessageDescriptions.get(1);
-		assertEquals("value for B", messageB
-				.getCurrentValue());
+		assertEquals("value for B", messageB.getCurrentValue());
 
 	}
 

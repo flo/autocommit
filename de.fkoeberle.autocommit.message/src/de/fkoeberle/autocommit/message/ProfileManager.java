@@ -2,7 +2,6 @@ package de.fkoeberle.autocommit.message;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -16,61 +15,56 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 public class ProfileManager {
 	private static final String FACTORY_EXTENSION_POINT_ID = "de.fkoeberle.autocommit.message.factory";
-	private final SoftReference<Profile> defaultProfile;
-	private final IRegistryEventListener factoryExtensionPointListener;
-	private final IRegistryEventListener profileExtensionPointListener;
+	private static final String PROFILE_EXTENSION_POINT_ID = "de.fkoeberle.autocommit.message.profile";
 
 	public ProfileManager() throws CoreException {
-		defaultProfile = new SoftReference<Profile>(null);
-
-		factoryExtensionPointListener = new RegistryEventListener();
-		profileExtensionPointListener = new RegistryEventListener();
-		Platform.getExtensionRegistry().addListener(
-				factoryExtensionPointListener, FACTORY_EXTENSION_POINT_ID);
 	}
 
 	public void dispose() {
-		Platform.getExtensionRegistry().removeListener(
-				factoryExtensionPointListener);
-		Platform.getExtensionRegistry().removeListener(
-				profileExtensionPointListener);
-	}
-
-	private final class RegistryEventListener implements IRegistryEventListener {
-		@Override
-		public void added(IExtension[] extensions) {
-			defaultProfile.clear();
-		}
-
-		@Override
-		public void removed(IExtension[] extensions) {
-			defaultProfile.clear();
-		}
-
-		@Override
-		public void added(IExtensionPoint[] extensionPoints) {
-			// ignore
-		}
-
-		@Override
-		public void removed(IExtensionPoint[] extensionPoints) {
-			// ignore
-		}
+		// nothing to do so far
 	}
 
 	public ProfileDescription createProfileDescriptionFor(URL resource)
 			throws IOException {
-		ProfileXml profileXml = ProfileXml.createFrom(resource);
+		Object loadedObject = ProfileXml.loadProfileFile(resource);
+		String defaultProfileId = null;
+		if (loadedObject instanceof ProfileReferenceXml) {
+			ProfileReferenceXml referenceXml = (ProfileReferenceXml) loadedObject;
+			defaultProfileId = referenceXml.getId();
+		}
+		while (loadedObject instanceof ProfileReferenceXml) {
+			ProfileReferenceXml referenceXml = (ProfileReferenceXml) loadedObject;
+			resource = getDefaultProfileResource(referenceXml.getId());
+			loadedObject = ProfileXml.loadProfileFile(resource);
+		}
+		// loadProfileFile returns only ProfileReferenceXml and ProfileXml
+		// if it's not a ProfileReferenceXml instance it must be ProfileXml
+		ProfileXml profileXml = (ProfileXml) loadedObject;
 		CMFDescriptionFactory cmfFactory = new CMFDescriptionFactory();
-		return profileXml.createProfileDescription(cmfFactory);
+		return profileXml
+				.createProfileDescription(cmfFactory, defaultProfileId);
+
+	}
+
+	private URL getDefaultProfileResource(String id) throws IOException {
+		IExtensionPoint profileExtensionPoint = Platform.getExtensionRegistry()
+				.getExtensionPoint(PROFILE_EXTENSION_POINT_ID);
+		for (IConfigurationElement element : profileExtensionPoint
+				.getConfigurationElements()) {
+			String currentId = element.getAttribute("id");
+			if (id.equals(currentId)) {
+				URL resource = getResourceAttribute(element, "path");
+				return resource;
+			}
+		}
+		throw new IOException(String.format(
+				"Unable to resolve comit message profile with id %s", id));
 	}
 
 	public Profile getProfileFor(URL resource) throws IOException {
@@ -191,6 +185,15 @@ public class ProfileManager {
 			throw new RuntimeException(e);
 		}
 		return classObject;
+	}
+
+	private URL getResourceAttribute(IConfigurationElement element,
+			String attribute) {
+		String resourcePath = element.getAttribute(attribute);
+
+		String contributorName = element.getContributor().getName();
+		Bundle contributorBundle = Platform.getBundle(contributorName);
+		return contributorBundle.getResource(resourcePath);
 	}
 
 	private Map<String, CommitMessageFactoryDescription> createFactoryIdToDescriptionMap() {
