@@ -177,7 +177,32 @@
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.AddedMethodCMF"
+            description="Generates a commit message when only a single method or constructor got added."
             id="de.fkoeberle.autocommit.message.java.AddedMethodCMF">
+          <arguments>
+            <argument
+                  description="The name of changed class prefixed with the outer types. Example: &quot;OuterClass.MiddleClass.InnerClass&quot;.">
+            </argument>
+            <argument
+                  description="The name of the added method or constructor">
+            </argument>
+            <argument
+                  description="An comma seperated list of the parameter types of the added method or constructor like &quot;String, int&quot;">
+            </argument>
+            <argument
+                  description="The name of the changed type without any prefix">
+            </argument>
+         </arguments>
+          <messages>
+             <message
+                   defaultValue="Added method {0}\#{1}({2})"
+                   fieldName="addedMethodMessage">
+             </message>
+             <message
+                   defaultValue="Added constructor {0}\#{1}({2})"
+                   fieldName="addedConstructorMessage">
+             </message>
+          </messages>
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.DocumentedTypeCMF"
