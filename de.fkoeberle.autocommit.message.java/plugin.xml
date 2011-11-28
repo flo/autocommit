@@ -327,7 +327,31 @@
       </factory>
       <factory
             class="de.fkoeberle.autocommit.message.java.DocumentedPackageCMF"
+            description="Generates a commit message when only javadoc tags got added or modified. It also generates messages when javadoc tags got removed as long as at least one javadoc tag got modified or added."
             id="de.fkoeberle.autocommit.message.java.DocumentedPackageCMF">
+         <arguments>
+            <argument
+                  description="The java package which contains the javadoc changes, or when multiple java files got modified the &quot;parent&quot; package that contains the other packages. e.g. if there were changes in the package org.example.a and org.example.b then this argument will be org.example. It doesn&apos;t have an usable value if the changes are in the default pacakge or in packages which have no parent package in common.">
+            </argument>
+         </arguments>
+         <messages>
+            <message
+                  defaultValue="Documented source in sub packages of {0}"
+                  fieldName="documentedSourceInSubPackagesOfMessage">
+            </message>
+            <message
+                  defaultValue="Documented source in package {0}"
+                  fieldName="documentedSourceInPackageMessage">
+            </message>
+            <message
+                  defaultValue="Documented source in the default package"
+                  fieldName="documentedSourceInTheDefaultPackageMessage">
+            </message>
+            <message
+                  defaultValue="Documented source"
+                  fieldName="documentedSourceMessage">
+            </message>
+         </messages>
       </factory>
    </extension>
    
