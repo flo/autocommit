@@ -153,7 +153,7 @@ public class CommitMessageComposite extends Composite {
 	}
 
 	private void setDefaultMessage(String value) {
-		captionLabel.setText(NLS.bind("Replacement of \"{0}\":", value));
+		captionLabel.setText(NLS.bind("Replacement for \"{0}\":", value));
 	}
 
 }
