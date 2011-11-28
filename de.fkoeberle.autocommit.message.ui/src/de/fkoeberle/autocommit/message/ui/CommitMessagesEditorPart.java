@@ -217,6 +217,11 @@ public class CommitMessagesEditorPart extends EditorPart {
 				setRightFactorySelection(listType, indices);
 				otherTableViewer.getTable().setSelection(new int[] {});
 			}
+			int otherSelectionCount = otherTableViewer.getTable()
+					.getSelectionCount();
+			if (indices.length == 0 && otherSelectionCount == 0) {
+				setRightFactorySelection(listType, new int[] {});
+			}
 		}
 	}
 
