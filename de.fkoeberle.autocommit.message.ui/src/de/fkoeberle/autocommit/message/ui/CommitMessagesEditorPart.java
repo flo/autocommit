@@ -61,7 +61,6 @@ public class CommitMessagesEditorPart extends EditorPart {
 	private final Model model;
 	private Table usedFactoriesTable;
 	private Composite factoriesComposite;
-	private ScrolledComposite rightComposite;
 	private Table unusedFactoriesTable;
 
 	public CommitMessagesEditorPart() {
@@ -134,23 +133,34 @@ public class CommitMessagesEditorPart extends EditorPart {
 						CMFList.UNUSED, unusedFactoriesTableViewer,
 						usedFactoriesTableViewer));
 
-		rightComposite = new ScrolledComposite(sashForm, SWT.V_SCROLL
-				| SWT.BORDER);
-		factoriesComposite = new Composite(rightComposite, SWT.NONE);
-		rightComposite.setContent(factoriesComposite);
+		Composite rightComposite = new Composite(sashForm, SWT.BORDER);
+		rightComposite.setLayout(new GridLayout(1, false));
+
+		Composite rightHeader = new Composite(rightComposite, SWT.NONE);
+		rightHeader.setLayout(new GridLayout(1, false));
+
+		Label lblSelected = new Label(rightHeader, SWT.NONE);
+		lblSelected.setText("Selected:");
+
+		final ScrolledComposite scrolledComposite = new ScrolledComposite(
+				rightComposite, SWT.V_SCROLL | SWT.BORDER);
+		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, 1, 1));
+		factoriesComposite = new Composite(scrolledComposite, SWT.NONE);
+		scrolledComposite.setContent(factoriesComposite);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		factoriesComposite.setLayout(layout);
-		rightComposite.addControlListener(new ControlAdapter() {
+		scrolledComposite.addControlListener(new ControlAdapter() {
 			@Override
 			public void controlResized(ControlEvent e) {
-				Rectangle r = rightComposite.getClientArea();
+				Rectangle r = scrolledComposite.getClientArea();
 				factoriesComposite.setSize(factoriesComposite.computeSize(
 						r.width, SWT.DEFAULT));
 				factoriesComposite.layout();
 			}
 		});
-		rightComposite.setAlwaysShowScrollBars(true);
+		scrolledComposite.setAlwaysShowScrollBars(true);
 		sashForm.setWeights(new int[] { 200, 200, 350 });
 
 		model.addDirtyPropertyListener(new IDirtyPropertyListener() {
