@@ -1,0 +1,5 @@
+<commit-message-factories>
+	<factory>
+		<id>de.fkoeberle.autocommit.message.refactor.RefactoringCommentCMF</id>
+	</factory>
+</commit-message-factories>

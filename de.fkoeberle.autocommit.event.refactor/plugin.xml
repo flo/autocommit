@@ -29,5 +29,13 @@
          </messages>
       </factory>
    </extension>
+   <extension
+         point="de.fkoeberle.autocommit.message.profile">
+      <profile
+            id="de.fkoeberle.autocommit.message.refactor.only"
+            name="Commit Messages For Refactorings Only"
+            path="refactor.commitmessages">
+      </profile>
+   </extension>
 
 </plugin>
