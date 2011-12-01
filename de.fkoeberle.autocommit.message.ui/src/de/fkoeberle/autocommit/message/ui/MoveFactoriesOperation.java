@@ -5,29 +5,23 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
-
-public class MoveFactoriesOperation extends AbstractOperation {
+public class MoveFactoriesOperation extends AbstractProfileCustomizingOperation {
 	private final WritableList sourceList;
 	private final WritableList targetList;
 	private final int[] indicesOfObjectsToMove;
 	private final int insertIndex;
 	private int insertIndexAfterElementRemoval;
-	private ProfileIdResourceAndName oldProfileId;
-	private final Model model;
 
 	public MoveFactoriesOperation(Model model, WritableList sourceList,
 			WritableList targetList, int[] indicesOfObjectsToMove,
 			int insertIndex) {
-		super("Move Commit Message Factories");
-		this.model = model;
+		super("Move Commit Message Factories", model);
 		this.sourceList = sourceList;
 		this.targetList = targetList;
 		this.indicesOfObjectsToMove = indicesOfObjectsToMove;
@@ -35,7 +29,7 @@ public class MoveFactoriesOperation extends AbstractOperation {
 	}
 
 	@Override
-	public IStatus execute(IProgressMonitor monitor, IAdaptable info)
+	public IStatus executeHook(IProgressMonitor monitor, IAdaptable info)
 			throws ExecutionException {
 		if (insertIndex > targetList.size()) {
 			throw new ExecutionException(
@@ -61,19 +55,11 @@ public class MoveFactoriesOperation extends AbstractOperation {
 		for (Object objectToMove : reverseListOfObjectsToMove) {
 			targetList.add(insertIndexAfterElementRemoval, objectToMove);
 		}
-		oldProfileId = model.getCurrentProfile();
-		model.setCurrentProfileForOperations(Model.CUSTOM_PROFILE);
 		return Status.OK_STATUS;
 	}
 
 	@Override
-	public IStatus redo(IProgressMonitor monitor, IAdaptable info)
-			throws ExecutionException {
-		return execute(monitor, info);
-	}
-
-	@Override
-	public IStatus undo(IProgressMonitor monitor, IAdaptable info)
+	public IStatus undoHook(IProgressMonitor monitor, IAdaptable info)
 			throws ExecutionException {
 		List<Object> objectsToMove = new ArrayList<Object>();
 		int numberOfObjectsToMove = indicesOfObjectsToMove.length;
@@ -86,7 +72,6 @@ public class MoveFactoriesOperation extends AbstractOperation {
 			int insertIndex = indicesOfObjectsToMove[i];
 			sourceList.add(insertIndex, object);
 		}
-		model.setCurrentProfileForOperations(oldProfileId);
 		return Status.OK_STATUS;
 	}
 
