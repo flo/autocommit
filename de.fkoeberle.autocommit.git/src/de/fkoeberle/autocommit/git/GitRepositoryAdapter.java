@@ -117,32 +117,33 @@ public class GitRepositoryAdapter implements IRepository {
 					e.printStackTrace();
 					return;
 				}
+				if (message != null) {
+					CommitCommand commitCommand = git.commit();
+					commitCommand.setMessage(message);
 
-				CommitCommand commitCommand = git.commit();
-				commitCommand.setMessage(message);
-
-				try {
-					commitCommand.call();
-				} catch (NoHeadException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return;
-				} catch (NoMessageException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return;
-				} catch (ConcurrentRefUpdateException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return;
-				} catch (JGitInternalException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return;
-				} catch (WrongRepositoryStateException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return;
+					try {
+						commitCommand.call();
+					} catch (NoHeadException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return;
+					} catch (NoMessageException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return;
+					} catch (ConcurrentRefUpdateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return;
+					} catch (JGitInternalException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return;
+					} catch (WrongRepositoryStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return;
+					}
 				}
 			}
 		} catch (IOException e) {
