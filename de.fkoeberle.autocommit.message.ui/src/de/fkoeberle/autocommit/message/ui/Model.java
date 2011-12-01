@@ -36,6 +36,7 @@ import de.fkoeberle.autocommit.message.CommitMessageFactoryXml;
 import de.fkoeberle.autocommit.message.CommitMessageTemplateXml;
 import de.fkoeberle.autocommit.message.ProfileDescription;
 import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
+import de.fkoeberle.autocommit.message.ProfileReferenceXml;
 import de.fkoeberle.autocommit.message.ProfileXml;
 
 public class Model {
@@ -52,6 +53,7 @@ public class Model {
 	private final IOperationHistoryListener operationHistoryListener;
 	private final WritableList profiles;;
 	private ProfileIdResourceAndName currentProfile;
+	private final JAXBContext jaxbContext;
 
 	public Model() {
 		this.usedFactories = new WritableList(Realm.getDefault(),
@@ -62,6 +64,13 @@ public class Model {
 				Collections.emptySet(), ProfileDescription.class);
 		this.currentProfile = CUSTOM_PROFILE;
 		this.undoContext = new ObjectUndoContext(this);
+		try {
+			this.jaxbContext = JAXBContext.newInstance(ProfileXml.class,
+					ProfileReferenceXml.class);
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
+
 		undoableOperationAtSave = null;
 
 		operationHistoryListener = new IOperationHistoryListener() {
@@ -138,15 +147,18 @@ public class Model {
 			try {
 				IFileEditorInput fileEditorInput = (IFileEditorInput) editorInput;
 				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				monitor.beginTask("Generate data structures to save", 10);
-				ProfileXml profileXml = createProfileXml();
-				monitor.beginTask("Generate XML to write", 10);
-				JAXBContext context = JAXBContext.newInstance(ProfileXml.class);
-				Marshaller marshaller = context.createMarshaller();
+				monitor.beginTask("Generating data structures to save", 10);
+
+				Marshaller marshaller = jaxbContext.createMarshaller();
 				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
 						Boolean.TRUE);
-				monitor.worked(5);
-				marshaller.marshal(profileXml, byteArrayOutputStream);
+				Object objectToMarshall;
+				if (currentProfile == CUSTOM_PROFILE) {
+					objectToMarshall = createProfileXml();
+				} else {
+					objectToMarshall = createProfileReferenceXml();
+				}
+				marshaller.marshal(objectToMarshall, byteArrayOutputStream);
 				monitor.beginTask("Writing data", 90);
 				byte[] data = byteArrayOutputStream.toByteArray();
 				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
@@ -167,6 +179,12 @@ public class Model {
 			throw new RuntimeException(
 					"Saving is not supported for this input type. Editing should not have been possible!");
 		}
+	}
+
+	private ProfileReferenceXml createProfileReferenceXml() {
+		ProfileReferenceXml profileReferenceXml = new ProfileReferenceXml();
+		profileReferenceXml.setId(currentProfile.getId());
+		return profileReferenceXml;
 	}
 
 	private ProfileXml createProfileXml() {
