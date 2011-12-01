@@ -36,7 +36,7 @@
          point="de.fkoeberle.autocommit.message.profile">
       <profile
             id="de.fkoeberle.autocommit.message.tex"
-            name="Tex Profile"
+            name="Commit messages for LaTeX code"
             path="tex.commitmessages">
       </profile>
    </extension>

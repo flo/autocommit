@@ -1,6 +1,7 @@
 package de.fkoeberle.autocommit.message.ui;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -28,10 +29,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.CommitMessageDescription;
+import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
+import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
 import de.fkoeberle.autocommit.message.ui.Model.CMFList;
 
 public class ModelTest {
 
+	private static final String FIVE_DUMMIES_ID = "fiveDummiesId";
 	private IProject project;
 	private Model model;
 
@@ -307,7 +312,79 @@ public class ModelTest {
 	}
 
 	@Test
-	public void testMoveFactoryByMovingFactoriesAtIndex0and1ToIndex3()
+	public void testResetCommitMessage() throws Exception {
+		IEditorInput editorInput = createInputFromResource("fiveDummies.commitmessages");
+		model.load(editorInput);
+
+		Object firstObject = model.getFactoryDescriptions().get(0);
+		CommitMessageFactoryDescription firstFactory = (CommitMessageFactoryDescription) firstObject;
+
+		CommitMessageDescription commitMessageDescription = firstFactory
+				.getCommitMessageDescriptions().get(0);
+		String initialCurrentValue = "current value";
+		String initialDefaultValue = commitMessageDescription.getDefaultValue();
+		commitMessageDescription.setCurrentValue(initialCurrentValue);
+		assertFalse(model.isDirty());
+		ProfileIdResourceAndName initialProfileId = model.getCurrentProfile();
+		assertEquals(FIVE_DUMMIES_ID, initialProfileId.getId());
+
+		model.resetMessage(commitMessageDescription);
+
+		for (int undoRedoIteration = 0; undoRedoIteration < 2; undoRedoIteration++) {
+			assertEquals(initialDefaultValue,
+					commitMessageDescription.getCurrentValue());
+			assertTrue(model.isDirty());
+			assertSame(Model.CUSTOM_PROFILE, model.getCurrentProfile());
+
+			undoLastOperation();
+
+			assertEquals(initialCurrentValue,
+					commitMessageDescription.getCurrentValue());
+			assertFalse(model.isDirty());
+			assertSame(initialProfileId, model.getCurrentProfile());
+
+			redoLastOperation();
+		}
+	}
+
+	@Test
+	public void testSetCommitMessage() throws Exception {
+		IEditorInput editorInput = createInputFromResource("fiveDummies.commitmessages");
+		model.load(editorInput);
+
+		Object firstObject = model.getFactoryDescriptions().get(0);
+		CommitMessageFactoryDescription firstFactory = (CommitMessageFactoryDescription) firstObject;
+
+		CommitMessageDescription commitMessageDescription = firstFactory
+				.getCommitMessageDescriptions().get(0);
+		String initialCurrentValue = "current value";
+		String assignedValue = "new value";
+		commitMessageDescription.setCurrentValue(initialCurrentValue);
+		assertFalse(model.isDirty());
+		ProfileIdResourceAndName initialProfileId = model.getCurrentProfile();
+		assertEquals(FIVE_DUMMIES_ID, initialProfileId.getId());
+
+		model.setMessage(commitMessageDescription, assignedValue);
+
+		for (int undoRedoIteration = 0; undoRedoIteration < 2; undoRedoIteration++) {
+			assertEquals(assignedValue,
+					commitMessageDescription.getCurrentValue());
+			assertTrue(model.isDirty());
+			assertSame(Model.CUSTOM_PROFILE, model.getCurrentProfile());
+
+			undoLastOperation();
+
+			assertEquals(initialCurrentValue,
+					commitMessageDescription.getCurrentValue());
+			assertFalse(model.isDirty());
+			assertSame(initialProfileId, model.getCurrentProfile());
+
+			redoLastOperation();
+		}
+	}
+
+	@Test
+	public void testMoveFactoryByMovingFactoriesAtIndex0and1ToIndex3AndSwitchToCustomProfile()
 			throws Exception {
 		IEditorInput editorInput = createInputFromResource("fiveDummies.commitmessages");
 		model.load(editorInput);
@@ -317,6 +394,9 @@ public class ModelTest {
 		@SuppressWarnings("unchecked")
 		ArrayList<?> oldUnusedFactories = new ArrayList<Object>(
 				model.getUnusedFactoryDescriptions());
+		assertFalse(model.isDirty());
+		ProfileIdResourceAndName initialProfileId = model.getCurrentProfile();
+		assertEquals(FIVE_DUMMIES_ID, initialProfileId.getId());
 
 		model.moveFactories(CMFList.USED, CMFList.USED, new int[] { 0, 1 }, 3);
 
@@ -334,9 +414,9 @@ public class ModelTest {
 			assertSame(oldUsedFactories.get(4), newUsedFactories.get(2));
 			assertSame(oldUsedFactories.get(0), newUsedFactories.get(3));
 			assertSame(oldUsedFactories.get(1), newUsedFactories.get(4));
-
 			assertEquals(oldUnusedFactories, newUnusedFactories);
-
+			assertTrue(model.isDirty());
+			assertSame(Model.CUSTOM_PROFILE, model.getCurrentProfile());
 			assertTrue(model.isDirty());
 
 			undoLastOperation();
@@ -349,6 +429,8 @@ public class ModelTest {
 					model.getUnusedFactoryDescriptions());
 			assertEquals(oldUsedFactories, restoredUsedFactories);
 			assertEquals(oldUnusedFactories, restoredUnusedFactories);
+			assertFalse(model.isDirty());
+			assertSame(initialProfileId, model.getCurrentProfile());
 
 			redoLastOperation();
 		}

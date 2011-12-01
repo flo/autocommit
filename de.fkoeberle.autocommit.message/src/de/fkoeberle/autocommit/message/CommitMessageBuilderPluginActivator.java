@@ -61,4 +61,8 @@ public class CommitMessageBuilderPluginActivator extends Plugin {
 
 		return plugin.profileManager.findMissingFactories(profileDescription);
 	}
+
+	public static Collection<ProfileIdResourceAndName> getDefaultProfiles() {
+		return plugin.profileManager.getDefaultProfiles();
+	}
 }

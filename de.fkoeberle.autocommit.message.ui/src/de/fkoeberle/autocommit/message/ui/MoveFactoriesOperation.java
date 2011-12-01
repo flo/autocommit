@@ -12,17 +12,22 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
+import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
+
 public class MoveFactoriesOperation extends AbstractOperation {
 	private final WritableList sourceList;
 	private final WritableList targetList;
 	private final int[] indicesOfObjectsToMove;
 	private final int insertIndex;
 	private int insertIndexAfterElementRemoval;
+	private ProfileIdResourceAndName oldProfileId;
+	private final Model model;
 
-	public MoveFactoriesOperation(WritableList sourceList,
+	public MoveFactoriesOperation(Model model, WritableList sourceList,
 			WritableList targetList, int[] indicesOfObjectsToMove,
 			int insertIndex) {
 		super("Move Commit Message Factories");
+		this.model = model;
 		this.sourceList = sourceList;
 		this.targetList = targetList;
 		this.indicesOfObjectsToMove = indicesOfObjectsToMove;
@@ -56,6 +61,8 @@ public class MoveFactoriesOperation extends AbstractOperation {
 		for (Object objectToMove : reverseListOfObjectsToMove) {
 			targetList.add(insertIndexAfterElementRemoval, objectToMove);
 		}
+		oldProfileId = model.getCurrentProfile();
+		model.setCurrentProfileForOperations(Model.CUSTOM_PROFILE);
 		return Status.OK_STATUS;
 	}
 
@@ -79,7 +86,7 @@ public class MoveFactoriesOperation extends AbstractOperation {
 			int insertIndex = indicesOfObjectsToMove[i];
 			sourceList.add(insertIndex, object);
 		}
-
+		model.setCurrentProfileForOperations(oldProfileId);
 		return Status.OK_STATUS;
 	}
 

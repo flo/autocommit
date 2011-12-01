@@ -35,9 +35,12 @@ import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryXml;
 import de.fkoeberle.autocommit.message.CommitMessageTemplateXml;
 import de.fkoeberle.autocommit.message.ProfileDescription;
+import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
 import de.fkoeberle.autocommit.message.ProfileXml;
 
 public class Model {
+	public static final ProfileIdResourceAndName CUSTOM_PROFILE = new ProfileIdResourceAndName(
+			null, null, "Custom commit messages");
 	private final WritableList usedFactories;;
 	private final WritableList unusedFactories;;
 	private IEditorInput editorInput;
@@ -45,13 +48,19 @@ public class Model {
 	private IUndoableOperation undoableOperationAtSave;
 	private boolean dirty;
 	private final List<IDirtyPropertyListener> dirtyPropertyListenerList = new ArrayList<Model.IDirtyPropertyListener>();
+	private final List<ICurrentProfileListener> currentProfileListenerList = new ArrayList<Model.ICurrentProfileListener>();
 	private final IOperationHistoryListener operationHistoryListener;
+	private final WritableList profiles;;
+	private ProfileIdResourceAndName currentProfile;
 
 	public Model() {
 		this.usedFactories = new WritableList(Realm.getDefault(),
 				Collections.emptySet(), CommitMessageFactoryDescription.class);
 		this.unusedFactories = new WritableList(Realm.getDefault(),
 				Collections.emptySet(), CommitMessageFactoryDescription.class);
+		this.profiles = new WritableList(Realm.getDefault(),
+				Collections.emptySet(), ProfileDescription.class);
+		this.currentProfile = CUSTOM_PROFILE;
 		this.undoContext = new ObjectUndoContext(this);
 		undoableOperationAtSave = null;
 
@@ -92,14 +101,36 @@ public class Model {
 		}
 		ProfileDescription profileDescription = CommitMessageBuilderPluginActivator
 				.createProfileDescription(url);
+		loadFactoriesFor(profileDescription);
+		profiles.clear();
+		profiles.add(CUSTOM_PROFILE);
+		profiles.addAll(CommitMessageBuilderPluginActivator
+				.getDefaultProfiles());
+		String profileId = profileDescription.getDefaultProfileId();
+		if (profileId == null) {
+			setCurrentProfileForOperations(CUSTOM_PROFILE);
+		} else {
+			for (Object profileObject : profiles) {
+				ProfileIdResourceAndName profile = (ProfileIdResourceAndName) profileObject;
+				if (profileId.equals(profile.getId())) {
+					setCurrentProfileForOperations(profile);
+				}
+			}
+		}
+		this.editorInput = editorInput;
+	}
+
+	/**
+	 * Should NOT be called from UI classes. It's accessible for operations
+	 * 
+	 * @param profileDescription
+	 */
+	void loadFactoriesFor(ProfileDescription profileDescription) {
 		usedFactories.clear();
 		usedFactories.addAll(profileDescription.getFactoryDescriptions());
 		unusedFactories.clear();
 		unusedFactories.addAll(CommitMessageBuilderPluginActivator
 				.findMissingFactories(profileDescription));
-
-		this.editorInput = editorInput;
-
 	}
 
 	public void save(IProgressMonitor monitor) throws IOException {
@@ -189,7 +220,7 @@ public class Model {
 	public void resetMessage(CommitMessageDescription messageDescription)
 			throws ExecutionException {
 		ResetCommitMessageOperation operation = new ResetCommitMessageOperation(
-				messageDescription);
+				this, messageDescription);
 		runOperation(operation);
 	}
 
@@ -221,7 +252,7 @@ public class Model {
 	public void setMessage(CommitMessageDescription messageDescription,
 			String value) throws ExecutionException {
 		SetCommitMessageOperation operation = new SetCommitMessageOperation(
-				messageDescription, value);
+				this, messageDescription, value);
 		runOperation(operation);
 	}
 
@@ -272,10 +303,46 @@ public class Model {
 
 	public void moveFactories(CMFList sourceListType, CMFList targetListType,
 			int[] selectionIndices, int insertIndex) throws ExecutionException {
-		MoveFactoriesOperation operation = new MoveFactoriesOperation(
+		MoveFactoriesOperation operation = new MoveFactoriesOperation(this,
 				getList(sourceListType), getList(targetListType),
 				selectionIndices, insertIndex);
 		runOperation(operation);
+	}
+
+	public WritableList getProfiles() {
+		return profiles;
+	}
+
+	public ProfileIdResourceAndName getCurrentProfile() {
+		return currentProfile;
+	}
+
+	interface ICurrentProfileListener {
+		void currentProfileChanged();
+	}
+
+	public void switchToProfile(ProfileIdResourceAndName profile)
+			throws ExecutionException {
+		/*
+		 * Avoid unnecessary undo entries and a set dirty flag at start.
+		 */
+		if (profile.equals(currentProfile)) {
+			return;
+		}
+		runOperation(new SwitchProfileOperation(this, profile));
+	}
+
+	void setCurrentProfileForOperations(ProfileIdResourceAndName profile) {
+		if (this.currentProfile != profile) {
+			this.currentProfile = profile;
+			for (ICurrentProfileListener listener : currentProfileListenerList) {
+				listener.currentProfileChanged();
+			}
+		}
+	}
+
+	public void addCurrentProfileListener(ICurrentProfileListener listener) {
+		currentProfileListenerList.add(listener);
 	}
 
 }

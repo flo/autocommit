@@ -6,13 +6,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -24,7 +28,6 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -46,19 +49,13 @@ import org.eclipse.ui.part.EditorPart;
 
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
 import de.fkoeberle.autocommit.message.WorkedOnPathCMF;
 import de.fkoeberle.autocommit.message.ui.Model.CMFList;
+import de.fkoeberle.autocommit.message.ui.Model.ICurrentProfileListener;
 import de.fkoeberle.autocommit.message.ui.Model.IDirtyPropertyListener;
 
 public class CommitMessagesEditorPart extends EditorPart {
-	private final class FactoryLabelProvider extends LabelProvider {
-		@Override
-		public String getText(Object element) {
-			CommitMessageFactoryDescription factoryDescription = (CommitMessageFactoryDescription) element;
-			return factoryDescription.getTitle();
-		}
-	}
-
 	public static final String ID = "de.fkoeberle.autocommit.message.ui.CommitMessagesEditorPart"; //$NON-NLS-1$
 	private final Model model;
 	private Table usedFactoriesTable;
@@ -83,19 +80,44 @@ public class CommitMessagesEditorPart extends EditorPart {
 		container.setLayout(new GridLayout(1, false));
 
 		Composite header = new Composite(container, SWT.NONE);
-		header.setLayout(new GridLayout(3, false));
+		header.setLayout(new GridLayout(2, false));
 
 		Label generateLabel = new Label(header, SWT.NONE);
+		generateLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
+				false, 1, 1));
 		generateLabel.setText("Generate:");
-		Combo combo = new Combo(header, SWT.NONE);
-		combo.setItems(new String[] { "Custom commit messages",
-				"Commit messages for Java code",
-				"Commit messages for LaTeX code",
-				"Commit messages for refactorings only" });
-		combo.select(0);
 
-		Point comboSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-		combo.setLayoutData(new GridData(300, comboSize.y));
+		final ComboViewer comboViewer = new ComboViewer(header, SWT.READ_ONLY);
+		final Combo combo = comboViewer.getCombo();
+		GridData comboLayoutData = new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1);
+		comboLayoutData.widthHint = 315;
+		combo.setLayoutData(comboLayoutData);
+		comboViewer
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+
+					@Override
+					public void selectionChanged(SelectionChangedEvent event) {
+						IStructuredSelection selection = (IStructuredSelection) comboViewer
+								.getSelection();
+						Object selectedObject = selection.iterator().next();
+						try {
+							model.switchToProfile((ProfileIdResourceAndName) selectedObject);
+						} catch (ExecutionException e) {
+							reportError(combo.getShell(),
+									"Failed to switch profile", e);
+						}
+					}
+				});
+
+		comboViewer.setContentProvider(new ObservableListContentProvider());
+		comboViewer.setLabelProvider(new DefaultProfileLabelProvider());
+		comboViewer.setInput(model.getProfiles());
+
+		ProfileComboBoxUpdater profileComboBoxUpdater = new ProfileComboBoxUpdater(
+				comboViewer);
+		model.addCurrentProfileListener(new ProfileComboBoxUpdater(comboViewer));
+		profileComboBoxUpdater.currentProfileChanged();
 
 		SashForm sashForm = new SashForm(container, SWT.NONE);
 		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
@@ -226,6 +248,29 @@ public class CommitMessagesEditorPart extends EditorPart {
 						listIdToTableViewerMap));
 	}
 
+	private final class ProfileComboBoxUpdater implements
+			ICurrentProfileListener {
+		private final ComboViewer comboViewer;
+
+		private ProfileComboBoxUpdater(ComboViewer comboViewer) {
+			this.comboViewer = comboViewer;
+		}
+
+		@Override
+		public void currentProfileChanged() {
+			IStructuredSelection selection = (IStructuredSelection) comboViewer
+					.getSelection();
+			if (!selection.isEmpty()) {
+				Object selectedObject = selection.iterator().next();
+				if (selectedObject == model.getCurrentProfile()) {
+					return;
+				}
+			}
+			comboViewer.setSelection(
+					new StructuredSelection(model.getCurrentProfile()), true);
+		}
+	}
+
 	private final class FactoriesSelectionListener implements
 			ISelectionChangedListener {
 		private final CMFList listType;
@@ -318,10 +363,13 @@ public class CommitMessagesEditorPart extends EditorPart {
 
 	private void createUndoAndRedoActionHandlers(IEditorSite site) {
 		IActionBars actionBars = site.getActionBars();
-		actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
-				new UndoActionHandler(site, model.getUndoContext()));
-		actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
-				new RedoActionHandler(site, model.getUndoContext()));
+		// null check is a workaround around a WindowBuilder parser bug
+		if (model != null) {
+			actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
+					new UndoActionHandler(site, model.getUndoContext()));
+			actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
+					new RedoActionHandler(site, model.getUndoContext()));
+		}
 	}
 
 	public static void reportError(Shell shell, String message, Exception e) {
@@ -332,5 +380,24 @@ public class CommitMessagesEditorPart extends EditorPart {
 				.getLog()
 				.log(new Status(Status.ERROR, Activator.PLUGIN_ID, Status.OK,
 						message, e));
+	}
+
+	private final class FactoryLabelProvider extends LabelProvider {
+		@Override
+		public String getText(Object element) {
+			CommitMessageFactoryDescription factoryDescription = (CommitMessageFactoryDescription) element;
+			return factoryDescription.getTitle();
+		}
+	}
+
+	private final class DefaultProfileLabelProvider extends LabelProvider {
+		@Override
+		public String getText(Object element) {
+			ProfileIdResourceAndName factoryDescription = (ProfileIdResourceAndName) element;
+			if (element == null) {
+				return "Custom Commit Messages";
+			}
+			return factoryDescription.getName();
+		}
 	}
 }

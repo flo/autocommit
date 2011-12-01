@@ -234,4 +234,18 @@ public class ProfileManager {
 		}
 		return map.values();
 	}
+
+	public Collection<ProfileIdResourceAndName> getDefaultProfiles() {
+		IExtensionPoint profileExtensionPoint = Platform.getExtensionRegistry()
+				.getExtensionPoint(PROFILE_EXTENSION_POINT_ID);
+		List<ProfileIdResourceAndName> list = new ArrayList<ProfileIdResourceAndName>();
+		for (IConfigurationElement element : profileExtensionPoint
+				.getConfigurationElements()) {
+			String name = element.getAttribute("name");
+			String id = element.getAttribute("id");
+			URL resource = getResourceAttribute(element, "path");
+			list.add(new ProfileIdResourceAndName(id, resource, name));
+		}
+		return list;
+	}
 }
