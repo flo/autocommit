@@ -47,7 +47,7 @@ import de.fkoeberle.autocommit.message.ui.Model.ICurrentProfileListener;
 import de.fkoeberle.autocommit.message.ui.Model.IDirtyPropertyListener;
 
 public class AdvancedPage extends FormPage {
-	public static final String ID = "de.fkoeberle.autocommit.message.ui.CommitMessagesEditorPart"; //$NON-NLS-1$
+	public static final String ID = "de.fkoeberle.autocommit.message.ui.AdvancedPage"; //$NON-NLS-1$
 	private final Model model;
 	private Table usedFactoriesTable;
 	private Composite factoriesComposite;
