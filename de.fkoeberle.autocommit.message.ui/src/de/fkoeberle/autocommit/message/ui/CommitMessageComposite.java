@@ -102,7 +102,7 @@ public class CommitMessageComposite extends Composite {
 				try {
 					model.setMessage(messageDescription, field.getText());
 				} catch (ExecutionException ex) {
-					CommitMessagesEditorPart.reportError(
+					CMFMultiPageEditorPart.reportError(
 							CommitMessageComposite.this.getShell(),
 							"Failed to set commit message", ex);
 				}
@@ -123,7 +123,7 @@ public class CommitMessageComposite extends Composite {
 			try {
 				model.resetMessage(messageDescription);
 			} catch (ExecutionException e) {
-				CommitMessagesEditorPart.reportError(
+				CMFMultiPageEditorPart.reportError(
 						CommitMessageComposite.this.getShell(),
 						"Failed to reset commit message", e);
 			}

@@ -64,7 +64,7 @@ public class CMFDropAdapter extends ViewerDropAdapter {
 			model.moveFactories(sourceListType, targetListType, sourceTable
 					.getTable().getSelectionIndices(), insertIndex);
 		} catch (ExecutionException e) {
-			CommitMessagesEditorPart.reportError(targetTable.getTable()
+			CMFMultiPageEditorPart.reportError(targetTable.getTable()
 					.getShell(), "Drop failed", e);
 			return false;
 		}

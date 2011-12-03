@@ -1,13 +1,10 @@
 package de.fkoeberle.autocommit.message.ui;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -38,34 +35,27 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.operations.RedoActionHandler;
-import org.eclipse.ui.operations.UndoActionHandler;
-import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
-import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
-import de.fkoeberle.autocommit.message.WorkedOnPathCMF;
 import de.fkoeberle.autocommit.message.ui.Model.CMFList;
 import de.fkoeberle.autocommit.message.ui.Model.ICurrentProfileListener;
 import de.fkoeberle.autocommit.message.ui.Model.IDirtyPropertyListener;
 
-public class CommitMessagesEditorPart extends EditorPart {
+public class AdvancedPage extends FormPage {
 	public static final String ID = "de.fkoeberle.autocommit.message.ui.CommitMessagesEditorPart"; //$NON-NLS-1$
 	private final Model model;
 	private Table usedFactoriesTable;
 	private Composite factoriesComposite;
 	private Table unusedFactoriesTable;
 
-	public CommitMessagesEditorPart() {
-		ArrayList<ICommitMessageFactory> factories = new ArrayList<ICommitMessageFactory>();
-		factories.add(new WorkedOnPathCMF());
-		model = new Model();
+	public AdvancedPage(FormEditor editor, Model model) {
+		super(editor, ID, "Advanced");
+		this.model = model;
 	}
 
 	/**
@@ -74,7 +64,18 @@ public class CommitMessagesEditorPart extends EditorPart {
 	 * @param parent
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createFormContent(IManagedForm managedForm) {
+		super.createFormContent(managedForm);
+
+		ScrolledForm scrolledForm = managedForm.getForm();
+		// TODO documentation says I should use the toolkit to create form child
+		// elements like buttons
+		// FormToolkit toolkit = managedForm.getToolkit();
+		//
+		//
+		// TODO do I want a title?
+		// scrolledForm.setText("Hello World");
+		Composite parent = scrolledForm.getBody();
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new GridLayout(1, false));
@@ -318,40 +319,6 @@ public class CommitMessagesEditorPart extends EditorPart {
 	}
 
 	@Override
-	public void setFocus() {
-		// Set the focus
-
-	}
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		try {
-			model.save(monitor);
-		} catch (IOException e) {
-			reportError(getEditorSite().getShell(), "Saving failed", e);
-		}
-	}
-
-	@Override
-	public void doSaveAs() {
-		// Do the Save As operation
-	}
-
-	@Override
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
-		setSite(site);
-		setInput(input);
-		try {
-			model.load(input);
-		} catch (IOException e) {
-			reportError(this.getSite().getShell(),
-					"Loading failed. See error log for details", e);
-		}
-		createUndoAndRedoActionHandlers(site);
-	}
-
-	@Override
 	public boolean isDirty() {
 		return model.isDirty();
 	}
@@ -359,17 +326,6 @@ public class CommitMessagesEditorPart extends EditorPart {
 	@Override
 	public boolean isSaveAsAllowed() {
 		return false;
-	}
-
-	private void createUndoAndRedoActionHandlers(IEditorSite site) {
-		IActionBars actionBars = site.getActionBars();
-		// null check is a workaround around a WindowBuilder parser bug
-		if (model != null) {
-			actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
-					new UndoActionHandler(site, model.getUndoContext()));
-			actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
-					new RedoActionHandler(site, model.getUndoContext()));
-		}
 	}
 
 	public static void reportError(Shell shell, String message, Exception e) {
