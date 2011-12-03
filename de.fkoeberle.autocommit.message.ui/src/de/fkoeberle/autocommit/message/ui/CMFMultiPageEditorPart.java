@@ -93,6 +93,7 @@ public class CMFMultiPageEditorPart extends FormEditor {
 	@Override
 	protected void addPages() {
 		try {
+			addPage(new OverviewPage(this, model));
 			addPage(new AdvancedPage(this, model));
 		} catch (PartInitException e) {
 			throw new RuntimeException(e);
