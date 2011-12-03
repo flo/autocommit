@@ -62,7 +62,11 @@ public class Model {
 				Collections.emptySet(), CommitMessageFactoryDescription.class);
 		this.profiles = new WritableList(Realm.getDefault(),
 				Collections.emptySet(), ProfileDescription.class);
+		profiles.addAll(CommitMessageBuilderPluginActivator
+				.getDefaultProfiles());
+		profiles.add(CUSTOM_PROFILE);
 		this.currentProfile = CUSTOM_PROFILE;
+
 		this.undoContext = new ObjectUndoContext(this);
 		try {
 			this.jaxbContext = JAXBContext.newInstance(ProfileXml.class,
@@ -111,10 +115,6 @@ public class Model {
 		ProfileDescription profileDescription = CommitMessageBuilderPluginActivator
 				.createProfileDescription(url);
 		loadFactoriesFor(profileDescription);
-		profiles.clear();
-		profiles.add(CUSTOM_PROFILE);
-		profiles.addAll(CommitMessageBuilderPluginActivator
-				.getDefaultProfiles());
 		String profileId = profileDescription.getDefaultProfileId();
 		if (profileId == null) {
 			setCurrentProfileForOperations(CUSTOM_PROFILE);
