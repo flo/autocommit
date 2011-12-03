@@ -51,14 +51,12 @@ public class OverviewPage extends FormPage {
 		managedForm.getToolkit().paintBordersFor(sctnSelectHowCommit);
 		sctnSelectHowCommit
 				.setText("Select which commit messages should be generated:");
-		sctnSelectHowCommit.setExpanded(true);
 
 		Composite profileRadioButtonsComposite = managedForm.getToolkit()
 				.createComposite(sctnSelectHowCommit, SWT.NONE);
 		managedForm.getToolkit().paintBordersFor(profileRadioButtonsComposite);
 		sctnSelectHowCommit.setClient(profileRadioButtonsComposite);
 		profileRadioButtonsComposite.setLayout(new GridLayout(1, false));
-
 		for (Object object : model.getProfiles()) {
 			final ProfileIdResourceAndName profile = (ProfileIdResourceAndName) object;
 			Composite rowComposite = toolkit
@@ -95,6 +93,13 @@ public class OverviewPage extends FormPage {
 			}
 			listener.currentProfileChanged();
 		}
+		/*
+		 * setExpanded needs to be called after creating the content. Since
+		 * eclipse 3.7 seems to not create the section content properly
+		 * otherwise.
+		 */
+		sctnSelectHowCommit.setExpanded(true);
+
 	}
 
 	private final class RadioButtonSelectionListener implements
