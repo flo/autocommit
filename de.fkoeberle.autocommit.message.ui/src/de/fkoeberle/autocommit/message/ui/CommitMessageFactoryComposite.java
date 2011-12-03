@@ -6,8 +6,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import de.fkoeberle.autocommit.message.CommitMessageDescription;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
@@ -18,12 +20,13 @@ public class CommitMessageFactoryComposite extends Composite {
 	private final Label descriptionLabel;
 	private final Group grpFactory;
 	private final Model model;
+	private final FormToolkit toolkit;
 
 	/**
 	 * Constructor only used for preview
 	 */
 	public CommitMessageFactoryComposite(Composite parent, int style) {
-		this(parent, style, null, null);
+		this(parent, style, null, null, new FormToolkit(Display.getCurrent()));
 	}
 
 	/**
@@ -31,39 +34,41 @@ public class CommitMessageFactoryComposite extends Composite {
 	 * 
 	 */
 	public CommitMessageFactoryComposite(Composite parent, int style,
-			Model model, CommitMessageFactoryDescription factoryDescription) {
+			Model model, CommitMessageFactoryDescription factoryDescription,
+			FormToolkit toolkit) {
 		super(parent, SWT.NONE);
+		toolkit.adapt(this);
 		this.model = model;
+		this.toolkit = toolkit;
 		setLayout(new GridLayout(1, false));
 		grpFactory = new Group(this, SWT.NONE);
 		grpFactory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
 		grpFactory.setText(factoryDescription.getTitle());
 		grpFactory.setLayout(new GridLayout(1, false));
+		toolkit.adapt(grpFactory);
 
-		descriptionLabel = new Label(grpFactory, SWT.WRAP);
-		descriptionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true,
-				false, 1, 1));
-		descriptionLabel.setBounds(0, 0, 100, 100);
 		String description = factoryDescription.getDescription();
 		if (description == null) {
 			description = "placeholder description";
 		}
-		descriptionLabel.setText(description);
+		descriptionLabel = toolkit.createLabel(grpFactory, description,
+				SWT.WRAP);
+		descriptionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true,
+				false, 1, 1));
+		descriptionLabel.setBounds(0, 0, 100, 100);
 
-		Label argumentsLabel = new Label(grpFactory, SWT.NONE);
-		argumentsLabel.setText("Available Placeholders:");
+		toolkit.createLabel(grpFactory, "Available Placeholders:");
 
-		argumentsComposite = new Composite(grpFactory, SWT.NONE);
+		argumentsComposite = toolkit.createComposite(grpFactory, SWT.NONE);
 		argumentsComposite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
 				true, false, 1, 1));
 		argumentsComposite.setLayout(new GridLayout(2, false));
 
-		Label messagesLabel = new Label(grpFactory, SWT.NONE);
-		messagesLabel.setText("Generated Messages:");
+		toolkit.createLabel(grpFactory, "Generated Messages:");
 		createArgumentDescriptions(factoryDescription);
 
-		messagesComposite = new Composite(grpFactory, SWT.NONE);
+		messagesComposite = toolkit.createComposite(grpFactory);
 		messagesComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 				true, false, 1, 1));
 		messagesComposite.setLayout(new GridLayout(1, false));
@@ -88,12 +93,14 @@ public class CommitMessageFactoryComposite extends Composite {
 				.getArgumentDescriptions();
 		for (int i = 0; i < argumentDescriptions.size(); i++) {
 			String argumentDescription = argumentDescriptions.get(i);
-			Label numberLabel = new Label(argumentsComposite, SWT.NONE);
-			numberLabel.setText(String.format("{%d}", i));
+			String numberString = String.format("{%d}", i);
+			Label numberLabel = toolkit.createLabel(argumentsComposite,
+					numberString);
 			numberLabel.setLayoutData(new GridData(SWT.TOP, SWT.TOP, false,
 					false, 1, 1));
-			Label descriptionLabel = new Label(argumentsComposite, SWT.WRAP);
-			descriptionLabel.setText(argumentDescription);
+
+			Label descriptionLabel = toolkit.createLabel(argumentsComposite,
+					argumentDescription, SWT.WRAP);
 			descriptionLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 					true, false, 1, 1));
 		}
@@ -105,7 +112,8 @@ public class CommitMessageFactoryComposite extends Composite {
 				.getCommitMessageDescriptions();
 		for (CommitMessageDescription messageDescription : messageDescriptions) {
 			CommitMessageComposite messageComposite = new CommitMessageComposite(
-					messagesComposite, SWT.NONE, messageDescription, model);
+					messagesComposite, SWT.NONE, messageDescription, model,
+					toolkit);
 
 			messageComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 					true, false, 1, 1));

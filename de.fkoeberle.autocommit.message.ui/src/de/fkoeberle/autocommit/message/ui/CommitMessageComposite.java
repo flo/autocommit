@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import de.fkoeberle.autocommit.message.CommitMessageDescription;
 
@@ -31,14 +32,17 @@ public class CommitMessageComposite extends Composite {
 	 * @param parent
 	 * @param style
 	 * @param messageDescription
+	 * @param toolkit
 	 */
 	public CommitMessageComposite(Composite parent, int style,
-
-	CommitMessageDescription messageDescription, final Model model) {
+			CommitMessageDescription messageDescription, final Model model,
+			FormToolkit toolkit) {
 		super(parent, style);
+		toolkit.adapt(this);
 		this.messageDescription = messageDescription;
 		setLayout(new GridLayout(1, false));
-		Composite headerComposite = new Composite(this, SWT.NONE);
+		Composite headerComposite = toolkit.createComposite(this, SWT.NONE);
+		toolkit.adapt(headerComposite);
 		headerComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
 		headerComposite.setBounds(0, 0, 259, 17);
@@ -47,9 +51,10 @@ public class CommitMessageComposite extends Composite {
 		gl_headerComposite.horizontalSpacing = 0;
 		headerComposite.setLayout(gl_headerComposite);
 
-		captionLabel = new Label(headerComposite, SWT.NONE);
+		captionLabel = toolkit.createLabel(headerComposite, "", SWT.NONE);
 
 		Composite bodyComposite = new Composite(this, SWT.NONE);
+		toolkit.adapt(bodyComposite);
 		bodyComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
 		bodyComposite.setBounds(0, 0, 454, 26);
@@ -57,17 +62,16 @@ public class CommitMessageComposite extends Composite {
 		gl_bodyComposite.marginHeight = 0;
 		bodyComposite.setLayout(gl_bodyComposite);
 
-		field = new Text(bodyComposite, SWT.BORDER);
+		field = toolkit.createText(bodyComposite, "", SWT.BORDER);
 		field.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
 		ModifyListener modifyListener = new TextModificationListener(model);
 		field.addModifyListener(modifyListener);
 
-		resetButton = new Button(bodyComposite, SWT.NONE);
+		resetButton = toolkit.createButton(bodyComposite, "Reset", SWT.NONE);
 		resetButton.addSelectionListener(new ResetButtonClickListener(model));
 		resetButton
 				.setToolTipText("Resets the replacement to the default value");
-		resetButton.setText("Reset");
 
 		setDefaultMessage(messageDescription.getDefaultValue());
 		setCurrentMessage(messageDescription.getCurrentValue());

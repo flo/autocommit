@@ -38,7 +38,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
 
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
@@ -66,50 +68,35 @@ public class AdvancedPage extends FormPage {
 	@Override
 	public void createFormContent(IManagedForm managedForm) {
 		super.createFormContent(managedForm);
-
+		FormToolkit toolkit = managedForm.getToolkit();
 		ScrolledForm scrolledForm = managedForm.getForm();
-		// TODO documentation says I should use the toolkit to create form child
-		// elements like buttons
-		// FormToolkit toolkit = managedForm.getToolkit();
-		//
-		//
-		// TODO do I want a title?
-		// scrolledForm.setText("Hello World");
+		Composite body = scrolledForm.getBody();
+		toolkit.decorateFormHeading(scrolledForm.getForm());
+		toolkit.paintBordersFor(body);
+
+		scrolledForm.setText("Advanced");
 		Composite parent = scrolledForm.getBody();
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
-		Composite container = new Composite(parent, SWT.NONE);
+		Composite container = toolkit.createComposite(parent);
 		container.setLayout(new GridLayout(1, false));
 
-		Composite header = new Composite(container, SWT.NONE);
+		Composite header = toolkit.createComposite(container);
 		header.setLayout(new GridLayout(2, false));
 
-		Label generateLabel = new Label(header, SWT.NONE);
+		Label generateLabel = toolkit.createLabel(header, "Generate:");
 		generateLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
 				false, 1, 1));
-		generateLabel.setText("Generate:");
 
 		final ComboViewer comboViewer = new ComboViewer(header, SWT.READ_ONLY);
 		final Combo combo = comboViewer.getCombo();
+		toolkit.adapt(combo, true, true);
+
 		GridData comboLayoutData = new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1);
 		comboLayoutData.widthHint = 315;
 		combo.setLayoutData(comboLayoutData);
-		comboViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-
-					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
-						IStructuredSelection selection = (IStructuredSelection) comboViewer
-								.getSelection();
-						Object selectedObject = selection.iterator().next();
-						try {
-							model.switchToProfile((ProfileIdResourceAndName) selectedObject);
-						} catch (ExecutionException e) {
-							reportError(combo.getShell(),
-									"Failed to switch profile", e);
-						}
-					}
-				});
+		comboViewer.addSelectionChangedListener(new ComboSelectionListener(
+				combo, comboViewer));
 
 		comboViewer.setContentProvider(new ObservableListContentProvider());
 		comboViewer.setLabelProvider(new DefaultProfileLabelProvider());
@@ -123,15 +110,18 @@ public class AdvancedPage extends FormPage {
 		SashForm sashForm = new SashForm(container, SWT.NONE);
 		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
 				1));
+		toolkit.adapt(sashForm, false, false);
 
-		Composite leftComposite = new Composite(sashForm, SWT.BORDER);
+		Section leftSection = managedForm.getToolkit().createSection(sashForm,
+				Section.TWISTIE | Section.TITLE_BAR);
+		managedForm.getToolkit().paintBordersFor(leftSection);
+		leftSection.setText("Used commit message factories:");
+
+		Composite leftComposite = managedForm.getToolkit().createComposite(
+				leftSection, SWT.NONE);
+		managedForm.getToolkit().paintBordersFor(leftComposite);
+		leftSection.setClient(leftComposite);
 		leftComposite.setLayout(new GridLayout(1, false));
-
-		Composite leftHeader = new Composite(leftComposite, SWT.NONE);
-		leftHeader.setLayout(new GridLayout(1, false));
-
-		Label lblCommitMessageFactories = new Label(leftHeader, SWT.NONE);
-		lblCommitMessageFactories.setText("Used commit message factories:");
 
 		final TableViewer usedFactoriesTableViewer = new TableViewer(
 				leftComposite, SWT.BORDER | SWT.MULTI);
@@ -143,14 +133,16 @@ public class AdvancedPage extends FormPage {
 		usedFactoriesTableViewer.setLabelProvider(new FactoryLabelProvider());
 		usedFactoriesTableViewer.setInput(model.getFactoryDescriptions());
 
-		Composite middleComposite = new Composite(sashForm, SWT.BORDER);
+		Section middleSection = managedForm.getToolkit().createSection(
+				sashForm, Section.TWISTIE | Section.TITLE_BAR);
+		managedForm.getToolkit().paintBordersFor(middleSection);
+		middleSection.setText("Unused commit message factories:");
+
+		Composite middleComposite = managedForm.getToolkit().createComposite(
+				middleSection, SWT.NONE);
+		managedForm.getToolkit().paintBordersFor(middleComposite);
+		middleSection.setClient(middleComposite);
 		middleComposite.setLayout(new GridLayout(1, false));
-
-		Composite middleHeader = new Composite(middleComposite, SWT.NONE);
-		middleHeader.setLayout(new GridLayout(1, false));
-
-		Label lblUnused = new Label(middleHeader, SWT.NONE);
-		lblUnused.setText("Unused commit message factories:");
 
 		TableViewer unusedFactoriesTableViewer = new TableViewer(
 				middleComposite, SWT.BORDER | SWT.MULTI);
@@ -169,27 +161,31 @@ public class AdvancedPage extends FormPage {
 		usedFactoriesTableViewer
 				.addSelectionChangedListener(new FactoriesSelectionListener(
 						CMFList.USED, usedFactoriesTableViewer,
-						unusedFactoriesTableViewer));
+						unusedFactoriesTableViewer, toolkit));
 		unusedFactoriesTableViewer
 				.addSelectionChangedListener(new FactoriesSelectionListener(
 						CMFList.UNUSED, unusedFactoriesTableViewer,
-						usedFactoriesTableViewer));
+						usedFactoriesTableViewer, toolkit));
 
-		Composite rightComposite = new Composite(sashForm, SWT.BORDER);
+		Section rightSection = managedForm.getToolkit().createSection(sashForm,
+				Section.TWISTIE | Section.TITLE_BAR);
+		managedForm.getToolkit().paintBordersFor(rightSection);
+		rightSection.setText("Selected commit message factories:");
+
+		Composite rightComposite = managedForm.getToolkit().createComposite(
+				rightSection, SWT.NONE);
+		managedForm.getToolkit().paintBordersFor(rightComposite);
+		rightSection.setClient(rightComposite);
 		rightComposite.setLayout(new GridLayout(1, false));
-
-		Composite rightHeader = new Composite(rightComposite, SWT.NONE);
-		rightHeader.setLayout(new GridLayout(1, false));
-
-		Label lblSelected = new Label(rightHeader, SWT.NONE);
-		lblSelected.setText("Selected commit message factories:");
 
 		final ScrolledComposite scrolledComposite = new ScrolledComposite(
 				rightComposite, SWT.V_SCROLL | SWT.BORDER);
 		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true, 1, 1));
+		toolkit.adapt(scrolledComposite);
 		factoriesComposite = new Composite(scrolledComposite, SWT.NONE);
 		scrolledComposite.setContent(factoriesComposite);
+		toolkit.adapt(factoriesComposite);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		factoriesComposite.setLayout(layout);
@@ -204,6 +200,13 @@ public class AdvancedPage extends FormPage {
 		});
 		scrolledComposite.setAlwaysShowScrollBars(true);
 		sashForm.setWeights(new int[] { 180, 180, 350 });
+		/*
+		 * Expand after generating it's content so that content gets properly
+		 * shown:
+		 */
+		leftSection.setExpanded(true);
+		middleSection.setExpanded(true);
+		rightSection.setExpanded(true);
 
 		model.addDirtyPropertyListener(new IDirtyPropertyListener() {
 
@@ -249,6 +252,29 @@ public class AdvancedPage extends FormPage {
 						listIdToTableViewerMap));
 	}
 
+	private final class ComboSelectionListener implements
+			ISelectionChangedListener {
+		private final Combo combo;
+		private final ComboViewer comboViewer;
+
+		private ComboSelectionListener(Combo combo, ComboViewer comboViewer) {
+			this.combo = combo;
+			this.comboViewer = comboViewer;
+		}
+
+		@Override
+		public void selectionChanged(SelectionChangedEvent event) {
+			IStructuredSelection selection = (IStructuredSelection) comboViewer
+					.getSelection();
+			Object selectedObject = selection.iterator().next();
+			try {
+				model.switchToProfile((ProfileIdResourceAndName) selectedObject);
+			} catch (ExecutionException e) {
+				reportError(combo.getShell(), "Failed to switch profile", e);
+			}
+		}
+	}
+
 	private final class ProfileComboBoxUpdater implements
 			ICurrentProfileListener {
 		private final ComboViewer comboViewer;
@@ -277,12 +303,15 @@ public class AdvancedPage extends FormPage {
 		private final CMFList listType;
 		private final TableViewer tableViewer;
 		private final TableViewer otherTableViewer;
+		private final FormToolkit toolkit;
 
 		private FactoriesSelectionListener(CMFList listType,
-				TableViewer tableViewer, TableViewer otherTableViewer) {
+				TableViewer tableViewer, TableViewer otherTableViewer,
+				FormToolkit toolkit) {
 			this.listType = listType;
 			this.tableViewer = tableViewer;
 			this.otherTableViewer = otherTableViewer;
+			this.toolkit = toolkit;
 		}
 
 		@Override
@@ -298,24 +327,24 @@ public class AdvancedPage extends FormPage {
 				setRightFactorySelection(listType, new int[] {});
 			}
 		}
-	}
 
-	public void setRightFactorySelection(CMFList list, int[] indices) {
-		for (Control child : factoriesComposite.getChildren()) {
-			child.dispose();
-		}
-		for (int factoryIndex : indices) {
-			CommitMessageFactoryDescription factory = (CommitMessageFactoryDescription) model
-					.getList(list).get(factoryIndex);
-			CommitMessageFactoryComposite factoryComposite = new CommitMessageFactoryComposite(
-					factoriesComposite, SWT.NONE, model, factory);
-			factoryComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP,
-					true, false, 1, 1));
-		}
+		public void setRightFactorySelection(CMFList list, int[] indices) {
+			for (Control child : factoriesComposite.getChildren()) {
+				child.dispose();
+			}
+			for (int factoryIndex : indices) {
+				CommitMessageFactoryDescription factory = (CommitMessageFactoryDescription) model
+						.getList(list).get(factoryIndex);
+				CommitMessageFactoryComposite factoryComposite = new CommitMessageFactoryComposite(
+						factoriesComposite, SWT.NONE, model, factory, toolkit);
+				factoryComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP,
+						true, false, 1, 1));
+			}
 
-		factoriesComposite.layout(true, true);
-		factoriesComposite.setSize(factoriesComposite.computeSize(
-				factoriesComposite.getSize().x, SWT.DEFAULT));
+			factoriesComposite.layout(true, true);
+			factoriesComposite.setSize(factoriesComposite.computeSize(
+					factoriesComposite.getSize().x, SWT.DEFAULT));
+		}
 	}
 
 	@Override
