@@ -4,9 +4,13 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -48,26 +52,87 @@ public class OverviewPage extends FormPage {
 		Section sctnSelectHowCommit = managedForm.getToolkit().createSection(
 				managedForm.getForm().getBody(),
 				Section.TWISTIE | Section.TITLE_BAR);
+		GridData gd_sctnSelectHowCommit = new GridData(SWT.LEFT, SWT.CENTER,
+				false, false, 1, 1);
+		sctnSelectHowCommit.setLayoutData(gd_sctnSelectHowCommit);
 		managedForm.getToolkit().paintBordersFor(sctnSelectHowCommit);
 		sctnSelectHowCommit
 				.setText("Select which commit messages should be generated:");
 
-		Composite profileRadioButtonsComposite = managedForm.getToolkit()
-				.createComposite(sctnSelectHowCommit, SWT.NONE);
+		Composite profileRadioButtonsComposite = toolkit.createComposite(
+				sctnSelectHowCommit, SWT.NONE);
 		managedForm.getToolkit().paintBordersFor(profileRadioButtonsComposite);
 		sctnSelectHowCommit.setClient(profileRadioButtonsComposite);
 		profileRadioButtonsComposite.setLayout(new GridLayout(1, false));
+		createRadioButtons(toolkit, profileRadioButtonsComposite);
+
+		Section helpSection = managedForm.getToolkit().createSection(
+				managedForm.getForm().getBody(),
+				Section.TWISTIE | Section.TITLE_BAR);
+		toolkit.paintBordersFor(helpSection);
+		helpSection.setText("How to customize the commit message generation:");
+		Composite helpComposite = toolkit
+				.createComposite(helpSection, SWT.NONE);
+		toolkit.paintBordersFor(helpComposite);
+		helpSection.setClient(helpComposite);
+		helpComposite.setLayout(new GridLayout(1, false));
+
+		String helpStringPart1 = "For what commmit messages are generated and how they are formulated"
+				+ " gets determined by a list of so called \"Commit Message Factories\".";
+		createHelpLabel(toolkit, helpComposite, helpStringPart1);
+		Hyperlink helpAdvancedHyperlink = toolkit.createHyperlink(
+				helpComposite, "This list can be edited in the advanced tab.",
+				SWT.WRAP);
+		helpAdvancedHyperlink.addHyperlinkListener(new CustomizeProfile(
+				helpAdvancedHyperlink.getShell(), null));
+		layoutHelpItem(helpAdvancedHyperlink);
+
+		String helpStringPart2 = "The message algorithm will search for the first factory that can successfully"
+				+ " create a message for a given change. It starts with the search at the top of the list."
+				+ " Thus more specific \"Commit Message Factories\" should be put to the top and a factory"
+				+ " that is always able to generate a message at the bottom, as factories below it would not get used."
+				+ " The list of available commit message factories can be extended via the factory commit message extension point.";
+		createHelpLabel(toolkit, helpComposite, helpStringPart2);
+
+		/*
+		 * setExpanded needs to be called after creating the content. Since
+		 * eclipse 3.7 seems to not create the section content properly
+		 * otherwise.
+		 */
+		sctnSelectHowCommit.setExpanded(true);
+		helpSection.setExpanded(true);
+
+	}
+
+	private void createHelpLabel(FormToolkit toolkit, Composite helpComposite,
+			String helpString) {
+		Label label = toolkit.createLabel(helpComposite, helpString, SWT.WRAP);
+		layoutHelpItem(label);
+	}
+
+	private void layoutHelpItem(Control control) {
+		GridData gd_label = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1,
+				1);
+		gd_label.widthHint = 500;
+		control.setLayoutData(gd_label);
+	}
+
+	private void createRadioButtons(FormToolkit toolkit,
+			Composite profileRadioButtonsComposite) {
 		for (Object object : model.getProfiles()) {
 			final ProfileIdResourceAndName profile = (ProfileIdResourceAndName) object;
 			Composite rowComposite = toolkit
 					.createComposite(profileRadioButtonsComposite);
+			GridData rowGridData = new GridData();
+			rowGridData.widthHint = 500;
+			rowComposite.setLayoutData(rowGridData);
 			GridLayout rowLayout = new GridLayout(2, false);
 			rowLayout.marginHeight = 0;
 			rowComposite.setLayout(rowLayout);
 
 			final Button radioButton = toolkit.createButton(rowComposite,
 					profile.getName(), SWT.RADIO);
-			managedForm.getToolkit().adapt(radioButton, true, true);
+			toolkit.adapt(radioButton, true, true);
 			ICurrentProfileListener listener = new RadioButtonCurrentProfileListener(
 					model, radioButton, profile);
 			model.addCurrentProfileListener(listener);
@@ -76,30 +141,34 @@ public class OverviewPage extends FormPage {
 			if (profile != Model.CUSTOM_PROFILE) {
 				Hyperlink hyperlink = toolkit.createHyperlink(rowComposite,
 						"(Customize...)", SWT.NONE);
-				hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
-					@Override
-					public void linkActivated(HyperlinkEvent event) {
-						getEditor().setActivePage(AdvancedPage.ID);
-						try {
-							model.switchToProfile(profile);
-						} catch (ExecutionException e) {
-							AdvancedPage.reportError(
-									radioButton.getShell(),
-									"Failed to switch profile for customization",
-									e);
-						}
-					}
-				});
+				hyperlink.addHyperlinkListener(new CustomizeProfile(radioButton
+						.getShell(), profile));
 			}
 			listener.currentProfileChanged();
 		}
-		/*
-		 * setExpanded needs to be called after creating the content. Since
-		 * eclipse 3.7 seems to not create the section content properly
-		 * otherwise.
-		 */
-		sctnSelectHowCommit.setExpanded(true);
+	}
 
+	private final class CustomizeProfile extends HyperlinkAdapter {
+		private final Shell shell;
+		private final ProfileIdResourceAndName profile;
+
+		private CustomizeProfile(Shell shell, ProfileIdResourceAndName profile) {
+			this.shell = shell;
+			this.profile = profile;
+		}
+
+		@Override
+		public void linkActivated(HyperlinkEvent event) {
+			getEditor().setActivePage(AdvancedPage.ID);
+			if (profile != null) {
+				try {
+					model.switchToProfile(profile);
+				} catch (ExecutionException e) {
+					AdvancedPage.reportError(shell,
+							"Failed to switch profile for customization", e);
+				}
+			}
+		}
 	}
 
 	private final class RadioButtonSelectionListener implements
