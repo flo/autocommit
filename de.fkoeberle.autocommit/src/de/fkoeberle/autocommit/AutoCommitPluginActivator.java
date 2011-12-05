@@ -30,6 +30,8 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
+ * 
+ * Can be used to iterate over the repositories with enabled autocommit support.
  */
 public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 		Iterable<IRepository> {
@@ -235,4 +237,9 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 		};
 	}
 
+	public static void logError(String message, Exception e) {
+		getDefault().getLog().log(
+				new Status(IStatus.ERROR, AutoCommitPluginActivator.PLUGIN_ID,
+						message, e));
+	}
 }

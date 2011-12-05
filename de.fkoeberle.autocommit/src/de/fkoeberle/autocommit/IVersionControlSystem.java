@@ -1,5 +1,9 @@
 package de.fkoeberle.autocommit;
 
-public interface IVersionControlSystem extends Iterable<IRepository>{
+/**
+ * Can be used to iterate over the repositories with enabled autocommit support.
+ * 
+ */
+public interface IVersionControlSystem extends Iterable<IRepository> {
 
 }
