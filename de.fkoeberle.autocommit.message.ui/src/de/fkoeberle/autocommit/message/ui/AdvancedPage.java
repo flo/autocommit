@@ -23,8 +23,6 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -46,7 +44,6 @@ import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
 import de.fkoeberle.autocommit.message.ui.Model.CMFList;
 import de.fkoeberle.autocommit.message.ui.Model.ICurrentProfileListener;
-import de.fkoeberle.autocommit.message.ui.Model.IDirtyPropertyListener;
 
 public class AdvancedPage extends FormPage {
 	public static final String ID = "de.fkoeberle.autocommit.message.ui.AdvancedPage"; //$NON-NLS-1$
@@ -207,21 +204,6 @@ public class AdvancedPage extends FormPage {
 		leftSection.setExpanded(true);
 		middleSection.setExpanded(true);
 		rightSection.setExpanded(true);
-
-		model.addDirtyPropertyListener(new IDirtyPropertyListener() {
-
-			@Override
-			public void handleDirtyPropertyChange() {
-				firePropertyChange(PROP_DIRTY);
-			}
-		});
-		container.addDisposeListener(new DisposeListener() {
-
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				model.dispose();
-			}
-		});
 	}
 
 	private void addDragAndDropSupport(

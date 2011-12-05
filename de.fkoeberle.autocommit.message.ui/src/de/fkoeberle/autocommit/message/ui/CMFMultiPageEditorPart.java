@@ -16,6 +16,8 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.operations.RedoActionHandler;
 import org.eclipse.ui.operations.UndoActionHandler;
 
+import de.fkoeberle.autocommit.message.ui.Model.IDirtyPropertyListener;
+
 public class CMFMultiPageEditorPart extends FormEditor {
 	public static final String ID = "de.fkoeberle.autocommit.message.ui.CommitMessagesEditorPart"; //$NON-NLS-1$
 	private final Model model;
@@ -56,6 +58,13 @@ public class CMFMultiPageEditorPart extends FormEditor {
 			reportError(this.getSite().getShell(),
 					"Loading failed. See error log for details", e);
 		}
+		model.addDirtyPropertyListener(new IDirtyPropertyListener() {
+
+			@Override
+			public void handleDirtyPropertyChange() {
+				firePropertyChange(PROP_DIRTY);
+			}
+		});
 		createUndoAndRedoActionHandlers(site);
 	}
 
@@ -97,6 +106,15 @@ public class CMFMultiPageEditorPart extends FormEditor {
 			addPage(new AdvancedPage(this, model));
 		} catch (PartInitException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void dispose() {
+		try {
+			model.dispose();
+		} finally {
+			super.dispose();
 		}
 	}
 }
