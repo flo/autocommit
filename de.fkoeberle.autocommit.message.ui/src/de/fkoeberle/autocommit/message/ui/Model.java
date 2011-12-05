@@ -62,9 +62,6 @@ public class Model {
 				Collections.emptySet(), CommitMessageFactoryDescription.class);
 		this.profiles = new WritableList(Realm.getDefault(),
 				Collections.emptySet(), ProfileDescription.class);
-		profiles.addAll(CommitMessageBuilderPluginActivator
-				.getDefaultProfiles());
-		profiles.add(CUSTOM_PROFILE);
 		this.currentProfile = CUSTOM_PROFILE;
 
 		this.undoContext = new ObjectUndoContext(this);
@@ -103,6 +100,10 @@ public class Model {
 	}
 
 	public void load(IEditorInput editorInput) throws IOException {
+		profiles.clear();
+		profiles.addAll(CommitMessageBuilderPluginActivator
+				.getDefaultProfiles());
+		profiles.add(CUSTOM_PROFILE);
 		if (!(editorInput instanceof IURIEditorInput)) {
 			throw new IOException("Input type not supported");
 		}
