@@ -17,11 +17,7 @@
    </license>
 
    <includes
-         id="org.eclipse.egit"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.jgit"
+         id="de.fkoeberle.autocommit.feature"
          version="0.0.0"/>
 
    <requires>
@@ -35,42 +31,7 @@
    </requires>
 
    <plugin
-         id="de.fkoeberle.autocommit.event.build"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fkoeberle.autocommit.git"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fkoeberle.autocommit.message"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="de.fkoeberle.autocommit.message.tex"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fkoeberle.autocommit.message.refactor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fkoeberle.autocommit.message.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
