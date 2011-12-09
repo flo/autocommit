@@ -56,16 +56,19 @@ public class ProfileManager {
 	private URL getDefaultProfileResource(String id) throws IOException {
 		IExtensionPoint profileExtensionPoint = Platform.getExtensionRegistry()
 				.getExtensionPoint(PROFILE_EXTENSION_POINT_ID);
+		String failureMessage = "Unable to resolve commit message profile with id %s";
 		for (IConfigurationElement element : profileExtensionPoint
 				.getConfigurationElements()) {
 			String currentId = element.getAttribute("id");
 			if (id.equals(currentId)) {
-				URL resource = getResourceAttribute(element, "path");
-				return resource;
+				try {
+					return getResourceAttribute(element, "path");
+				} catch (IOException e) {
+					throw new IOException(String.format(failureMessage, id), e);
+				}
 			}
 		}
-		throw new IOException(String.format(
-				"Unable to resolve comit message profile with id %s", id));
+		throw new IOException(String.format(failureMessage, id));
 	}
 
 	public Profile getProfileFor(URL resource) throws IOException {
@@ -196,7 +199,9 @@ public class ProfileManager {
 		Bundle contributorBundle = Platform.getBundle(contributorName);
 		/*
 		 * It's necessary to make sure the bundle is started, since that doesn't
-		 * happen when a resource gets requested.
+		 * happen when a resource gets requested. TODO true? I think the problem
+		 * was not to include refactor.commitmessages TODO getEntry better then
+		 * getResource?
 		 */
 		try {
 			contributorBundle.start();
@@ -205,7 +210,13 @@ public class ProfileManager {
 					"An exception occured while starting a bundle with a requested commit message factories profile",
 					e);
 		}
-		return contributorBundle.getResource(resourcePath);
+		URL resource = contributorBundle.getResource(resourcePath);
+		if (resource == null) {
+			throw new IOException(String.format(
+					"Bundle %s does not have resource %s as specified",
+					contributorBundle, resourcePath));
+		}
+		return resource;
 	}
 
 	private Map<String, CommitMessageFactoryDescription> createFactoryIdToDescriptionMap() {
