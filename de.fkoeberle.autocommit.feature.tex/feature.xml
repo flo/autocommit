@@ -21,13 +21,9 @@
          version="0.0.0"/>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="de.fkoeberle.autocommit" version="0.0.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources"/>
       <import plugin="de.fkoeberle.autocommit.message" version="0.0.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.egit.core"/>
-      <import plugin="org.eclipse.jgit"/>
+      <import plugin="de.fkoeberle.autocommit.message.refactor" version="0.0.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin

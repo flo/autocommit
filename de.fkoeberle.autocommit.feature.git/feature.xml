@@ -16,13 +16,19 @@
       [Enter License Description here.]
    </license>
 
-   <includes
-         id="org.eclipse.egit"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.jgit"
-         version="0.0.0"/>
+   <requires>
+      <import feature="org.eclipse.jgit" version="1.1.0.201109151100-r"/>
+      <import feature="org.eclipse.egit" version="1.1.0.201109151100-r"/>
+      <import feature="org.eclipse.jgit" version="1.1.0.201109151100-r"/>
+      <import plugin="de.fkoeberle.autocommit" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="de.fkoeberle.autocommit.message" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.jobs"/>
+      <import plugin="org.eclipse.egit.core"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.osgi"/>
+   </requires>
 
    <plugin
          id="de.fkoeberle.autocommit.git"
