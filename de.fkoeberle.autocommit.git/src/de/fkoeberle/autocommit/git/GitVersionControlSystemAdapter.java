@@ -70,4 +70,13 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 		return adapter;
 	}
 
+	@Override
+	public IRepository getRepositoryFor(IProject project) {
+		RepositoryMapping mapping = RepositoryMapping.getMapping(project);
+		if (mapping == null) {
+			return null;
+		}
+		return getAdapterFor(mapping.getRepository());
+	}
+
 }
