@@ -47,7 +47,7 @@
 			class= "de.fkoeberle.autocommit.AutocommitIconDecorator"
 			adaptable="true">
 			<description>
-			Marks projects which have the "autocommit"-feature enabled with "a" icon at the bottom left.
+			Marks projects which have the "autocommit"-feature enabled with "a" icon at the bottom right.
 			</description>
 		</decorator>
 	</extension>

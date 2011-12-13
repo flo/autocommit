@@ -1,8 +1,12 @@
 package de.fkoeberle.autocommit;
 
+import java.net.URL;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
@@ -12,6 +16,7 @@ public class AutocommitIconDecorator extends LabelProvider implements
 		ILabelDecorator {
 
 	private final IAutoCommitEnabledStateListener listener;
+	private final ImageDescriptor icon;
 
 	public AutocommitIconDecorator() {
 		listener = new IAutoCommitEnabledStateListener() {
@@ -24,17 +29,12 @@ public class AutocommitIconDecorator extends LabelProvider implements
 		};
 		AutoCommitPluginActivator.getDefault()
 				.addAutoCommitEnabledStateListener(listener);
+		URL iconURL = getClass().getResource("/icon8x8.png");
+		this.icon = ImageDescriptor.createFromURL(iconURL);
 	}
 
 	@Override
 	public Image decorateImage(Image image, Object element) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String decorateText(String text, Object element) {
-		// TODO Auto-generated method stub
 		IProject project = (IProject) Platform.getAdapterManager().getAdapter(
 				element, IProject.class);
 		if (project == null) {
@@ -47,7 +47,15 @@ public class AutocommitIconDecorator extends LabelProvider implements
 		} catch (CoreException e) {
 			AutoCommitPluginActivator.logUnexpectedException(e);
 		}
-		return "[a]" + text;
+		DecorationOverlayIcon newImageDescriptor = new DecorationOverlayIcon(
+				image, new ImageDescriptor[] { null, null, null, icon, null });
+
+		return newImageDescriptor.createImage();
+	}
+
+	@Override
+	public String decorateText(String text, Object element) {
+		return null;
 	}
 
 	@Override
