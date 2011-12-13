@@ -1,21 +1,18 @@
 package de.fkoeberle.autocommit;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,7 +25,6 @@ import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -55,6 +51,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 	private List<IVersionControlSystem> versionControlSystems;
 	private IRegistryEventListener registryEventListener;
 	private IResourceChangeListener resourceChangeListener;
+	private List<IAutoCommitEnabledStateListener> autoCommitEnabledStateListenerList;
 
 	/**
 	 * The constructor
@@ -73,6 +70,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		workspace.addResourceChangeListener(resourceChangeListener,
 				IResourceChangeEvent.POST_CHANGE);
+		autoCommitEnabledStateListenerList = new ArrayList<IAutoCommitEnabledStateListener>();
 	}
 
 	protected IRepository getRepositoryFor(IProject project) {
@@ -203,7 +201,8 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 
 	private final class UpdateAutocommitNatureScheduler implements
 			IResourceChangeListener {
-		UpdateAutocommitNatureJob job = new UpdateAutocommitNatureJob();
+		UpdateAutocommitNatureJob job = new UpdateAutocommitNatureJob(
+				AutoCommitPluginActivator.this);
 
 		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
@@ -222,73 +221,6 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 						e);
 				throw new RuntimeException(e);
 			}
-		}
-	}
-
-	private final class UpdateAutocommitNatureJob extends Job {
-		private final Set<IProject> projects;
-
-		private UpdateAutocommitNatureJob() {
-			super("Update autocommit state");
-			this.projects = Collections
-					.synchronizedSet(new HashSet<IProject>());
-			setUser(false);
-			setSystem(true);
-			setPriority(Job.DECORATE);
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			try {
-				for (IProject project : projects) {
-					IRepository repository = getRepositoryFor(project);
-					if (repository == null && project.hasNature(Nature.ID)) {
-						Nature.removeSelfFrom(project);
-					}
-				}
-				return Status.OK_STATUS;
-			} catch (CoreException e) {
-				return new Status(IStatus.ERROR, PLUGIN_ID,
-						"Failed to update which projects can autocommit", e);
-			}
-		}
-
-		@Override
-		public boolean shouldRun() {
-			return projects.size() > 0;
-		}
-
-		@Override
-		public boolean shouldSchedule() {
-			return projects.size() > 0;
-		}
-
-		/**
-		 * 
-		 * @return a synchronized sets of projects to update.
-		 */
-		public Set<IProject> getProjects() {
-			return projects;
-		}
-	}
-
-	private final class ProjectSetGatherer implements IResourceDeltaVisitor {
-		private final Set<IProject> projects = new HashSet<IProject>();
-
-		@Override
-		public boolean visit(IResourceDelta delta) throws CoreException {
-			IProject project = delta.getResource().getProject();
-			if (project == null) {
-				// workspace root -> iterate further
-				return true;
-			} else {
-				projects.add(project);
-				return false;
-			}
-		}
-
-		public Set<IProject> getProjects() {
-			return projects;
 		}
 	}
 
@@ -356,9 +288,59 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 		};
 	}
 
+	private void fireAutoCommitEnabledStateChanged(IProject project) {
+		for (IAutoCommitEnabledStateListener listener : autoCommitEnabledStateListenerList) {
+			listener.handleEnabledStateChanged(project);
+		}
+	}
+
+	public void addAutoCommitEnabledStateListener(
+			IAutoCommitEnabledStateListener listener) {
+		autoCommitEnabledStateListenerList.add(listener);
+	}
+
+	public void removeAutoCommitEnabledStateListener(
+			IAutoCommitEnabledStateListener listener) {
+		autoCommitEnabledStateListenerList.remove(listener);
+	}
+
+	public static void enableAutoCommitsFor(IProject project)
+			throws CoreException {
+		IProjectDescription projectDescription = project.getDescription();
+		String[] natureIds = projectDescription.getNatureIds();
+		for (int i = 0; i < natureIds.length; i++) {
+			if (natureIds[i] == Nature.ID) {
+				natureIds[natureIds.length - 1] = natureIds[i];
+				break;
+			}
+		}
+		natureIds = Arrays.copyOf(natureIds, natureIds.length - 1);
+		projectDescription.setNatureIds(natureIds);
+		project.setDescription(projectDescription, null);
+		getDefault().fireAutoCommitEnabledStateChanged(project);
+	}
+
+	public static void disableAutoCommitsFor(IProject project)
+			throws CoreException {
+		IProjectDescription projectDescription = project.getDescription();
+		String[] natureIds = projectDescription.getNatureIds();
+		natureIds = Arrays.copyOf(natureIds, natureIds.length + 1);
+		natureIds[natureIds.length - 1] = Nature.ID;
+		projectDescription.setNatureIds(natureIds);
+		project.setDescription(projectDescription, null);
+		getDefault().fireAutoCommitEnabledStateChanged(project);
+	}
+
 	public static void logError(String message, Exception e) {
 		getDefault().getLog().log(
 				new Status(IStatus.ERROR, AutoCommitPluginActivator.PLUGIN_ID,
 						message, e));
 	}
+
+	public static void logUnexpectedException(CoreException e) {
+		getDefault().getLog().log(
+				new Status(IStatus.ERROR, AutoCommitPluginActivator.PLUGIN_ID,
+						"Unexpected exception", e));
+	}
+
 }

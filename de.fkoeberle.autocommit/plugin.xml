@@ -43,4 +43,17 @@
        id="de.fkoeberle.autocommit.nature.img" natureId="de.fkoeberle.autocommit.nature" icon="icon8x8.png">
 	</image>
 	</extension>
+	
+	<extension point="org.eclipse.ui.decorators">
+		<decorator
+			id="de.fkoeberle.autocommit"
+			label="Enabled State of 'Autocommit' Feature"
+			state="true"
+			class= "de.fkoeberle.autocommit.AutocommitIconDecorator"
+			adaptable="true">
+			<description>
+			Marks projects which have the "autocommit"-feature enabled with "a" icon at the bottom left.
+			</description>
+		</decorator>
+	</extension>
 </plugin>

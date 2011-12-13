@@ -15,7 +15,6 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
 import de.fkoeberle.autocommit.AutoCommitPluginActivator;
-import de.fkoeberle.autocommit.Nature;
 
 public class EnableAutomaticCommitsAction implements IObjectActionDelegate {
 
@@ -44,7 +43,7 @@ public class EnableAutomaticCommitsAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 		try {
 			for (IProject project : selectedProjectsWithoutNature) {
-				Nature.addSelfTo(project);
+				AutoCommitPluginActivator.disableAutoCommitsFor(project);
 			}
 		} catch (CoreException e) {
 			String message = "Failed to enable automatic commits";
