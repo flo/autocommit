@@ -73,7 +73,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 		autoCommitEnabledStateListenerList = new ArrayList<IAutoCommitEnabledStateListener>();
 	}
 
-	protected IRepository getRepositoryFor(IProject project) {
+	public IRepository getRepositoryFor(IProject project) {
 		for (IVersionControlSystem versionControlSystem : versionControlSystems) {
 			IRepository repository = versionControlSystem
 					.getRepositoryFor(project);

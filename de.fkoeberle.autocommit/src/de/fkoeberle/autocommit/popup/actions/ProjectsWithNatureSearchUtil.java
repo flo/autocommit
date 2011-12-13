@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 import de.fkoeberle.autocommit.AutoCommitPluginActivator;
+import de.fkoeberle.autocommit.IRepository;
 import de.fkoeberle.autocommit.Nature;
 
 class ProjectsWithNatureSearchUtil {
@@ -24,7 +25,7 @@ class ProjectsWithNatureSearchUtil {
 	 * 
 	 * @return never null.
 	 */
-	public static Set<IProject> searchProjectsWithEnabledState(
+	public static Set<IProject> searchAutoCommitableProjectsWithEnabledState(
 			ISelection selection, boolean enabledState) {
 		Set<IProject> projects = new HashSet<IProject>();
 		if (!(selection instanceof IStructuredSelection)) {
@@ -38,7 +39,11 @@ class ProjectsWithNatureSearchUtil {
 				IProject project = (IProject) o;
 				try {
 					if (project.hasNature(Nature.ID) == enabledState) {
-						projects.add(project);
+						IRepository repository = AutoCommitPluginActivator
+								.getDefault().getRepositoryFor(project);
+						if (repository != null) {
+							projects.add(project);
+						}
 					}
 				} catch (CoreException e) {
 					AutoCommitPluginActivator

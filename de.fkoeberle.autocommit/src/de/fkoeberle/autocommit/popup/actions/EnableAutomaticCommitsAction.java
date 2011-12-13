@@ -1,6 +1,6 @@
 package de.fkoeberle.autocommit.popup.actions;
 
-import static de.fkoeberle.autocommit.popup.actions.ProjectsWithNatureSearchUtil.searchProjectsWithEnabledState;
+import static de.fkoeberle.autocommit.popup.actions.ProjectsWithNatureSearchUtil.searchAutoCommitableProjectsWithEnabledState;
 
 import java.util.Set;
 
@@ -55,7 +55,7 @@ public class EnableAutomaticCommitsAction implements IObjectActionDelegate {
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
-		selectedProjectsWithoutNature = searchProjectsWithEnabledState(
+		selectedProjectsWithoutNature = searchAutoCommitableProjectsWithEnabledState(
 				selection, false);
 		action.setEnabled(!selectedProjectsWithoutNature.isEmpty());
 	}
