@@ -16,6 +16,9 @@
 				<separator
 				name="group1">
 				</separator>
+				<separator
+				name="group2">
+				</separator>
 			</menu>
 		</objectContribution>
 		<objectContribution

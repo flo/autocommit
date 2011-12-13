@@ -330,11 +330,15 @@ public class GitRepositoryAdapter implements IRepository {
 		sessionData.add(data);
 	}
 
-	public void prepareForAutocommits(IProject project) throws IOException {
+	public void editCommitMessagesFor(IProject project) throws IOException {
 		File profileFile = getProfileFile();
 		if (!profileFile.exists()) {
 			createInitialProfileFile(profileFile);
 		}
+		openEditorForProfileFile(profileFile);
+	}
+
+	private void openEditorForProfileFile(File profileFile) throws IOException {
 		URI profileFileURI = profileFile.toURI();
 		IFileStore fileStore = EFS.getLocalFileSystem()
 				.getStore(profileFileURI);
@@ -344,6 +348,14 @@ public class GitRepositoryAdapter implements IRepository {
 			IDE.openEditorOnFileStore(page, fileStore);
 		} catch (PartInitException e) {
 			throw new IOException(e);
+		}
+	}
+
+	public void prepareForAutocommits(IProject project) throws IOException {
+		File profileFile = getProfileFile();
+		if (!profileFile.exists()) {
+			createInitialProfileFile(profileFile);
+			openEditorForProfileFile(profileFile);
 		}
 	}
 
@@ -372,4 +384,5 @@ public class GitRepositoryAdapter implements IRepository {
 		profileReferenceXml.setId(first.getId());
 		return profileReferenceXml;
 	}
+
 }

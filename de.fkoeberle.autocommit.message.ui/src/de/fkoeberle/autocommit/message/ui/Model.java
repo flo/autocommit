@@ -162,16 +162,23 @@ public class Model {
 				fileEditorInput.getFile().setContents(byteArrayInputStream,
 						force, keepHistory, monitor);
 			} else if (editorInput instanceof IURIEditorInput) {
+				/*
+				 * needed for external files but it has the drawback of Eclipse
+				 * not noticing the file system change instantly
+				 */
 				IURIEditorInput uriInput = (IURIEditorInput) editorInput;
 				IFileStore fileStore = EFS.getLocalFileSystem().getStore(
 						uriInput.getURI());
 				OutputStream outputStream = fileStore.openOutputStream(0, null);
 				writeDataToAndCloseStream(outputStream);
 			} else {
-				throw new RuntimeException(
-						String.format(
-								"Saving is not supported for the input type %s. Editing should not have been possible!",
-								editorInput.getClass()));
+				if (editorInput == null) {
+					throw new RuntimeException(
+							"Saving is not possible due to invalid input");
+				}
+				throw new RuntimeException(String.format(
+						"Saving is not supported for the input type %s.",
+						editorInput.getClass()));
 			}
 		} catch (JAXBException e) {
 			throw new IOException(e);

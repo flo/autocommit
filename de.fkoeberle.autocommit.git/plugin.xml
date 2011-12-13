@@ -7,5 +7,23 @@
             class="de.fkoeberle.autocommit.git.GitVersionControlSystemAdapter">
       </vcs>
    </extension>
+	<extension
+		point="org.eclipse.ui.popupMenus">
+		<objectContribution
+			adaptable="true"
+			id="org.eclipse.ui.articles.action.contribution.popup.object"
+			objectClass="org.eclipse.core.resources.IProject">
+			<action
+				class="de.fkoeberle.autocommit.git.EditCommitMessagesAction"
+				id="de.fkoeberle.autocommit.git.EditCommitMessagesAction"
+				label="Edit Commit Messages"
+				menubarPath="team.main/de.fkoeberle.autocommit/group2"> 
+			</action>
+			<visibility>
+				<objectState name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=org.eclipse.egit.core.GitProvider"></objectState>
+			</visibility>
+		</objectContribution>
 
+	</extension>
 </plugin>
