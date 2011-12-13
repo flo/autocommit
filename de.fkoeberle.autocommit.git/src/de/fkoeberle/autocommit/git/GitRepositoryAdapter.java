@@ -2,7 +2,7 @@ package de.fkoeberle.autocommit.git;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,6 +10,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.egit.core.IteratorService;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CommitCommand;
@@ -36,12 +43,19 @@ import org.eclipse.jgit.treewalk.WorkingTreeIterator;
 import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
 import org.eclipse.jgit.treewalk.filter.SkipWorkTreeFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 
 import de.fkoeberle.autocommit.IRepository;
 import de.fkoeberle.autocommit.message.CommitMessageBuilder;
 import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
 import de.fkoeberle.autocommit.message.ICommitMessageBuilder;
 import de.fkoeberle.autocommit.message.Profile;
+import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
+import de.fkoeberle.autocommit.message.ProfileReferenceXml;
+import de.fkoeberle.autocommit.message.ProfileXml;
 
 /**
  * Enhances and existing git repository to match the interface
@@ -50,21 +64,17 @@ import de.fkoeberle.autocommit.message.Profile;
  * {@link Repository} to {@link GitRepositoryAdapter}.
  */
 public class GitRepositoryAdapter implements IRepository {
-	private final WeakReference<Repository> repositoryRef;
+	private final Repository repository;
 	private final List<Object> sessionData;
 	private byte[] sessionDataDeltaHash;
 
 	public GitRepositoryAdapter(Repository repository) {
-		this.repositoryRef = new WeakReference<Repository>(repository);
+		this.repository = repository;
 		this.sessionData = new ArrayList<Object>();
 	}
 
 	@Override
 	public void commit() {
-		Repository repository = repositoryRef.get();
-		if (repository == null) {
-			return;
-		}
 		WorkingTreeIterator workingTreeIterator = IteratorService
 				.createInitialIterator(repository);
 		try {
@@ -111,7 +121,7 @@ public class GitRepositoryAdapter implements IRepository {
 
 				String message;
 				try {
-					message = buildCommitMessage(repository);
+					message = buildCommitMessage();
 				} catch (NoHeadException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -155,10 +165,6 @@ public class GitRepositoryAdapter implements IRepository {
 
 	@Override
 	public boolean noUncommittedChangesExist() {
-		Repository repository = repositoryRef.get();
-		if (repository == null) {
-			return true;
-		}
 		WorkingTreeIterator workingTreeIterator = IteratorService
 				.createInitialIterator(repository);
 		try {
@@ -175,12 +181,8 @@ public class GitRepositoryAdapter implements IRepository {
 		return true;
 	}
 
-	private String buildCommitMessage(Repository repository)
-			throws IOException, NoHeadException {
-		File repositoryDirectory = repository.getWorkTree();
-		// TODO handle case no working tree
-		final File commitMessagesFile = new File(repositoryDirectory,
-				".commitmessages");
+	private String buildCommitMessage() throws IOException, NoHeadException {
+		final File commitMessagesFile = getProfileFile();
 		final Profile profile = CommitMessageBuilderPluginActivator
 				.getProfile(commitMessagesFile);
 
@@ -191,8 +193,7 @@ public class GitRepositoryAdapter implements IRepository {
 				reader, messageBuilder);
 		if (sessionDataDeltaHash != null) {
 			HashCacluatingDeltaVisitor hashCalculator = new HashCacluatingDeltaVisitor();
-			visitHeadIndexDelta(repository, FileDeltaToMessageBuilderAdder,
-					hashCalculator);
+			visitHeadIndexDelta(FileDeltaToMessageBuilderAdder, hashCalculator);
 			byte[] currentHash = hashCalculator.buildHash();
 			if (Arrays.equals(sessionDataDeltaHash, currentHash)) {
 				for (Object data : sessionData) {
@@ -201,14 +202,21 @@ public class GitRepositoryAdapter implements IRepository {
 			}
 			sessionDataDeltaHash = null;
 		} else {
-			visitHeadIndexDelta(repository, FileDeltaToMessageBuilderAdder);
+			visitHeadIndexDelta(FileDeltaToMessageBuilderAdder);
 		}
 		return messageBuilder.buildMessage();
 	}
 
-	private void visitHeadIndexDelta(Repository repository,
-			FileSetDeltaVisitor... visitors) throws IOException,
-			NoHeadException {
+	private File getProfileFile() {
+		File repositoryDirectory = repository.getWorkTree();
+		// TODO handle case no working tree
+		final File commitMessagesFile = new File(repositoryDirectory,
+				".commitmessages");
+		return commitMessagesFile;
+	}
+
+	private void visitHeadIndexDelta(FileSetDeltaVisitor... visitors)
+			throws IOException, NoHeadException {
 		TreeWalk treeWalk = new TreeWalk(repository);
 		treeWalk.setRecursive(true);
 		ObjectId headTreeId = repository.resolve(Constants.HEAD);
@@ -302,10 +310,6 @@ public class GitRepositoryAdapter implements IRepository {
 
 	@Override
 	public void addSessionDataForUncommittedChanges(Object data) {
-		Repository repository = repositoryRef.get();
-		if (repository == null) {
-			return;
-		}
 		HashCacluatingDeltaVisitor hashCalculator = new HashCacluatingDeltaVisitor();
 		try {
 			visitHeadFileSystemDelta(repository, hashCalculator);
@@ -324,5 +328,48 @@ public class GitRepositoryAdapter implements IRepository {
 		}
 		sessionDataDeltaHash = currentHash;
 		sessionData.add(data);
+	}
+
+	public void prepareForAutocommits(IProject project) throws IOException {
+		File profileFile = getProfileFile();
+		if (!profileFile.exists()) {
+			createInitialProfileFile(profileFile);
+		}
+		URI profileFileURI = profileFile.toURI();
+		IFileStore fileStore = EFS.getLocalFileSystem()
+				.getStore(profileFileURI);
+		IWorkbenchPage page = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+		try {
+			IDE.openEditorOnFileStore(page, fileStore);
+		} catch (PartInitException e) {
+			throw new IOException(e);
+		}
+	}
+
+	private void createInitialProfileFile(File profileFile) throws IOException {
+		ProfileReferenceXml profileReferenceXml = determineInitialProfileReferenceXml();
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(ProfileXml.class,
+					ProfileReferenceXml.class);
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+					Boolean.TRUE);
+			marshaller.marshal(profileReferenceXml, profileFile);
+		} catch (JAXBException e) {
+			throw new IOException(e);
+			// TODO better exception handling: e.g. message dialog
+			// or other exception type
+		}
+	}
+
+	private ProfileReferenceXml determineInitialProfileReferenceXml()
+			throws IOException {
+		Collection<ProfileIdResourceAndName> defaultProfiles = CommitMessageBuilderPluginActivator
+				.getDefaultProfiles();
+		ProfileIdResourceAndName first = defaultProfiles.iterator().next();
+		ProfileReferenceXml profileReferenceXml = new ProfileReferenceXml();
+		profileReferenceXml.setId(first.getId());
+		return profileReferenceXml;
 	}
 }

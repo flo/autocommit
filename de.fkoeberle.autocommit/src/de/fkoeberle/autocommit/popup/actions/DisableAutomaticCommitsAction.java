@@ -33,7 +33,8 @@ public class DisableAutomaticCommitsAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 		try {
 			for (IProject project : selectedProjectsWithNature) {
-				AutoCommitPluginActivator.enableAutoCommitsFor(project);
+				AutoCommitPluginActivator.getDefault().disableAutoCommitsFor(
+						project);
 			}
 		} catch (CoreException e) {
 			String message = "Failed to enable automatic commits";
@@ -45,8 +46,8 @@ public class DisableAutomaticCommitsAction implements IObjectActionDelegate {
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
-		selectedProjectsWithNature = searchAutoCommitableProjectsWithEnabledState(selection,
-				true);
+		selectedProjectsWithNature = searchAutoCommitableProjectsWithEnabledState(
+				selection, true);
 		action.setEnabled(!selectedProjectsWithNature.isEmpty());
 	}
 }

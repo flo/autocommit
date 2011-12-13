@@ -33,7 +33,8 @@ final class UpdateAutocommitNatureJob extends Job {
 				IRepository repository = pluginActivator
 						.getRepositoryFor(project);
 				if (repository == null && project.hasNature(Nature.ID)) {
-					AutoCommitPluginActivator.enableAutoCommitsFor(project);
+					AutoCommitPluginActivator.getDefault()
+							.disableAutoCommitsFor(project);
 				}
 			}
 			return Status.OK_STATUS;

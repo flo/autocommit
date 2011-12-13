@@ -5,7 +5,6 @@ import static de.fkoeberle.autocommit.popup.actions.ProjectsWithNatureSearchUtil
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -43,9 +42,10 @@ public class EnableAutomaticCommitsAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 		try {
 			for (IProject project : selectedProjectsWithoutNature) {
-				AutoCommitPluginActivator.disableAutoCommitsFor(project);
+				AutoCommitPluginActivator.getDefault().enableAutoCommitsFor(
+						project);
 			}
-		} catch (CoreException e) {
+		} catch (Exception e) {
 			String message = "Failed to enable automatic commits";
 			MessageDialog.openError(shell, message,
 					"An error occored, view log for details");

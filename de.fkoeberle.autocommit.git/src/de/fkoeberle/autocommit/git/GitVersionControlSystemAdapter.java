@@ -1,5 +1,6 @@
 package de.fkoeberle.autocommit.git;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -71,7 +72,7 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 	}
 
 	@Override
-	public IRepository getRepositoryFor(IProject project) {
+	public GitRepositoryAdapter getRepositoryFor(IProject project) {
 		RepositoryMapping mapping = RepositoryMapping.getMapping(project);
 		if (mapping == null) {
 			return null;
@@ -79,4 +80,13 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 		return getAdapterFor(mapping.getRepository());
 	}
 
+	@Override
+	public void prepareProjectForAutocommits(IProject project)
+			throws IOException {
+		GitRepositoryAdapter repositoryAdapter = getRepositoryFor(project);
+		if (repositoryAdapter == null) {
+			return;
+		}
+		repositoryAdapter.prepareForAutocommits(project);
+	}
 }

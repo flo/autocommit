@@ -1,5 +1,6 @@
 package de.fkoeberle.autocommit;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -304,8 +305,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 		autoCommitEnabledStateListenerList.remove(listener);
 	}
 
-	public static void enableAutoCommitsFor(IProject project)
-			throws CoreException {
+	public void disableAutoCommitsFor(IProject project) throws CoreException {
 		IProjectDescription projectDescription = project.getDescription();
 		String[] natureIds = projectDescription.getNatureIds();
 		for (int i = 0; i < natureIds.length; i++) {
@@ -317,18 +317,21 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 		natureIds = Arrays.copyOf(natureIds, natureIds.length - 1);
 		projectDescription.setNatureIds(natureIds);
 		project.setDescription(projectDescription, null);
-		getDefault().fireAutoCommitEnabledStateChanged(project);
+		fireAutoCommitEnabledStateChanged(project);
 	}
 
-	public static void disableAutoCommitsFor(IProject project)
-			throws CoreException {
+	public void enableAutoCommitsFor(IProject project) throws CoreException,
+			IOException {
 		IProjectDescription projectDescription = project.getDescription();
 		String[] natureIds = projectDescription.getNatureIds();
 		natureIds = Arrays.copyOf(natureIds, natureIds.length + 1);
 		natureIds[natureIds.length - 1] = Nature.ID;
 		projectDescription.setNatureIds(natureIds);
 		project.setDescription(projectDescription, null);
-		getDefault().fireAutoCommitEnabledStateChanged(project);
+		for (IVersionControlSystem vcs : versionControlSystems) {
+			vcs.prepareProjectForAutocommits(project);
+		}
+		fireAutoCommitEnabledStateChanged(project);
 	}
 
 	public static void logError(String message, Exception e) {

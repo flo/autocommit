@@ -1,8 +1,10 @@
 package de.fkoeberle.autocommit.message.ui;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
@@ -23,6 +26,8 @@ import org.eclipse.core.commands.operations.OperationHistoryEvent;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
@@ -144,41 +149,58 @@ public class Model {
 	}
 
 	public void save(IProgressMonitor monitor) throws IOException {
-		if (editorInput instanceof IFileEditorInput) {
-			try {
+		try {
+			if (editorInput instanceof IFileEditorInput) {
 				IFileEditorInput fileEditorInput = (IFileEditorInput) editorInput;
-				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				monitor.beginTask("Generating data structures to save", 10);
-
-				Marshaller marshaller = jaxbContext.createMarshaller();
-				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
-						Boolean.TRUE);
-				Object objectToMarshall;
-				if (currentProfile == CUSTOM_PROFILE) {
-					objectToMarshall = createProfileXml();
-				} else {
-					objectToMarshall = createProfileReferenceXml();
-				}
-				marshaller.marshal(objectToMarshall, byteArrayOutputStream);
-				monitor.beginTask("Writing data", 90);
-				byte[] data = byteArrayOutputStream.toByteArray();
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				writeDataToAndCloseStream(outputStream);
+				byte[] data = outputStream.toByteArray();
 				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
 						data);
 				boolean keepHistory = true;
 				boolean force = true;
 				fileEditorInput.getFile().setContents(byteArrayInputStream,
 						force, keepHistory, monitor);
-			} catch (JAXBException e) {
-				throw new IOException(e);
-			} catch (CoreException e) {
-				throw new IOException(e);
+			} else if (editorInput instanceof IURIEditorInput) {
+				IURIEditorInput uriInput = (IURIEditorInput) editorInput;
+				IFileStore fileStore = EFS.getLocalFileSystem().getStore(
+						uriInput.getURI());
+				OutputStream outputStream = fileStore.openOutputStream(0, null);
+				writeDataToAndCloseStream(outputStream);
+			} else {
+				throw new RuntimeException(
+						String.format(
+								"Saving is not supported for the input type %s. Editing should not have been possible!",
+								editorInput.getClass()));
 			}
+		} catch (JAXBException e) {
+			throw new IOException(e);
+		} catch (CoreException e) {
+			throw new IOException(e);
+		}
+		undoableOperationAtSave = getUndoableOperation();
+		setDirty(false);
 
-			undoableOperationAtSave = getUndoableOperation();
-			setDirty(false);
-		} else {
-			throw new RuntimeException(
-					"Saving is not supported for this input type. Editing should not have been possible!");
+	}
+
+	private void writeDataToAndCloseStream(OutputStream outputStream)
+			throws JAXBException, PropertyException, IOException {
+		outputStream = new BufferedOutputStream(outputStream);
+		try {
+			outputStream = new BufferedOutputStream(outputStream);
+
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+					Boolean.TRUE);
+			Object objectToMarshall;
+			if (currentProfile == CUSTOM_PROFILE) {
+				objectToMarshall = createProfileXml();
+			} else {
+				objectToMarshall = createProfileReferenceXml();
+			}
+			marshaller.marshal(objectToMarshall, outputStream);
+		} finally {
+			outputStream.close();
 		}
 	}
 
