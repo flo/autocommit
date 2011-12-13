@@ -38,11 +38,6 @@
          </run>
       </runtime>
 	</extension>
-	<extension point="org.eclipse.ui.ide.projectNatureImages">
-	<image
-       id="de.fkoeberle.autocommit.nature.img" natureId="de.fkoeberle.autocommit.nature" icon="icon8x8.png">
-	</image>
-	</extension>
 	
 	<extension point="org.eclipse.ui.decorators">
 		<decorator
