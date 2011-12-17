@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 
+import de.fkoeberle.autocommit.message.AbstractViewWithCache;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class SingleAddedBodyDeclarationView extends

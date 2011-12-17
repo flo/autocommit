@@ -1,4 +1,4 @@
-package de.fkoeberle.autocommit.message.java;
+package de.fkoeberle.autocommit.message;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;

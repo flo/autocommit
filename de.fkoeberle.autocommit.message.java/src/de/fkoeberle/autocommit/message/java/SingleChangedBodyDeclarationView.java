@@ -2,6 +2,7 @@ package de.fkoeberle.autocommit.message.java;
 
 import java.io.IOException;
 
+import de.fkoeberle.autocommit.message.AbstractViewWithCache;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class SingleChangedBodyDeclarationView extends
