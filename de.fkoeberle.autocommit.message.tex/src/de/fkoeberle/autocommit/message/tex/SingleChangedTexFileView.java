@@ -2,11 +2,10 @@ package de.fkoeberle.autocommit.message.tex;
 
 import java.io.IOException;
 
-import de.fkoeberle.autocommit.message.ChangedFile;
+import de.fkoeberle.autocommit.message.ChangedTextFile;
 import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
-import de.fkoeberle.autocommit.message.FileContentReader;
 import de.fkoeberle.autocommit.message.InjectedBySession;
-import de.fkoeberle.autocommit.message.SingleChangedFileView;
+import de.fkoeberle.autocommit.message.SingleChangedTextFileView;
 
 public class SingleChangedTexFileView {
 	private boolean deltaDetermined;
@@ -16,14 +15,10 @@ public class SingleChangedTexFileView {
 	private TexParser parser;
 
 	@InjectedBySession
-	private FileContentReader reader;
-
-	@InjectedBySession
-	private SingleChangedFileView singleChangedFileView;
+	private SingleChangedTextFileView singleChangedTextFileView;
 
 	@InjectedBySession
 	private ExtensionsOfAddedModifiedOrChangedFiles extensions;
-
 
 	public OutlineNodeDelta getDelta() throws IOException {
 		if (!deltaDetermined) {
@@ -31,17 +26,16 @@ public class SingleChangedTexFileView {
 			if (!extensions.containsOnly("tex")) {
 				return null;
 			}
-			ChangedFile changedFile = singleChangedFileView.getChangedFile();
-			if (changedFile == null) {
+			ChangedTextFile changedTextFile = singleChangedTextFileView
+					.getChangedTextFile();
+			if (changedTextFile == null) {
 				return null;
 			}
-			String oldString = reader.getStringFor(changedFile.getOldContent());
-			String newString = reader.getStringFor(changedFile.getNewContent());
-			OutlineNode oldOutlineNode = parser.parse(changedFile.getPath(),
-					oldString);
-			OutlineNode newOutlineNode = parser.parse(changedFile.getPath(),
-					newString);
-			this.outlineNodeDelta = new OutlineNodeDelta(
+			OutlineNode oldOutlineNode = parser.parse(
+					changedTextFile.getPath(), changedTextFile.getOldContent());
+			OutlineNode newOutlineNode = parser.parse(
+					changedTextFile.getPath(), changedTextFile.getNewContent());
+			this.outlineNodeDelta = new OutlineNodeDelta(changedTextFile,
 					oldOutlineNode, newOutlineNode);
 		}
 		return this.outlineNodeDelta;

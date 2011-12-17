@@ -57,6 +57,14 @@ public class OutlineNode {
 		return text;
 	}
 
+	public int getFirstIndex() {
+		return firstIndex;
+	}
+
+	public int getExlusiveEndIndex() {
+		return exlusiveEndIndex;
+	}
+
 	@Override
 	public String toString() {
 		return getText();

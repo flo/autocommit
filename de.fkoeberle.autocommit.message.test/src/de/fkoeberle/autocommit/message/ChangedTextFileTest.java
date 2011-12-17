@@ -7,12 +7,12 @@ import org.junit.Test;
 public class ChangedTextFileTest {
 
 	@Test
-	public void testChangedRangeOfAddedText() {
+	public void testEarliestChangedRangeOfAddedText() {
 		String oldContent = "HelloWorld";
 		String newContent = "HelNEWloWorld";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -23,12 +23,28 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeOfAddedTextAtStart() {
+	public void testLatestChangedRangeOfAddedText() {
+		String oldContent = "HelloWorld";
+		String newContent = "HelNEWloWorld";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("", removedText);
+		assertEquals("NEW", addedText);
+	}
+
+	@Test
+	public void testEarliestChangedRangeOfAddedTextAtStart() {
 		String oldContent = "HelloWorld";
 		String newContent = "NEWHelloWorld";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -39,12 +55,28 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeOfAddedTextAtEnd() {
+	public void testLatestChangedRangeOfAddedTextAtStart() {
+		String oldContent = "HelloWorld";
+		String newContent = "NEWHelloWorld";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("", removedText);
+		assertEquals("NEW", addedText);
+	}
+
+	@Test
+	public void testEarliestChangedRangeOfAddedTextAtEnd() {
 		String oldContent = "HelloWorld";
 		String newContent = "HelloWorldNEW";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -55,12 +87,28 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeOfRemovedText() {
+	public void testLatestChangedRangeOfAddedTextAtEnd() {
+		String oldContent = "HelloWorld";
+		String newContent = "HelloWorldNEW";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("", removedText);
+		assertEquals("NEW", addedText);
+	}
+
+	@Test
+	public void testEarliestChangedRangeOfRemovedText() {
 		String oldContent = "HelOLDloWorld";
 		String newContent = "HelloWorld";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -71,12 +119,28 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeOfRemovedTextAtStart() {
+	public void testLatestChangedRangeOfRemovedText() {
+		String oldContent = "HelOLDloWorld";
+		String newContent = "HelloWorld";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("OLD", removedText);
+		assertEquals("", addedText);
+	}
+
+	@Test
+	public void testEarliestChangedRangeOfRemovedTextAtStart() {
 		String oldContent = "OLDHelloWorld";
 		String newContent = "HelloWorld";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -87,12 +151,28 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeOfRemovedTextAtEnd() {
+	public void testLatestChangedRangeOfRemovedTextAtStart() {
+		String oldContent = "OLDHelloWorld";
+		String newContent = "HelloWorld";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("OLD", removedText);
+		assertEquals("", addedText);
+	}
+
+	@Test
+	public void testEarliestChangedRangeOfRemovedTextAtEnd() {
 		String oldContent = "HelloWorldOLD";
 		String newContent = "HelloWorld";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -103,12 +183,28 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeOfReplacedText() {
+	public void testLatestChangedRangeOfRemovedTextAtEnd() {
+		String oldContent = "HelloWorldOLD";
+		String newContent = "HelloWorld";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("OLD", removedText);
+		assertEquals("", addedText);
+	}
+
+	@Test
+	public void testEarliestChangedRangeOfReplacedText() {
 		String oldContent = "HelOLDloWorld";
 		String newContent = "HelNEWloWorld";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -119,12 +215,28 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeOfReplacedTextAtStart() {
+	public void testLatestChangedRangeOfReplacedText() {
+		String oldContent = "HelOLDloWorld";
+		String newContent = "HelNEWloWorld";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("OLD", removedText);
+		assertEquals("NEW", addedText);
+	}
+
+	@Test
+	public void testEarliestChangedRangeOfReplacedTextAtStart() {
 		String oldContent = "OLDHelloWorld";
 		String newContent = "NEWHelloWorld";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -135,12 +247,28 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeOfReplacedTextAtEnd() {
+	public void testLatestChangedRangeOfReplacedTextAtStart() {
+		String oldContent = "OLDHelloWorld";
+		String newContent = "NEWHelloWorld";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("OLD", removedText);
+		assertEquals("NEW", addedText);
+	}
+
+	@Test
+	public void testEearliestChangedRangeOfReplacedTextAtEnd() {
 		String oldContent = "HelloWorldOLD";
 		String newContent = "HelloWorldNEW";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -151,12 +279,45 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeOfAddedAtStartOrMiddle() {
+	public void testLatestChangedRangeOfReplacedTextAtEnd() {
+		String oldContent = "HelloWorldOLD";
+		String newContent = "HelloWorldNEW";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("OLD", removedText);
+		assertEquals("NEW", addedText);
+	}
+
+	@Test
+	public void testEarliestChangedRangeOfAddedAtStartOrMiddle() {
 		String oldContent = "HelloWorld";
 		String newContent = "HelloHelloWorld";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("", removedText);
+		assertEquals("Hello", addedText);
+		assertEquals(0, changedRange.getFirstIndex());
+	}
+
+	@Test
+	public void testLatestChangedRangeOfAddedAtStartOrMiddle() {
+		String oldContent = "HelloWorld";
+		String newContent = "HelloHelloWorld";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -168,12 +329,29 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeOfAddedAtMiddleOrEnd() {
+	public void testEarliestChangedRangeOfAddedAtMiddleOrEnd() {
 		String oldContent = "HelloWorld";
 		String newContent = "HelloWorldWorld";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("", removedText);
+		assertEquals("World", addedText);
+		assertEquals(5, changedRange.getFirstIndex());
+	}
+
+	@Test
+	public void testLatestChangedRangeOfAddedAtMiddleOrEnd() {
+		String oldContent = "HelloWorld";
+		String newContent = "HelloWorldWorld";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -185,12 +363,12 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeWithSame() {
+	public void testEarliestChangedRangeWithSame() {
 		String oldContent = "HelloWorld";
 		String newContent = "HelloWorld";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());
@@ -201,12 +379,45 @@ public class ChangedTextFileTest {
 	}
 
 	@Test
-	public void testChangedRangeAddedTextAtTwoPossibleLocationsInMiddle() {
+	public void testLatestChangedRangeWithSame() {
+		String oldContent = "HelloWorld";
+		String newContent = "HelloWorld";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("", removedText);
+		assertEquals("", addedText);
+	}
+
+	@Test
+	public void testEarliestChangedRangeAddedTextAtTwoPossibleLocationsInMiddle() {
 		String oldContent = "HelloWorld";
 		String newContent = "HelloWoWorld";
 		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
 				oldContent, newContent);
-		ChangedRange changedRange = changedTextFile.getChangedRange();
+		ChangedRange changedRange = changedTextFile.getEarliestChangedRange();
+
+		String addedText = newContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfNew());
+		String removedText = oldContent.substring(changedRange.getFirstIndex(),
+				changedRange.getExlusiveEndOfOld());
+		assertEquals("", removedText);
+		assertEquals("oW", addedText);
+		assertEquals(4, changedRange.getFirstIndex());
+	}
+
+	@Test
+	public void testLatestChangedRangeAddedTextAtTwoPossibleLocationsInMiddle() {
+		String oldContent = "HelloWorld";
+		String newContent = "HelloWoWorld";
+		ChangedTextFile changedTextFile = new ChangedTextFile("/path",
+				oldContent, newContent);
+		ChangedRange changedRange = changedTextFile.getLatestChangedRange();
 
 		String addedText = newContent.substring(changedRange.getFirstIndex(),
 				changedRange.getExlusiveEndOfNew());

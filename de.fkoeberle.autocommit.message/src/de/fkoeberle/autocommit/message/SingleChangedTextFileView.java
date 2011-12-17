@@ -19,7 +19,7 @@ public class SingleChangedTextFileView extends
 		String oldContent = fileContentReader.getStringFor(changedFile
 				.getOldContent());
 		String newContent = fileContentReader.getStringFor(changedFile
-				.getOldContent());
+				.getNewContent());
 		String path = changedFile.getPath();
 		return new ChangedTextFile(path, oldContent, newContent);
 	}

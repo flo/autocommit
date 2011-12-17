@@ -1,18 +1,19 @@
 package de.fkoeberle.autocommit.message;
 
 public final class ChangedRange {
-	private final int start;
+	private final int firstIndex;
 	private final int exclusiveEndOfNew;
 	private final int exclusiveEndOfOld;
 
-	public ChangedRange(int start, int exclusiveEndOfNew, int exclusiveEndOfOld) {
-		this.start = start;
+	public ChangedRange(int firstIndex, int exclusiveEndOfNew,
+			int exclusiveEndOfOld) {
+		this.firstIndex = firstIndex;
 		this.exclusiveEndOfNew = exclusiveEndOfNew;
 		this.exclusiveEndOfOld = exclusiveEndOfOld;
 	}
 
 	public int getFirstIndex() {
-		return start;
+		return firstIndex;
 	}
 
 	public int getExlusiveEndOfNew() {

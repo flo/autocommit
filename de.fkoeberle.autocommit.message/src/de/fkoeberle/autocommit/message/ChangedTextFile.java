@@ -4,7 +4,8 @@ public class ChangedTextFile {
 	private final String path;
 	private final String oldContent;
 	private final String newContent;
-	private ChangedRange changedRange;
+	private ChangedRange latestChangedRange;
+	private ChangedRange earliestChangedRange;
 
 	public ChangedTextFile(String path, String oldContent, String newContent) {
 		this.path = path;
@@ -24,11 +25,32 @@ public class ChangedTextFile {
 		return newContent;
 	}
 
-	public ChangedRange getChangedRange() {
-		if (changedRange == null) {
-			changedRange = determineChangedRange();
+	/**
+	 * 
+	 * @return {@link ChangedRange} which describes a possible replacement which
+	 *         could have transforemed the old content to the new content. It
+	 *         tries to find the {@link ChangeRange} which is the smallest and
+	 *         most right.
+	 */
+	public ChangedRange getLatestChangedRange() {
+		if (latestChangedRange == null) {
+			latestChangedRange = determineChangedRange();
 		}
-		return changedRange;
+		return latestChangedRange;
+	}
+
+	/**
+	 * 
+	 * @return {@link ChangedRange} which describes a possible replacement which
+	 *         could have transforemed the old content to the new content. It
+	 *         tries to find the {@link ChangeRange} which is the smallest and
+	 *         most left.
+	 */
+	public ChangedRange getEarliestChangedRange() {
+		if (earliestChangedRange == null) {
+			earliestChangedRange = determineEarliestChangedRange();
+		}
+		return earliestChangedRange;
 	}
 
 	private boolean contentDiffersOrBothEndedAt(int index) {
@@ -57,5 +79,24 @@ public class ChangedTextFile {
 			exclusiveEndOfNew--;
 		}
 		return new ChangedRange(start, exclusiveEndOfNew, exclusiveEndOfOld);
+	}
+
+	private ChangedRange determineEarliestChangedRange() {
+		ChangedRange latestChangedRange = getLatestChangedRange();
+		int exclusiveEndOfOld = latestChangedRange.getExlusiveEndOfOld();
+		int exclusiveEndOfNew = latestChangedRange.getExlusiveEndOfNew();
+		int firstIndex = latestChangedRange.getFirstIndex();
+
+		while (firstIndex > 0
+				&& newContent.charAt(exclusiveEndOfNew - 1) == newContent
+						.charAt(firstIndex - 1)
+				&& oldContent.charAt(exclusiveEndOfOld - 1) == newContent
+						.charAt(firstIndex - 1)) {
+			firstIndex--;
+			exclusiveEndOfNew--;
+			exclusiveEndOfOld--;
+		}
+		return new ChangedRange(firstIndex, exclusiveEndOfNew,
+				exclusiveEndOfOld);
 	}
 }
