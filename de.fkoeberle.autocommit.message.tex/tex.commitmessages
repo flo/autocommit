@@ -3,7 +3,7 @@
 		<id>de.fkoeberle.autocommit.message.refactor.RefactoringCommentCMF</id>
 	</factory>
 	<factory>
-		<id>de.fkoeberle.autocommit.message.tex.WorkedOnHeadlineCMF</id>
+		<id>de.fkoeberle.autocommit.message.tex.WorkedOnSectionCMF</id>
 	</factory>
 	<factory>
 		<id>de.fkoeberle.autocommit.message.WorkedOnPathCMF</id>

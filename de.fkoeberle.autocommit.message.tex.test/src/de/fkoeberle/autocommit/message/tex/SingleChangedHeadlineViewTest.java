@@ -12,10 +12,10 @@ import de.fkoeberle.autocommit.message.Session;
 
 public class SingleChangedHeadlineViewTest {
 
-	private SingleChangedHeadlineView create(FileSetDelta delta) {
+	private SingleChangedSectionView create(FileSetDelta delta) {
 		Session session = new Session();
 		session.add(delta);
-		return session.getInstanceOf(SingleChangedHeadlineView.class);
+		return session.getInstanceOf(SingleChangedSectionView.class);
 	}
 
 	@Test
@@ -27,7 +27,7 @@ public class SingleChangedHeadlineViewTest {
 				"\\chapter{Chapter One}\\chapter{Chapter Two}\\section{One}X\\section{Two}X\\subsection{Hello}\\section{Three}");
 
 		FileSetDelta fileSetDelta = builder.build();
-		SingleChangedHeadlineView view = create(fileSetDelta);
+		SingleChangedSectionView view = create(fileSetDelta);
 		OutlineNodeDelta delta = view.getDelta();
 		assertEquals(
 				"\\chapter{Chapter Two}\\section{One}\\section{Two}\\subsection{Hello}\\section{Three}",
@@ -46,7 +46,7 @@ public class SingleChangedHeadlineViewTest {
 				"\\chapter{Chapter One}\\chapter{Chapter Two}\\section{One}\\section{Two}X\\subsection{Hello}\\section{Three}");
 
 		FileSetDelta fileSetDelta = builder.build();
-		SingleChangedHeadlineView view = create(fileSetDelta);
+		SingleChangedSectionView view = create(fileSetDelta);
 		OutlineNodeDelta delta = view.getDelta();
 		assertEquals("\\section{Two}\\subsection{Hello}", delta
 				.getOldOutlineNode().getText());
@@ -63,7 +63,7 @@ public class SingleChangedHeadlineViewTest {
 				"\\chapter{Chapter One}\\chapter{Chapter Two}\\section{One}\\section{Two}\\subsection{Hello}X\\section{Three}");
 
 		FileSetDelta fileSetDelta = builder.build();
-		SingleChangedHeadlineView view = create(fileSetDelta);
+		SingleChangedSectionView view = create(fileSetDelta);
 		OutlineNodeDelta delta = view.getDelta();
 		assertEquals("\\subsection{Hello}", delta.getOldOutlineNode().getText());
 		assertEquals("\\subsection{Hello}X", delta.getNewOutlineNode()
@@ -79,7 +79,7 @@ public class SingleChangedHeadlineViewTest {
 				"\\chapter{Chapter One}\\chapter{Chapter Two}\\section{One}\\section{Two}\\subsection{Hello}\\subsubsection{sub}X\\section{Three}");
 
 		FileSetDelta fileSetDelta = builder.build();
-		SingleChangedHeadlineView view = create(fileSetDelta);
+		SingleChangedSectionView view = create(fileSetDelta);
 		OutlineNodeDelta delta = view.getDelta();
 		assertEquals("\\subsubsection{sub}", delta.getOldOutlineNode()
 				.getText());
@@ -96,7 +96,7 @@ public class SingleChangedHeadlineViewTest {
 				"package org.example;\n\nclass Test {class Inner{/** New Docu*/ int myMethod(String s, int i) {return 0;}}}");
 
 		FileSetDelta fileSetDelta = builder.build();
-		SingleChangedHeadlineView view = create(fileSetDelta);
+		SingleChangedSectionView view = create(fileSetDelta);
 		OutlineNodeDelta delta = view.getDelta();
 		assertEquals(null, delta);
 	}

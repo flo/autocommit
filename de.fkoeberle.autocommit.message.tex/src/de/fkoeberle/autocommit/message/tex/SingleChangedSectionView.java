@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
-public class SingleChangedHeadlineView {
+public class SingleChangedSectionView {
 
 	@InjectedBySession
 	private SingleChangedTexFileView singleChangedTexFileView;

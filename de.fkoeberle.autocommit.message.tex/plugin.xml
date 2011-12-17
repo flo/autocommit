@@ -4,9 +4,9 @@
    <extension
          point="de.fkoeberle.autocommit.message.factory">
       <factory
-            class="de.fkoeberle.autocommit.message.tex.WorkedOnHeadlineCMF"
+            class="de.fkoeberle.autocommit.message.tex.WorkedOnSectionCMF"
             description="Generates a message for changes in *.tex files by telling the user which chapter, section, subsection or subsubsection has changed."
-            id="de.fkoeberle.autocommit.message.tex.WorkedOnHeadlineCMF">
+            id="de.fkoeberle.autocommit.message.tex.WorkedOnSectionCMF">
          <arguments>
             <argument
                   description="The title of the changed chapter, section, subsection or subsubsection.">

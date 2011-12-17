@@ -12,10 +12,10 @@ import de.fkoeberle.autocommit.message.Session;
 
 public class WorkedOnHeadlineCMFTest {
 
-	private WorkedOnHeadlineCMF create(FileSetDelta delta) {
+	private WorkedOnSectionCMF create(FileSetDelta delta) {
 		Session session = new Session();
 		session.add(delta);
-		return session.getInstanceOf(WorkedOnHeadlineCMF.class);
+		return session.getInstanceOf(WorkedOnSectionCMF.class);
 	}
 
 	@Test
@@ -27,7 +27,7 @@ public class WorkedOnHeadlineCMFTest {
 				"\\chapter{Chapter One}\\chapter{Chapter Two}\\section{One}X\\section{Two}X\\subsection{Hello}\\section{Three}");
 		FileSetDelta fileSetDelta = builder.build();
 
-		WorkedOnHeadlineCMF factory = create(fileSetDelta);
+		WorkedOnSectionCMF factory = create(fileSetDelta);
 		String actualMessage = factory.createMessage();
 		String expectedMessage = factory.workedOnChapterMessage
 				.createMessageWithArgs("Chapter Two");
@@ -43,7 +43,7 @@ public class WorkedOnHeadlineCMFTest {
 				"\\chapter{One}\\section{One}\\section{Two}X\\subsection{Hello}\\section{Three}");
 		FileSetDelta fileSetDelta = builder.build();
 
-		WorkedOnHeadlineCMF factory = create(fileSetDelta);
+		WorkedOnSectionCMF factory = create(fileSetDelta);
 		String actualMessage = factory.createMessage();
 		String expectedMessage = factory.workedOnSectionMessage
 				.createMessageWithArgs("Two");
@@ -59,7 +59,7 @@ public class WorkedOnHeadlineCMFTest {
 				"\\chapter{Chapter One}\\chapter{Chapter Two}\\section{One}\\section{Two}\\subsection{Hello}X\\section{Three}");
 		FileSetDelta fileSetDelta = builder.build();
 
-		WorkedOnHeadlineCMF factory = create(fileSetDelta);
+		WorkedOnSectionCMF factory = create(fileSetDelta);
 		String actualMessage = factory.createMessage();
 		String expectedMessage = factory.workedOnSubsectionMessage
 				.createMessageWithArgs("Hello");
@@ -75,7 +75,7 @@ public class WorkedOnHeadlineCMFTest {
 				"\\chapter{Chapter One}\\chapter{Chapter Two}\\section{One}\\section{Two}\\subsection{Hello}\\subsubsection{sub}X\\section{Three}");
 		FileSetDelta fileSetDelta = builder.build();
 
-		WorkedOnHeadlineCMF factory = create(fileSetDelta);
+		WorkedOnSectionCMF factory = create(fileSetDelta);
 		String actualMessage = factory.createMessage();
 		String expectedMessage = factory.workedOnSubsubsectionMessage
 				.createMessageWithArgs("sub");
@@ -91,7 +91,7 @@ public class WorkedOnHeadlineCMFTest {
 				"package org.example;\n\nclass Test {class Inner{/** New Docu*/ int myMethod(String s, int i) {return 0;}}}");
 		FileSetDelta fileSetDelta = builder.build();
 
-		WorkedOnHeadlineCMF factory = create(fileSetDelta);
+		WorkedOnSectionCMF factory = create(fileSetDelta);
 		String actualMessage = factory.createMessage();
 		String expectedMessage = null;
 		assertEquals(expectedMessage, actualMessage);

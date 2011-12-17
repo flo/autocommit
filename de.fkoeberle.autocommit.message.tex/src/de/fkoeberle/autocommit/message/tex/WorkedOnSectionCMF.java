@@ -6,7 +6,7 @@ import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
-public class WorkedOnHeadlineCMF implements ICommitMessageFactory {
+public class WorkedOnSectionCMF implements ICommitMessageFactory {
 
 	public final CommitMessageTemplate workedOnChapterMessage = new CommitMessageTemplate(
 			Translations.WorkedOnHeadlineCMF_workedOnChapter);
@@ -18,7 +18,7 @@ public class WorkedOnHeadlineCMF implements ICommitMessageFactory {
 			Translations.WorkedOnHeadlineCMF_workedOnSubsubsection);
 
 	@InjectedBySession
-	private SingleChangedHeadlineView singleChangedHeadlineView;
+	private SingleChangedSectionView singleChangedHeadlineView;
 
 	@Override
 	public String createMessage() throws IOException {
