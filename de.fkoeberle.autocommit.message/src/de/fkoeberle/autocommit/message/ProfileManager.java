@@ -118,7 +118,7 @@ public class ProfileManager {
 	private List<CommitMessageDescription> createMessagesListFrom(
 			IConfigurationElement element, Class<?> factoryClass) {
 		Map<String, Field> fieldMap = new HashMap<String, Field>();
-		for (Field field : factoryClass.getFields()) {
+		for (Field field : factoryClass.getDeclaredFields()) {
 			if (field.getType().equals(CommitMessageTemplate.class)) {
 				fieldMap.put(field.getName(), field);
 			}
