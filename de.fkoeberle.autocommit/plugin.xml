@@ -9,7 +9,6 @@
 			id="org.eclipse.ui.articles.action.contribution.popup.object"
 			objectClass="org.eclipse.core.resources.IProject">
 			<menu
-				icon="icon32x32.png"
 				id="de.fkoeberle.autocommit"
 				label="Automatic Commits"
 				path="team.main/group1">
