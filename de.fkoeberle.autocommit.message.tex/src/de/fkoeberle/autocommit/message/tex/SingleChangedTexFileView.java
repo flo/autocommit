@@ -2,15 +2,14 @@ package de.fkoeberle.autocommit.message.tex;
 
 import java.io.IOException;
 
+import de.fkoeberle.autocommit.message.AbstractViewWithCache;
 import de.fkoeberle.autocommit.message.ChangedTextFile;
 import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 import de.fkoeberle.autocommit.message.SingleChangedTextFileView;
 
-public class SingleChangedTexFileView {
-	private boolean deltaDetermined;
-	private OutlineNodeDelta outlineNodeDelta;
-
+public class SingleChangedTexFileView extends
+		AbstractViewWithCache<OutlineNodeDelta> {
 	@InjectedBySession
 	private TexParser parser;
 
@@ -20,25 +19,27 @@ public class SingleChangedTexFileView {
 	@InjectedBySession
 	private ExtensionsOfAddedModifiedOrChangedFiles extensions;
 
-	public OutlineNodeDelta getDelta() throws IOException {
-		if (!deltaDetermined) {
-			deltaDetermined = true;
-			if (!extensions.containsOnly("tex")) {
-				return null;
-			}
-			ChangedTextFile changedTextFile = singleChangedTextFileView
-					.getChangedTextFile();
-			if (changedTextFile == null) {
-				return null;
-			}
-			OutlineNode oldOutlineNode = parser.parse(
-					changedTextFile.getPath(), changedTextFile.getOldContent());
-			OutlineNode newOutlineNode = parser.parse(
-					changedTextFile.getPath(), changedTextFile.getNewContent());
-			this.outlineNodeDelta = new OutlineNodeDelta(changedTextFile,
-					oldOutlineNode, newOutlineNode);
+	@Override
+	protected OutlineNodeDelta determineCachableValue() throws IOException {
+		if (!extensions.containsOnly("tex")) {
+			return null;
 		}
-		return this.outlineNodeDelta;
+		ChangedTextFile changedTextFile = singleChangedTextFileView
+				.getChangedTextFile();
+		if (changedTextFile == null) {
+			return null;
+		}
+		OutlineNode oldOutlineNode = parser.parse(changedTextFile.getPath(),
+				changedTextFile.getOldContent());
+		OutlineNode newOutlineNode = parser.parse(changedTextFile.getPath(),
+				changedTextFile.getNewContent());
+		OutlineNodeDelta delta = new OutlineNodeDelta(changedTextFile,
+				oldOutlineNode, newOutlineNode);
+		return delta;
+	}
+
+	public OutlineNodeDelta getDelta() throws IOException {
+		return getCachableValue();
 	}
 
 }
