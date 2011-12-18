@@ -27,24 +27,19 @@ import de.fkoeberle.autocommit.message.InjectedBySession;
 public class AddedClassCMF implements ICommitMessageFactory {
 
 	@CommitMessage
-	public final CommitMessageTemplate addedInterfaceMessage = new CommitMessageTemplate(
-			Translations.AddedClassCMF_addedInterfaceMessage);
+	public CommitMessageTemplate addedInterfaceMessage;
 
 	@CommitMessage
-	public final CommitMessageTemplate addedStubClassMessage = new CommitMessageTemplate(
-			Translations.AddedClassCMF_addedStubClassMessage);
+	public CommitMessageTemplate addedStubClassMessage;
 
 	@CommitMessage
-	public final CommitMessageTemplate addedClassMessage = new CommitMessageTemplate(
-			Translations.AddedClassCMF_addedClassMessage);
+	public CommitMessageTemplate addedClassMessage;
 
 	@CommitMessage
-	public final CommitMessageTemplate addedEnumMessage = new CommitMessageTemplate(
-			Translations.AddedClassCMF_addedEnumMessage);
+	public CommitMessageTemplate addedEnumMessage;
 
 	@CommitMessage
-	public final CommitMessageTemplate addedAnotationMessage = new CommitMessageTemplate(
-			Translations.AddedClassCMF_addedAnotationMessage);
+	public CommitMessageTemplate addedAnotationMessage;
 
 	@InjectedBySession
 	private FileSetDelta delta;
@@ -76,8 +71,7 @@ public class AddedClassCMF implements ICommitMessageFactory {
 		AddedFile addedFile = delta.getAddedFiles().get(0);
 		IFileContent genericContent = addedFile.getNewContent();
 		CompilationUnit compilationUnit = compilationUnitProvider
-					.getInstanceFor(genericContent);
-
+				.getInstanceFor(genericContent);
 
 		List<?> topLevelTypes = compilationUnit.types();
 		if (topLevelTypes.size() != 1) {
