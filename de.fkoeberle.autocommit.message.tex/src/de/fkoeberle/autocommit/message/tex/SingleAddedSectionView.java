@@ -16,6 +16,9 @@ public class SingleAddedSectionView extends
 	@Override
 	protected AddedSectionInfo determineCachableValue() throws IOException {
 		OutlineNodeDelta parentDelta = singleChangedSectionView.getDelta();
+		if (parentDelta == null) {
+			return null;
+		}
 
 		List<OutlineNode> oldChilds = parentDelta.getOldOutlineNode()
 				.getChildNodes();

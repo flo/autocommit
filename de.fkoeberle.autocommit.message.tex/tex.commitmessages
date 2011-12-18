@@ -3,6 +3,9 @@
 		<id>de.fkoeberle.autocommit.message.refactor.RefactoringCommentCMF</id>
 	</factory>
 	<factory>
+		<id>de.fkoeberle.autocommit.message.tex.AddedSectionCMF</id>
+	</factory>
+	<factory>
 		<id>de.fkoeberle.autocommit.message.tex.WorkedOnSectionCMF</id>
 	</factory>
 	<factory>
