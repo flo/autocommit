@@ -9,16 +9,18 @@ public class OutlineNode {
 	private List<OutlineNode> childNodes;
 	private final String document;
 	private final int firstIndex;
+	private final int contentStartIndex;
 	private int exlusiveEndIndex;
 	private int length;
 	private String text;
 
 	public OutlineNode(OutlineNodeType type, String caption, String document,
-			int firstIndex) {
+			int firstIndex, int contentStartIndex) {
 		this.type = type;
 		this.caption = caption;
 		this.document = document;
 		this.firstIndex = firstIndex;
+		this.contentStartIndex = contentStartIndex;
 		this.childNodes = new ArrayList<OutlineNode>();
 	}
 
@@ -72,6 +74,10 @@ public class OutlineNode {
 
 	public void setExlusiveEndIndex(int index) {
 		this.exlusiveEndIndex = index;
+	}
+
+	public int getContentStartIndex() {
+		return contentStartIndex;
 	}
 
 }

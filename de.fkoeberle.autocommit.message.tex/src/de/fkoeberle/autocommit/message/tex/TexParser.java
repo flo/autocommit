@@ -16,14 +16,16 @@ public class TexParser {
 		Matcher headlineMatcher = HEADLINE_PATTERN.matcher(noCommentsText);
 		Deque<OutlineNode> nodeStack = new ArrayDeque<OutlineNode>();
 		OutlineNode root = new OutlineNode(OutlineNodeType.DOCUMENT, filename,
-				text, 0);
+				text, 0, 0);
 		nodeStack.addLast(root);
 		while (headlineMatcher.find()) {
 			String typeString = headlineMatcher.group(1);
 			String caption = headlineMatcher.group(2);
 			OutlineNodeType type = OutlineNodeType.typeOfCommand(typeString);
 			int startIndex = headlineMatcher.start();
-			OutlineNode node = new OutlineNode(type, caption, text, startIndex);
+			int contentStartIndex = headlineMatcher.end();
+			OutlineNode node = new OutlineNode(type, caption, text, startIndex,
+					contentStartIndex);
 			while (type.causesTheEndOf(nodeStack.getLast().getType())) {
 				OutlineNode last = nodeStack.removeLast();
 				last.setExlusiveEndIndex(startIndex);

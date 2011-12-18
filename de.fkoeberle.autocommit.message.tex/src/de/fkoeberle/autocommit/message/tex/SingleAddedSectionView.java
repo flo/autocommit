@@ -6,16 +6,12 @@ import java.util.List;
 import de.fkoeberle.autocommit.message.AbstractViewWithCache;
 import de.fkoeberle.autocommit.message.ChangedRange;
 import de.fkoeberle.autocommit.message.InjectedBySession;
-import de.fkoeberle.autocommit.message.SingleChangedTextFileView;
 
 public class SingleAddedSectionView extends
 		AbstractViewWithCache<AddedSectionInfo> {
 
 	@InjectedBySession
 	private SingleChangedSectionView singleChangedSectionView;
-
-	@InjectedBySession
-	private SingleChangedTextFileView singleChangedTextFileView;
 
 	@Override
 	protected AddedSectionInfo determineCachableValue() throws IOException {
@@ -75,16 +71,13 @@ public class SingleAddedSectionView extends
 			return null;
 		}
 		OutlineNode addedSection = newChilds.get(addedSectionIndex);
-		ChangedRange earliestChangedRange = singleChangedTextFileView
-				.getChangedTextFile().getEarliestChangedRange();
-		ChangedRange latestChangedRange = singleChangedTextFileView
-				.getChangedTextFile().getLatestChangedRange();
+		ChangedRange charRange = parentDelta.getSmartChangedCharacterRange();
 		int charactersAddedBefore = addedSection.getFirstIndex()
-				- earliestChangedRange.getFirstIndex();
-		int charactersAddedAfter = latestChangedRange.getExlusiveEndOfNew()
+				- charRange.getFirstIndex();
+		int charactersAddedAfter = charRange.getExlusiveEndOfNew()
 				- addedSection.getExlusiveEndIndex();
-		int charactersRemoved = latestChangedRange.getExlusiveEndOfOld()
-				- earliestChangedRange.getFirstIndex();
+		int charactersRemoved = charRange.getExlusiveEndOfOld()
+				- charRange.getFirstIndex();
 
 		return new AddedSectionInfo(parentDelta, addedSectionIndex,
 				charactersAddedBefore, charactersAddedAfter, charactersRemoved);

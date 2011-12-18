@@ -78,7 +78,7 @@ public class ChangedTextFile {
 			exclusiveEndOfOld--;
 			exclusiveEndOfNew--;
 		}
-		return new ChangedRange(start, exclusiveEndOfNew, exclusiveEndOfOld);
+		return new ChangedRange(start, exclusiveEndOfOld, exclusiveEndOfNew);
 	}
 
 	private ChangedRange determineEarliestChangedRange() {
@@ -96,7 +96,7 @@ public class ChangedTextFile {
 			exclusiveEndOfNew--;
 			exclusiveEndOfOld--;
 		}
-		return new ChangedRange(firstIndex, exclusiveEndOfNew,
-				exclusiveEndOfOld);
+		return new ChangedRange(firstIndex, exclusiveEndOfOld,
+				exclusiveEndOfNew);
 	}
 }

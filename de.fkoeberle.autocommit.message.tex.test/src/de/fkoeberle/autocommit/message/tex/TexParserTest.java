@@ -18,11 +18,14 @@ public class TexParserTest {
 		assertEquals(FILE_NAME, rootNode.getCaption());
 		assertEquals(1, rootNode.getChildNodes().size());
 		assertEquals("\\chapter{Hello World}", rootNode.getText());
+		assertEquals(0, rootNode.getContentStartIndex());
 
 		OutlineNode chapterNode = rootNode.getChildNodes().get(0);
 		assertEquals(OutlineNodeType.CHAPTER, chapterNode.getType());
 		assertEquals("Hello World", chapterNode.getCaption());
 		assertEquals("\\chapter{Hello World}", chapterNode.getText());
+		assertEquals("\\chapter{Hello World}".length(),
+				chapterNode.getContentStartIndex());
 	}
 
 	@Test
