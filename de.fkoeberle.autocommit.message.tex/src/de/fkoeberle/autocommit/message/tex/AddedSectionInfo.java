@@ -26,16 +26,16 @@ public final class AddedSectionInfo {
 		return addedSectionIndex;
 	}
 
-	public int getCharactersAddedBefore() {
-		return charactersAddedBefore.length();
+	public String getCharactersAddedBefore() {
+		return charactersAddedBefore;
 	}
 
-	public int getCharactersAddedAfter() {
-		return charactersAddedAfter.length();
+	public String getCharactersAddedAfter() {
+		return charactersAddedAfter;
 	}
 
-	public int getCharactersRemoved() {
-		return charactersRemoved.length();
+	public String getCharactersRemoved() {
+		return charactersRemoved;
 	}
 
 	public OutlineNode getAddedSection() {

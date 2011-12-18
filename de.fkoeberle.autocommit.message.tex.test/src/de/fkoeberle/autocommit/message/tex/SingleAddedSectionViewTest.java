@@ -32,9 +32,9 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals(0, addedSectionInfo.getCharactersAddedBefore());
-		assertEquals(0, addedSectionInfo.getCharactersAddedAfter());
-		assertEquals(0, addedSectionInfo.getCharactersRemoved());
+		assertEquals("", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("", addedSectionInfo.getCharactersAddedAfter());
+		assertEquals("", addedSectionInfo.getCharactersRemoved());
 	}
 
 	@Test
@@ -46,10 +46,9 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals("now comes x".length(),
-				addedSectionInfo.getCharactersAddedBefore());
-		assertEquals(0, addedSectionInfo.getCharactersAddedAfter());
-		assertEquals(0, addedSectionInfo.getCharactersRemoved());
+		assertEquals("now comes x", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("", addedSectionInfo.getCharactersAddedAfter());
+		assertEquals("", addedSectionInfo.getCharactersRemoved());
 	}
 
 	@Test
@@ -62,11 +61,10 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals(0, addedSectionInfo.getCharactersAddedBefore());
-		assertEquals("\\section{C}x was so cool".length(),
+		assertEquals("", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("\\section{C}x was so cool",
 				addedSectionInfo.getCharactersAddedAfter());
-		assertEquals("\\section{C}".length(),
-				addedSectionInfo.getCharactersRemoved());
+		assertEquals("\\section{C}", addedSectionInfo.getCharactersRemoved());
 	}
 
 	@Test
@@ -79,12 +77,10 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals("now comes x".length(),
-				addedSectionInfo.getCharactersAddedBefore());
-		assertEquals("\\section{C}x was so cool".length(),
+		assertEquals("now comes x", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("\\section{C}x was so cool",
 				addedSectionInfo.getCharactersAddedAfter());
-		assertEquals("\\section{C}".length(),
-				addedSectionInfo.getCharactersRemoved());
+		assertEquals("\\section{C}", addedSectionInfo.getCharactersRemoved());
 	}
 
 	@Test
@@ -97,12 +93,11 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals("now comes x;".length(),
+		assertEquals("now comes x;",
 				addedSectionInfo.getCharactersAddedBefore());
-		assertEquals("\\section{C}x was so cool;".length(),
+		assertEquals("\\section{C}x was so cool;",
 				addedSectionInfo.getCharactersAddedAfter());
-		assertEquals("\\section{C}".length(),
-				addedSectionInfo.getCharactersRemoved());
+		assertEquals("\\section{C}", addedSectionInfo.getCharactersRemoved());
 	}
 
 	@Test
@@ -112,9 +107,9 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals(0, addedSectionInfo.getCharactersAddedBefore());
-		assertEquals(0, addedSectionInfo.getCharactersAddedAfter());
-		assertEquals(0, addedSectionInfo.getCharactersRemoved());
+		assertEquals("", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("", addedSectionInfo.getCharactersAddedAfter());
+		assertEquals("", addedSectionInfo.getCharactersRemoved());
 	}
 
 	@Test
@@ -124,10 +119,9 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals("new intro".length(),
-				addedSectionInfo.getCharactersAddedBefore());
-		assertEquals(0, addedSectionInfo.getCharactersAddedAfter());
-		assertEquals("intro".length(), addedSectionInfo.getCharactersRemoved());
+		assertEquals("new intro", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("", addedSectionInfo.getCharactersAddedAfter());
+		assertEquals("intro", addedSectionInfo.getCharactersRemoved());
 	}
 
 	@Test
@@ -146,9 +140,9 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals(0, addedSectionInfo.getCharactersAddedBefore());
-		assertEquals(0, addedSectionInfo.getCharactersAddedAfter());
-		assertEquals(0, addedSectionInfo.getCharactersRemoved());
+		assertEquals("", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("", addedSectionInfo.getCharactersAddedAfter());
+		assertEquals("", addedSectionInfo.getCharactersRemoved());
 	}
 
 	@Test
@@ -159,9 +153,9 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals(0, addedSectionInfo.getCharactersAddedBefore());
-		assertEquals(0, addedSectionInfo.getCharactersAddedAfter());
-		assertEquals(0, addedSectionInfo.getCharactersRemoved());
+		assertEquals("", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("", addedSectionInfo.getCharactersAddedAfter());
+		assertEquals("", addedSectionInfo.getCharactersRemoved());
 	}
 
 	@Test
@@ -171,10 +165,9 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals("hello".length(),
-				addedSectionInfo.getCharactersAddedBefore());
-		assertEquals(0, addedSectionInfo.getCharactersAddedAfter());
-		assertEquals(0, addedSectionInfo.getCharactersRemoved());
+		assertEquals("hello", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("", addedSectionInfo.getCharactersAddedAfter());
+		assertEquals("", addedSectionInfo.getCharactersRemoved());
 	}
 
 	@Test
@@ -186,11 +179,10 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals(0, addedSectionInfo.getCharactersAddedBefore());
-		assertEquals("\\subsection{a}hello x".length(),
+		assertEquals("", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("\\subsection{a}hello x",
 				addedSectionInfo.getCharactersAddedAfter());
-		assertEquals("\\subsection{a}".length(),
-				addedSectionInfo.getCharactersRemoved());
+		assertEquals("\\subsection{a}", addedSectionInfo.getCharactersRemoved());
 	}
 
 	@Test
@@ -202,11 +194,9 @@ public class SingleAddedSectionViewTest {
 		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
 		assertNotNull(addedSectionInfo);
 		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
-		assertEquals("x comes;".length(),
-				addedSectionInfo.getCharactersAddedBefore());
-		assertEquals("\\subsection{b}text after x;".length(),
+		assertEquals("x comes;", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("\\subsection{b}text after x;",
 				addedSectionInfo.getCharactersAddedAfter());
-		assertEquals("\\subsection{b}".length(),
-				addedSectionInfo.getCharactersRemoved());
+		assertEquals("\\subsection{b}", addedSectionInfo.getCharactersRemoved());
 	}
 }
