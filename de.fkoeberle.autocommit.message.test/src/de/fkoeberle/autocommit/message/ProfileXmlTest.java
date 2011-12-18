@@ -67,10 +67,10 @@ public class ProfileXmlTest {
 				ArrayList<CommitMessageDescription> messageDescriptions = new ArrayList<CommitMessageDescription>();
 				try {
 					messageDescriptions.add(new CommitMessageDescription(
-							Dummy2CMF.class.getField("messageA"),
+							Dummy2CMF.class.getDeclaredField("messageA"),
 							"message a default", "value for A"));
 					messageDescriptions.add(new CommitMessageDescription(
-							Dummy2CMF.class.getField("messageB"),
+							Dummy2CMF.class.getDeclaredField("messageB"),
 							"message a default", "value for B"));
 				} catch (SecurityException e) {
 					throw new RuntimeException(e);
@@ -97,11 +97,12 @@ public class ProfileXmlTest {
 	private static class Dummy2CMF implements ICommitMessageFactory {
 		// fields are obtained via reflection:
 		@SuppressWarnings("unused")
-		public final CommitMessageTemplate messageA = new CommitMessageTemplate(
-				"old default value");
+		@InjectedAfterConstruction
+		CommitMessageTemplate messageA;
+
 		@SuppressWarnings("unused")
-		public final CommitMessageTemplate messageB = new CommitMessageTemplate(
-				"old default value");
+		@InjectedAfterConstruction
+		CommitMessageTemplate messageB;
 
 		@Override
 		public String createMessage() throws IOException {

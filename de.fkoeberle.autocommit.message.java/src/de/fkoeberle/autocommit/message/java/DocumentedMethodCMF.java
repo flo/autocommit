@@ -5,15 +5,16 @@ import java.util.EnumSet;
 
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class DocumentedMethodCMF implements ICommitMessageFactory {
 
-	public final CommitMessageTemplate documentedMethodMessage = new CommitMessageTemplate(
-			Translations.DocumentedMethodCMF_documentedMethod);
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedMethodMessage;
 
-	public final CommitMessageTemplate documentedConstructorMessage = new CommitMessageTemplate(
-			Translations.DocumentedMethodCMF_documentedConstructor);
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedConstructorMessage;
 
 	@InjectedBySession
 	SingleChangedBodyDeclarationView singleChangedMethodView;

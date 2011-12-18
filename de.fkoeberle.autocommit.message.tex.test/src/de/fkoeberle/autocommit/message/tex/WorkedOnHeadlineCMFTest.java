@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
@@ -15,7 +16,10 @@ public class WorkedOnHeadlineCMFTest {
 	private WorkedOnSectionCMF create(FileSetDelta delta) {
 		Session session = new Session();
 		session.add(delta);
-		return session.getInstanceOf(WorkedOnSectionCMF.class);
+		WorkedOnSectionCMF factory = session
+				.getInstanceOf(WorkedOnSectionCMF.class);
+		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 1);
+		return factory;
 	}
 
 	@Test

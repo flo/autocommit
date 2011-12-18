@@ -4,15 +4,16 @@ import java.io.IOException;
 
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class WorkedOnMethodCMF implements ICommitMessageFactory {
 
-	public final CommitMessageTemplate workedOnMethodMessage = new CommitMessageTemplate(
-			Translations.WorkedOnMethodCMF_workedOnMethod);
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnMethodMessage;
 
-	public final CommitMessageTemplate workedOnConstructorMessage = new CommitMessageTemplate(
-			Translations.WorkedOnMethodCMF_workedOnConstructor);
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnConstructorMessage;
 
 	@InjectedBySession
 	SingleChangedBodyDeclarationView singleChangedMethodView;
@@ -34,9 +35,8 @@ public class WorkedOnMethodCMF implements ICommitMessageFactory {
 		} else {
 			messageTemplate = workedOnMethodMessage;
 		}
-		return messageTemplate.createMessageWithArgs(
-				fullTypeName, methodName, parameterTypes, typeName);
+		return messageTemplate.createMessageWithArgs(fullTypeName, methodName,
+				parameterTypes, typeName);
 	}
-
 
 }

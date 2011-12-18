@@ -6,15 +6,16 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF;
 
 public class AddedGettersAndSettersCMFTest {
 
 	private AddedGettersAndSettersCMF createFactory(FileSetDelta delta) {
 		AddedGettersAndSettersCMF factory = new AddedGettersAndSettersCMF();
+		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 1);
 		Session session = new Session();
 		session.add(delta);
 		session.injectSessionData(factory);
@@ -249,8 +250,7 @@ public class AddedGettersAndSettersCMFTest {
 				"/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {enum Inner{ONE,TWO; int id; String name;}}",
 				"package org.example;\n\nclass Test {enum Inner{ONE,TWO; \n"
-						+ "int id;\n"
-						+ "String name;\n"
+						+ "int id;\n" + "String name;\n"
 						+ "int getId() {return id;}\n"
 						+ "String getName() {return name;}\n" + "}}");
 		AddedGettersAndSettersCMF factory = createFactory(builder.build());
@@ -263,12 +263,10 @@ public class AddedGettersAndSettersCMFTest {
 	@Test
 	public void testAddedTwoGettersToInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile(
-				"/project1/org/example/Test.java",
+		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {interface Inner{}}",
 				"package org.example;\n\nclass Test {interface Inner{"
-						+ "int getId();\n"
-						+ "String getName();\n" + "}}");
+						+ "int getId();\n" + "String getName();\n" + "}}");
 		AddedGettersAndSettersCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
@@ -292,7 +290,7 @@ public class AddedGettersAndSettersCMFTest {
 		String expectedMessage = null;
 		assertEquals(expectedMessage, actualMessage);
 	}
-	
+
 	@Test
 	public void testAddedTwoGettersAndAddedTopLevelClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();

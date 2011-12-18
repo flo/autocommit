@@ -7,20 +7,22 @@ import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class FormattedJavaFilesOfPackageCMF implements ICommitMessageFactory {
-	public final CommitMessageTemplate formattedSourceInPackageMessage = new CommitMessageTemplate(
-			Translations.FormattedJavaFilesOfPackageCMF_formattedSourceInPackage);
+	@InjectedAfterConstruction
+	CommitMessageTemplate formattedSourceInPackageMessage;
 
-	public final CommitMessageTemplate formattedSourceInSubPackagesOfMessage = new CommitMessageTemplate(
-			Translations.FormattedJavaFilesOfPackageCMF_formattedSourceInSubPackagesOf);
+	@InjectedAfterConstruction
+	CommitMessageTemplate formattedSourceInSubPackagesOfMessage;
 
-	public final CommitMessageTemplate formattedSourceInTheDefaultPackageMessage = new CommitMessageTemplate(
-			Translations.FormattedJavaFilesOfPackageCMF_formattedSourceInTheDefaultPackage);
+	@InjectedAfterConstruction
+	CommitMessageTemplate formattedSourceInTheDefaultPackageMessage;
 
-	public final CommitMessageTemplate formattedSourceMessage = new CommitMessageTemplate(
-			Translations.FormattedJavaFilesOfPackageCMF_formattedSource);
+	@InjectedAfterConstruction
+	CommitMessageTemplate formattedSourceMessage;
+
 	@InjectedBySession
 	private JavaFormatationChecker formatationChecker;
 

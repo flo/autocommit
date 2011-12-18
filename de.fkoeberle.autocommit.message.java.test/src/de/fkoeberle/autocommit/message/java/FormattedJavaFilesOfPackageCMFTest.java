@@ -6,14 +6,15 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.FormattedJavaFilesOfPackageCMF;
 
 public class FormattedJavaFilesOfPackageCMFTest {
 	private FormattedJavaFilesOfPackageCMF createFactory(FileSetDelta delta) {
 		FormattedJavaFilesOfPackageCMF factory = new FormattedJavaFilesOfPackageCMF();
+		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 1);
 		Session session = new Session();
 		session.add(delta);
 		session.injectSessionData(factory);
@@ -134,7 +135,6 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		assertEquals(expected, message);
 	}
 
-
 	@Test
 	public void testFormattedTwoFilesWithFirstInDefaultPackage2()
 			throws IOException {
@@ -142,7 +142,8 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		builder.addChangedFile("/project1/src/MyEnum.java",
 				"\nenum MyEnum {\nNEW,OLD;\n}\n",
 				"\nenum MyEnum {\nNEW,OLD; \n}\n");
-		builder.addChangedFile("/project1/src/org/example/NumberProvider.java",
+		builder.addChangedFile(
+				"/project1/src/org/example/NumberProvider.java",
 				"package org.example;\n\npublic class NumberProvider {\n\n\tpublic int returnANumber(Object newParam) {\n\t\t// TODO Auto-generated method stub\n\t\treturn 21;\n\n\t}\n\n}",
 				"package org.example;\n\npublic class NumberProvider {\n\n\tpublic int returnANumber(Object newParam) {\n\t\t// TODO Auto-generated method stub\n\t\treturn 21;\n\t}\n\n}");
 		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
@@ -168,7 +169,6 @@ public class FormattedJavaFilesOfPackageCMFTest {
 				.createMessageWithArgs();
 		assertEquals(expected, message);
 	}
-
 
 	@Test
 	public void testFormattedTwoFilesInDefaultPackage() throws IOException {

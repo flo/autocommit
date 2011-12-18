@@ -6,13 +6,15 @@ public class DummyCommitMessageUtil {
 	public static void insertUniqueCommitMessagesWithNArgs(
 			ICommitMessageFactory factory, int numberOfArguments) {
 		for (Field field : factory.getClass().getDeclaredFields()) {
-			CommitMessage annotation = field.getAnnotation(CommitMessage.class);
+			InjectedAfterConstruction annotation = field
+					.getAnnotation(InjectedAfterConstruction.class);
 			if (annotation != null) {
 				if (field.getType().equals(CommitMessageTemplate.class)) {
 					String s = createMessageFor(field, numberOfArguments);
 					CommitMessageTemplate template = new CommitMessageTemplate(
 							s);
 					try {
+						field.setAccessible(true);
 						field.set(factory, template);
 					} catch (Exception e) {
 						throw new RuntimeException(e);
@@ -24,7 +26,8 @@ public class DummyCommitMessageUtil {
 									field.getName(),
 									factory.getClass().getSimpleName(),
 									CommitMessageTemplate.class.getSimpleName(),
-									CommitMessage.class.getSimpleName()));
+									InjectedAfterConstruction.class
+											.getSimpleName()));
 				}
 
 			} else {
@@ -35,7 +38,8 @@ public class DummyCommitMessageUtil {
 									field.getName(),
 									factory.getClass().getSimpleName(),
 									CommitMessageTemplate.class.getSimpleName(),
-									CommitMessage.class.getSimpleName()));
+									InjectedAfterConstruction.class
+											.getSimpleName()));
 				}
 			}
 		}

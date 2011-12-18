@@ -9,26 +9,27 @@ import org.eclipse.jdt.core.dom.Type;
 
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class AddedGettersAndSettersCMF implements ICommitMessageFactory {
-	public final CommitMessageTemplate addedGettersMessage = new CommitMessageTemplate(
-			Translations.AddedGettersAndSettersCMF_addedGetters);
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedGettersMessage;
 
-	public final CommitMessageTemplate addedSettersMessage = new CommitMessageTemplate(
-			Translations.AddedGettersAndSettersCMF_addedSetters);
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedSettersMessage;
 
-	public final CommitMessageTemplate addedGettersAndSettersMessage = new CommitMessageTemplate(
-			Translations.AddedGettersAndSettersCMF_addedGettersAndSetters);
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedGettersAndSettersMessage;
 
-	public final CommitMessageTemplate addedAGetterAndSettersMessage = new CommitMessageTemplate(
-			Translations.AddedGettersAndSettersCMF_addedAGetterAndSetters);
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedAGetterAndSettersMessage;
 
-	public final CommitMessageTemplate addedGettersAndASetterMessage = new CommitMessageTemplate(
-			Translations.AddedGettersAndSettersCMF_addedGettersAndASetter);
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedGettersAndASetterMessage;
 
-	public final CommitMessageTemplate addedAGetterAndSetterMessage = new CommitMessageTemplate(
-			Translations.AddedGettersAndSettersCMF_addedAGettersAndSetter);
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedAGetterAndSetterMessage;
 
 	@InjectedBySession
 	private SingleChangedTypeView singleChangedTypeView;
@@ -104,8 +105,7 @@ public class AddedGettersAndSettersCMF implements ICommitMessageFactory {
 			return addedAGetterAndSettersMessage
 					.createMessageWithArgs(typeName);
 		} else if (getterCounter == 1 && setterCounter == 1) {
-			return addedAGetterAndSetterMessage
-					.createMessageWithArgs(typeName);
+			return addedAGetterAndSetterMessage.createMessageWithArgs(typeName);
 		} else {
 			return null;
 		}

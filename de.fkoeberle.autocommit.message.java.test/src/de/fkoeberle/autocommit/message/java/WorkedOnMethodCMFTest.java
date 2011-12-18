@@ -6,14 +6,15 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.WorkedOnMethodCMF;
 
 public class WorkedOnMethodCMFTest {
 	private WorkedOnMethodCMF createFactory(FileSetDelta delta) {
 		WorkedOnMethodCMF factory = new WorkedOnMethodCMF();
+		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 4);
 		Session session = new Session();
 		session.add(delta);
 		session.injectSessionData(factory);
@@ -31,12 +32,9 @@ public class WorkedOnMethodCMFTest {
 
 		String actualMessage = factory.createMessage();
 		String expectedMessage = factory.workedOnMethodMessage
-				.createMessageWithArgs("Test.Inner", "myMethod", "String, int");
+				.createMessageWithArgs("Test.Inner", "myMethod", "String, int",
+						"Inner");
 		assertEquals(expectedMessage, actualMessage);
-
-		factory.workedOnMethodMessage.setValue("{3}");
-		final String typeName = factory.createMessage();
-		assertEquals("Inner", typeName);
 	}
 
 	@Test
@@ -50,12 +48,9 @@ public class WorkedOnMethodCMFTest {
 
 		String actualMessage = factory.createMessage();
 		String expectedMessage = factory.workedOnConstructorMessage
-				.createMessageWithArgs("Test.Inner", "Inner", "String, int");
+				.createMessageWithArgs("Test.Inner", "Inner", "String, int",
+						"Inner");
 		assertEquals(expectedMessage, actualMessage);
-
-		factory.workedOnConstructorMessage.setValue("{3}");
-		final String typeName = factory.createMessage();
-		assertEquals("Inner", typeName);
 	}
 
 	@Test

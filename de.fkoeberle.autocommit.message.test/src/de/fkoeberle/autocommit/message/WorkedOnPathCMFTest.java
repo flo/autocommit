@@ -8,6 +8,7 @@ public class WorkedOnPathCMFTest {
 
 	private WorkedOnPathCMF createFactory(FileSetDelta delta) {
 		WorkedOnPathCMF factory = new WorkedOnPathCMF();
+		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 1);
 		Session session = new Session();
 		session.add(delta);
 		session.injectSessionData(factory);
@@ -19,7 +20,6 @@ public class WorkedOnPathCMFTest {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
-
 
 		WorkedOnPathCMF factory = createFactory(builder.build());
 		String actualMessage = factory.createMessage();
@@ -44,8 +44,8 @@ public class WorkedOnPathCMFTest {
 	@Test
 	public void testChangedFile() {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/some/Path/test.txt",
-				"old content","new content");
+		builder.addChangedFile("/some/Path/test.txt", "old content",
+				"new content");
 
 		WorkedOnPathCMF factory = createFactory(builder.build());
 		String actualMessage = factory.createMessage();

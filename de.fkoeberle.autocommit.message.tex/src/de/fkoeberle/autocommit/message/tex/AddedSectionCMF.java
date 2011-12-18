@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class AddedSectionCMF implements ICommitMessageFactory {
@@ -11,14 +12,17 @@ public class AddedSectionCMF implements ICommitMessageFactory {
 	@InjectedBySession
 	private SingleAddedSectionView singleAddedSectionView;
 
-	public final CommitMessageTemplate addedChapterMessage = new CommitMessageTemplate(
-			"Added chapter {0}");
-	public final CommitMessageTemplate addedSectionMessage = new CommitMessageTemplate(
-			"Added section {0}");
-	public final CommitMessageTemplate addedSubsectionMessage = new CommitMessageTemplate(
-			"Added subsection {0}");
-	public final CommitMessageTemplate addedSubsubsectionMessage = new CommitMessageTemplate(
-			"Added subsubsection {0} ");
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedChapterMessage;
+
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedSectionMessage;
+
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedSubsectionMessage;
+
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedSubsubsectionMessage;
 
 	@Override
 	public String createMessage() throws IOException {

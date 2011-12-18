@@ -16,30 +16,30 @@ import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import de.fkoeberle.autocommit.message.AddedFile;
-import de.fkoeberle.autocommit.message.CommitMessage;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.IFileContent;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class AddedClassCMF implements ICommitMessageFactory {
 
-	@CommitMessage
-	public CommitMessageTemplate addedInterfaceMessage;
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedInterfaceMessage;
 
-	@CommitMessage
-	public CommitMessageTemplate addedStubClassMessage;
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedStubClassMessage;
 
-	@CommitMessage
-	public CommitMessageTemplate addedClassMessage;
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedClassMessage;
 
-	@CommitMessage
-	public CommitMessageTemplate addedEnumMessage;
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedEnumMessage;
 
-	@CommitMessage
-	public CommitMessageTemplate addedAnotationMessage;
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedAnotationMessage;
 
 	@InjectedBySession
 	private FileSetDelta delta;

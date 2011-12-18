@@ -5,11 +5,12 @@ import java.io.IOException;
 import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class FormattedJavaFileCMF implements ICommitMessageFactory {
-	public final CommitMessageTemplate formattedJavaFileMessage = new CommitMessageTemplate(
-			Translations.FormattedJavaFileCMF_formattedJavaFileMessage);
+	@InjectedAfterConstruction
+	CommitMessageTemplate formattedJavaFileMessage;
 
 	@InjectedBySession
 	private SingleChangedJavaFileView singleChangedJavaFileView;

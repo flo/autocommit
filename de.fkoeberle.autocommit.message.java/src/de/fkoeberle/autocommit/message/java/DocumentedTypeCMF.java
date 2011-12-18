@@ -4,21 +4,22 @@ import java.io.IOException;
 
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class DocumentedTypeCMF implements ICommitMessageFactory {
 
-	public final CommitMessageTemplate documentedClassMessage = new CommitMessageTemplate(
-			Translations.DocumentedTypeCMF_documentedClass);
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedClassMessage;
 
-	public final CommitMessageTemplate documentedInterfaceMessage = new CommitMessageTemplate(
-			Translations.DocumentedTypeCMF_documentedInterface);
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedInterfaceMessage;
 
-	public final CommitMessageTemplate documentedEnumMessage = new CommitMessageTemplate(
-			Translations.DocumentedTypeCMF_documentedEnum);
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedEnumMessage;
 
-	public final CommitMessageTemplate documentedAnnotationMessage = new CommitMessageTemplate(
-			Translations.DocumentedTypeCMF_documentedAnnotation);
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedAnnotationMessage;
 
 	@InjectedBySession
 	private SingleChangedTypeView singleChangedTypeView;

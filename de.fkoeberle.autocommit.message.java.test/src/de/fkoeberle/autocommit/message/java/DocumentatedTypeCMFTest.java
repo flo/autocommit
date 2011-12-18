@@ -6,14 +6,15 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.DocumentedTypeCMF;
 
 public class DocumentatedTypeCMFTest {
 	private DocumentedTypeCMF createFactory(FileSetDelta delta) {
 		DocumentedTypeCMF factory = new DocumentedTypeCMF();
+		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 1);
 		Session session = new Session();
 		session.add(delta);
 		session.injectSessionData(factory);
@@ -78,7 +79,8 @@ public class DocumentatedTypeCMFTest {
 	public void testAddedJavaDocFirstMethodAndChangedSecondMethod()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile(
+				"/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {int x() {return 0;} int y() {return 0;}}",
 				"package org.example;\n\n/** Hello World*/class Test {int x() {return 0;} int y() {return 1;}}");
 		DocumentedTypeCMF factory = createFactory(builder.build());
@@ -150,7 +152,6 @@ public class DocumentatedTypeCMFTest {
 		assertEquals(expectedMessage, actualMessage);
 	}
 
-
 	@Test
 	public void testChangedJavaDocOfTwoMethods() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
@@ -167,8 +168,7 @@ public class DocumentatedTypeCMFTest {
 	}
 
 	@Test
-	public void testTwoInnerClassesGotDocumented()
-			throws IOException {
+	public void testTwoInnerClassesGotDocumented() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile(
 				"/project1/org/example/Test.java",
@@ -200,7 +200,8 @@ public class DocumentatedTypeCMFTest {
 	@Test
 	public void testAddedJavaDocToTwoEnumConstants() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile(
+				"/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {enum SmallNumber{ONE, TWO, THREE;}}",
 				"package org.example;\n\nclass Test {enum SmallNumber{/** 1 */ONE, /** 2 */ TWO, THREE;}}");
 		DocumentedTypeCMF factory = createFactory(builder.build());

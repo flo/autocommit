@@ -4,11 +4,12 @@ import java.io.IOException;
 
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 
 public class DummyCommitMessageFactory0 implements ICommitMessageFactory {
 
-	public final CommitMessageTemplate message = new CommitMessageTemplate(
-			"default");
+	@InjectedAfterConstruction
+	CommitMessageTemplate message;
 
 	@Override
 	public String createMessage() throws IOException {

@@ -3,25 +3,22 @@ package de.fkoeberle.autocommit.message.java;
 import java.io.IOException;
 import java.util.Set;
 
-import de.fkoeberle.autocommit.message.CommitMessage;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class WorkedOnPackageCMF implements ICommitMessageFactory {
-	@CommitMessage
-	public final CommitMessageTemplate workedOnDefaultPackage = new CommitMessageTemplate(
-			Translations.WorkedOnPackageCMF_workedOnDefaultPackage);
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnDefaultPackage;
 
-	@CommitMessage
-	public final CommitMessageTemplate workedOnPackage = new CommitMessageTemplate(
-			Translations.WorkedOnPackageCMF_workedOnPackage);
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnPackage;
 
-	@CommitMessage
-	public final CommitMessageTemplate workedOnSubPackages = new CommitMessageTemplate(
-			Translations.WorkedOnPackageCMF_workedOnSubPackages);
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnSubPackages;
 
 	@InjectedBySession
 	private FileSetDelta delta;

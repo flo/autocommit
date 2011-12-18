@@ -6,15 +6,16 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF;
 
 public class WorkedOnPackageCMFTest {
 
 	private WorkedOnPackageCMF createFactory(FileSetDelta delta) {
 		WorkedOnPackageCMF factory = new WorkedOnPackageCMF();
+		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 4);
 		Session session = new Session();
 		session.add(delta);
 		session.injectSessionData(factory);

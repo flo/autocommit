@@ -6,16 +6,15 @@ import java.io.StringReader;
 
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 
-import de.fkoeberle.autocommit.message.CommitMessage;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class RefactoringCommentCMF implements ICommitMessageFactory {
 
-	@CommitMessage
-	public final CommitMessageTemplate message = new CommitMessageTemplate(
-			"{1}");
+	@InjectedAfterConstruction
+	CommitMessageTemplate message;
 
 	@InjectedBySession
 	private RefactoringDescriptorContainer refactoringDescriptorContainer;

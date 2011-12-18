@@ -12,21 +12,22 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class OrganizedImportsOfTypeCMF implements ICommitMessageFactory {
 
-	public final CommitMessageTemplate organizedImportsOfClassMessage = new CommitMessageTemplate(
-			Translations.OrganizedImportsOfTypeCMF_organizedImportsOfClass);
+	@InjectedAfterConstruction
+	CommitMessageTemplate organizedImportsOfClassMessage;
 
-	public final CommitMessageTemplate organizedImportsOfInterfaceMessage = new CommitMessageTemplate(
-			Translations.OrganizedImportsOfTypeCMF_organizedImportsOfInterface);
+	@InjectedAfterConstruction
+	CommitMessageTemplate organizedImportsOfInterfaceMessage;
 
-	public final CommitMessageTemplate organizedImportsOfEnumMessage = new CommitMessageTemplate(
-			Translations.OrganizedImportsOfTypeCMF_organizedImportsOfEnum);
+	@InjectedAfterConstruction
+	CommitMessageTemplate organizedImportsOfEnumMessage;
 
-	public final CommitMessageTemplate organizedImportsOfAnnotationMessage = new CommitMessageTemplate(
-			Translations.OrganizedImportsOfTypeCMF_organizedImportsOfAnnotation);
+	@InjectedAfterConstruction
+	CommitMessageTemplate organizedImportsOfAnnotationMessage;
 
 	@InjectedBySession
 	private SingleChangedJavaFileView singleChangedJavaFileView;

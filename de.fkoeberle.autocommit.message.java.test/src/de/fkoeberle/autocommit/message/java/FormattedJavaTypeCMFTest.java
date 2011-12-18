@@ -6,14 +6,15 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.FormattedJavaTypeCMF;
 
 public class FormattedJavaTypeCMFTest {
 	private FormattedJavaTypeCMF createFactory(FileSetDelta delta) {
 		FormattedJavaTypeCMF factory = new FormattedJavaTypeCMF();
+		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 1);
 		Session session = new Session();
 		session.add(delta);
 		session.injectSessionData(factory);
@@ -75,6 +76,7 @@ public class FormattedJavaTypeCMFTest {
 				.createMessageWithArgs("Test");
 		assertEquals(expectedMessage, actualMessage);
 	}
+
 	@Test
 	public void testFormattedPackageWithOneType() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();

@@ -8,14 +8,15 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class AddedMethodCMF implements ICommitMessageFactory {
-	public final CommitMessageTemplate addedMethodMessage = new CommitMessageTemplate(
-			Translations.AddedMethodCMF_addedMethod);
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedMethodMessage;
 
-	public final CommitMessageTemplate addedConstructorMessage = new CommitMessageTemplate(
-			Translations.AddedMethodCMF_addedConstructor);
+	@InjectedAfterConstruction
+	CommitMessageTemplate addedConstructorMessage;
 
 	@InjectedBySession
 	private SingleAddedBodyDeclarationView singleAddedBodyDeclarationView;
@@ -44,8 +45,8 @@ public class AddedMethodCMF implements ICommitMessageFactory {
 			message = addedMethodMessage;
 		}
 
-		return message.createMessageWithArgs(fullTypeName,
-				methodName, parameterTypes, typeName);
+		return message.createMessageWithArgs(fullTypeName, methodName,
+				parameterTypes, typeName);
 	}
 
 }

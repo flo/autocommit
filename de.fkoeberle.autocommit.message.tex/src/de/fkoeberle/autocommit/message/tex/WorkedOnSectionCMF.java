@@ -4,18 +4,22 @@ import java.io.IOException;
 
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class WorkedOnSectionCMF implements ICommitMessageFactory {
 
-	public final CommitMessageTemplate workedOnChapterMessage = new CommitMessageTemplate(
-			Translations.WorkedOnHeadlineCMF_workedOnChapter);
-	public final CommitMessageTemplate workedOnSectionMessage = new CommitMessageTemplate(
-			Translations.WorkedOnHeadlineCMF_workedOnSection);
-	public final CommitMessageTemplate workedOnSubsectionMessage = new CommitMessageTemplate(
-			Translations.WorkedOnHeadlineCMF_workedOnSubsection);
-	public final CommitMessageTemplate workedOnSubsubsectionMessage = new CommitMessageTemplate(
-			Translations.WorkedOnHeadlineCMF_workedOnSubsubsection);
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnChapterMessage;
+
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnSectionMessage;
+
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnSubsectionMessage;
+
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnSubsubsectionMessage;
 
 	@InjectedBySession
 	private SingleChangedSectionView singleChangedHeadlineView;

@@ -2,28 +2,24 @@ package de.fkoeberle.autocommit.message.java;
 
 import java.io.IOException;
 
-import de.fkoeberle.autocommit.message.CommitMessage;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class WorkedOnTypeCMF implements ICommitMessageFactory {
 
-	@CommitMessage
-	public final CommitMessageTemplate workedOnClassMessage = new CommitMessageTemplate(
-			Translations.WorkedOnTypeCMF_workedOnClass);
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnClassMessage;
 
-	@CommitMessage
-	public final CommitMessageTemplate workedOnInterfaceMessage = new CommitMessageTemplate(
-			Translations.WorkedOnTypeCMF_workedOnInterface);
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnInterfaceMessage;
 
-	@CommitMessage
-	public final CommitMessageTemplate workedOnEnumMessage = new CommitMessageTemplate(
-			Translations.WorkedOnTypeCMF_workedOnEnum);
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnEnumMessage;
 
-	@CommitMessage
-	public final CommitMessageTemplate workedOnAnnotationMessage = new CommitMessageTemplate(
-			Translations.WorkedOnTypeCMF_workedOnAnnotation);
+	@InjectedAfterConstruction
+	CommitMessageTemplate workedOnAnnotationMessage;
 
 	@InjectedBySession
 	private SingleChangedTypeView view;
@@ -36,7 +32,7 @@ public class WorkedOnTypeCMF implements ICommitMessageFactory {
 		}
 		CommitMessageTemplate messageTemplate = getMessageTemplateFor(typeDelta);
 		String simpleName = typeDelta.getSimpleTypeName();
-		String fullName = typeDelta.getSimpleTypeName();
+		String fullName = typeDelta.getFullTypeName();
 		return messageTemplate.createMessageWithArgs(simpleName, fullName);
 	}
 

@@ -14,21 +14,21 @@ import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.FileContentReader;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class FormattedJavaTypeCMF implements ICommitMessageFactory {
+	@InjectedAfterConstruction
+	CommitMessageTemplate formattedClassMessage;
 
-	public final CommitMessageTemplate formattedClassMessage = new CommitMessageTemplate(
-			Translations.FormattedJavaTypeCMF_formattedClass);
+	@InjectedAfterConstruction
+	CommitMessageTemplate formattedInterfaceMessage;
 
-	public final CommitMessageTemplate formattedInterfaceMessage = new CommitMessageTemplate(
-			Translations.FormattedJavaTypeCMF_formattedInterface);
+	@InjectedAfterConstruction
+	CommitMessageTemplate formattedEnumMessage;
 
-	public final CommitMessageTemplate formattedEnumMessage = new CommitMessageTemplate(
-			Translations.FormattedJavaTypeCMF_formattedEnum);
-
-	public final CommitMessageTemplate formattedAnnotationMessage = new CommitMessageTemplate(
-			Translations.FormattedJavaTypeCMF_formattedAnnotation);
+	@InjectedAfterConstruction
+	CommitMessageTemplate formattedAnnotationMessage;
 
 	@InjectedBySession
 	private SingleChangedJavaFileView singleChangedJavaFileView;

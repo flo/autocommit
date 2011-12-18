@@ -8,21 +8,22 @@ import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 
 public class DocumentedPackageCMF implements ICommitMessageFactory {
 
-	public final CommitMessageTemplate documentedSourceInTheDefaultPackageMessage = new CommitMessageTemplate(
-			Translations.DocumentedPackageCMF_documentedSourceInTheDefaultPackage);
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedSourceInTheDefaultPackageMessage;
 
-	public final CommitMessageTemplate documentedSourceInPackageMessage = new CommitMessageTemplate(
-			Translations.DocumentedPackageCMF_documentedSourceInPackage);
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedSourceInPackageMessage;
 
-	public final CommitMessageTemplate documentedSourceInSubPackagesOfMessage = new CommitMessageTemplate(
-			Translations.DocumentedPackageCMF_documentedSourceInSubPackagesOf);
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedSourceInSubPackagesOfMessage;
 
-	public final CommitMessageTemplate documentedSourceMessage = new CommitMessageTemplate(
-			Translations.DocumentedPackageCMF_documentedSource);
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedSourceMessage;
 
 	@InjectedBySession
 	private FileSetDelta fileSetDelta;
