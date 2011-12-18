@@ -26,7 +26,7 @@
 			id="org.eclipse.ui.articles.action.contribution.popup.object"
 			objectClass="org.eclipse.core.resources.IProject">
 			<action
-				class="de.fkoeberle.autocommit.popup.actions.EnableAutomaticCommitsAction"
+				class="de.fkoeberle.autocommit.EnableAutomaticCommitsAction"
 				id="de.fkoeberle.autocommit.enable"
 				label="Enable"
 				menubarPath="team.main/de.fkoeberle.autocommit/group1"> 
@@ -42,7 +42,7 @@
 			id="org.eclipse.ui.articles.action.contribution.popup.object"
 			objectClass="org.eclipse.core.resources.IProject">
 			<action
-				class="de.fkoeberle.autocommit.popup.actions.DisableAutomaticCommitsAction"
+				class="de.fkoeberle.autocommit.DisableAutomaticCommitsAction"
 				id="de.fkoeberle.autocommit.disable"
 				label="Disable"
 				menubarPath="team.main/de.fkoeberle.autocommit/group1"> 

@@ -1,6 +1,6 @@
-package de.fkoeberle.autocommit.popup.actions;
+package de.fkoeberle.autocommit;
 
-import static de.fkoeberle.autocommit.popup.actions.ProjectsWithNatureSearchUtil.searchAutoCommitableProjectsWithEnabledState;
+import static de.fkoeberle.autocommit.ProjectsWithNatureSearchUtil.searchAutoCommitableProjectsWithEnabledState;
 
 import java.util.Set;
 
@@ -13,7 +13,6 @@ import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import de.fkoeberle.autocommit.AutoCommitPluginActivator;
 
 public class EnableAutomaticCommitsAction implements IObjectActionDelegate {
 

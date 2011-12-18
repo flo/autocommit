@@ -1,4 +1,4 @@
-package de.fkoeberle.autocommit.popup.actions;
+package de.fkoeberle.autocommit;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,9 +9,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-import de.fkoeberle.autocommit.AutoCommitPluginActivator;
-import de.fkoeberle.autocommit.IRepository;
-import de.fkoeberle.autocommit.Nature;
 
 class ProjectsWithNatureSearchUtil {
 
