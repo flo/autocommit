@@ -72,15 +72,19 @@ public class SingleAddedSectionView extends
 		}
 		OutlineNode addedSection = newChilds.get(addedSectionIndex);
 		ChangedRange charRange = parentDelta.getSmartChangedCharacterRange();
-		int charactersAddedBefore = addedSection.getFirstIndex()
-				- charRange.getFirstIndex();
-		int charactersAddedAfter = charRange.getExlusiveEndOfNew()
-				- addedSection.getExlusiveEndIndex();
-		int charactersRemoved = charRange.getExlusiveEndOfOld()
-				- charRange.getFirstIndex();
+		String oldContent = parentDelta.getChangedTextFile().getOldContent();
+		String newContent = parentDelta.getChangedTextFile().getNewContent();
+
+		String textAddedBefore = newContent.substring(
+				charRange.getFirstIndex(), addedSection.getFirstIndex());
+		String textAddedAfter = newContent.substring(
+				addedSection.getExlusiveEndIndex(),
+				charRange.getExlusiveEndOfNew());
+		String textRemoved = oldContent.substring(charRange.getFirstIndex(),
+				charRange.getExlusiveEndOfOld());
 
 		return new AddedSectionInfo(parentDelta, addedSectionIndex,
-				charactersAddedBefore, charactersAddedAfter, charactersRemoved);
+				textAddedBefore, textAddedAfter, textRemoved);
 	}
 
 	public AddedSectionInfo getAddedSectionInfo() throws IOException {

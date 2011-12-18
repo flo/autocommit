@@ -3,19 +3,19 @@ package de.fkoeberle.autocommit.message.tex;
 public final class AddedSectionInfo {
 	private final OutlineNodeDelta parentDelta;
 	private final int addedSectionIndex;
-	private final int charactersAddedBefore;
-	private final int charactersAddedAfter;
-	private final int charactersRemoved;
+	private final String charactersAddedBefore;
+	private final String charactersAddedAfter;
+	private final String charactersRemoved;
 
 	public AddedSectionInfo(OutlineNodeDelta parentDelta,
-			int addedSectionIndex, int charactersAddedBefore,
-			int charactersAddedAfter, int charactersRemoved) {
+			int addedSectionIndex, String textAddedBefore,
+			String textAddedAfter, String textRemoved) {
 		super();
 		this.parentDelta = parentDelta;
 		this.addedSectionIndex = addedSectionIndex;
-		this.charactersAddedBefore = charactersAddedBefore;
-		this.charactersAddedAfter = charactersAddedAfter;
-		this.charactersRemoved = charactersRemoved;
+		this.charactersAddedBefore = textAddedBefore;
+		this.charactersAddedAfter = textAddedAfter;
+		this.charactersRemoved = textRemoved;
 	}
 
 	public OutlineNodeDelta getParentDelta() {
@@ -27,15 +27,15 @@ public final class AddedSectionInfo {
 	}
 
 	public int getCharactersAddedBefore() {
-		return charactersAddedBefore;
+		return charactersAddedBefore.length();
 	}
 
 	public int getCharactersAddedAfter() {
-		return charactersAddedAfter;
+		return charactersAddedAfter.length();
 	}
 
 	public int getCharactersRemoved() {
-		return charactersRemoved;
+		return charactersRemoved.length();
 	}
 
 	public OutlineNode getAddedSection() {

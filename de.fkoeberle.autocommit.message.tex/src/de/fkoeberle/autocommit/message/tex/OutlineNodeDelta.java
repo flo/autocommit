@@ -188,4 +188,8 @@ public class OutlineNodeDelta {
 		}
 		return startChildIndex;
 	}
+
+	public ChangedTextFile getChangedTextFile() {
+		return changedTextFile;
+	}
 }
