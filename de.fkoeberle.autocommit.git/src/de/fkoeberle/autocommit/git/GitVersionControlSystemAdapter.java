@@ -1,6 +1,7 @@
 package de.fkoeberle.autocommit.git;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,11 +20,10 @@ import de.fkoeberle.autocommit.IVersionControlSystem;
 import de.fkoeberle.autocommit.Nature;
 
 public class GitVersionControlSystemAdapter implements IVersionControlSystem {
-	private final WeakHashMap<Repository, GitRepositoryAdapter> repositoryAdapterMap;
+	private final WeakHashMap<Repository, WeakReference<GitRepositoryAdapter>> repositoryAdapterMap;
 
 	public GitVersionControlSystemAdapter() {
-		repositoryAdapterMap = new WeakHashMap<Repository, GitRepositoryAdapter>();
-		// TODO Auto-generated constructor stub
+		repositoryAdapterMap = new WeakHashMap<Repository, WeakReference<GitRepositoryAdapter>>();
 	}
 
 	private Map<IRepository, Set<IProject>> getRepositoryToProjectSetMap(
@@ -63,10 +63,16 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 	}
 
 	private GitRepositoryAdapter getAdapterFor(Repository repository) {
-		GitRepositoryAdapter adapter = repositoryAdapterMap.get(repository);
+		WeakReference<GitRepositoryAdapter> adapterRef = repositoryAdapterMap
+				.get(repository);
+		GitRepositoryAdapter adapter = null;
+		if (adapterRef != null) {
+			adapter = adapterRef.get();
+		}
 		if (adapter == null) {
 			adapter = new GitRepositoryAdapter(repository);
-			repositoryAdapterMap.put(repository, adapter);
+			repositoryAdapterMap.put(repository,
+					new WeakReference<GitRepositoryAdapter>(adapter));
 		}
 		return adapter;
 	}
