@@ -3,39 +3,18 @@ package de.fkoeberle.autocommit.message;
 import org.eclipse.osgi.util.NLS;
 
 public final class CommitMessageTemplate {
-	private final String defaultValue;
-	private String value;
+	private final String value;
 
-	public CommitMessageTemplate(String defaultValue) {
-		this.defaultValue = defaultValue;
-		this.value = defaultValue;
-	}
-
-	public String getDefaultValue() {
-		return defaultValue;
+	public CommitMessageTemplate(String value) {
+		this.value = value;
 	}
 
 	public String getValue() {
 		return value;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public void resetToDefault() {
-		this.value = defaultValue;
-	}
-
 	public String createMessageWithArgs(String... args) {
 		return NLS.bind(value, args);
-	}
-
-	public static CommitMessageTemplate copyOf(CommitMessageTemplate original) {
-		CommitMessageTemplate copy = new CommitMessageTemplate(
-				original.getDefaultValue());
-		copy.setValue(original.getValue());
-		return copy;
 	}
 
 }

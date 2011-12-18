@@ -1,7 +1,6 @@
 package de.fkoeberle.autocommit.message;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,15 +57,8 @@ public class CommitMessageDescription {
 
 	public void injectCurrentValueTo(ICommitMessageFactory factory)
 			throws IllegalArgumentException, IllegalAccessException {
-		if (Modifier.isFinal(field.getModifiers())) {
-			System.err.printf("Field %s#%s needs to be made non final",
-					field.getName());
-			CommitMessageTemplate template = (CommitMessageTemplate) field
-					.get(factory);
-			template.setValue(currentValue);
-		} else {
-			field.set(factory, new CommitMessageTemplate(currentValue));
-		}
+		field.setAccessible(true);
+		field.set(factory, new CommitMessageTemplate(currentValue));
 	}
 
 	public Field getField() {

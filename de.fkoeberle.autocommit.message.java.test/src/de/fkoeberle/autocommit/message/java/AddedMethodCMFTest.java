@@ -70,9 +70,6 @@ public class AddedMethodCMFTest {
 				"package org.example;\n\nclass Test {class Inner{Inner(String s, int i) {}}}");
 		AddedMethodCMF factory = createFactory(builder.build());
 
-		factory.addedConstructorMessage
-				.setValue(factory.addedConstructorMessage.getValue()
-						+ " [constructor|{0}|{1}|{2}|{3}]");
 		String actualMessage = factory.createMessage();
 		String expectedMessage = factory.addedConstructorMessage
 				.createMessageWithArgs("Test.Inner", "Inner", "String, int",
