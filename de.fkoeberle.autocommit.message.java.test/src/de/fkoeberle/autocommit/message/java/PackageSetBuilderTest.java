@@ -1,4 +1,4 @@
-package de.fkoeberle.autocommit.message.java.test;
+package de.fkoeberle.autocommit.message.java;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

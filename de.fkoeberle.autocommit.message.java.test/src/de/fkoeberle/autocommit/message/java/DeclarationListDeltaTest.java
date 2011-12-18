@@ -1,6 +1,6 @@
-package de.fkoeberle.autocommit.message.java.test;
+package de.fkoeberle.autocommit.message.java;
 
-import static de.fkoeberle.autocommit.message.java.test.DeclarationListUtil.createDelta;
+import static de.fkoeberle.autocommit.message.java.DeclarationListUtil.createDelta;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

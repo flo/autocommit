@@ -1,4 +1,4 @@
-package de.fkoeberle.autocommit.message.java.test;
+package de.fkoeberle.autocommit.message.java;
 
 import java.io.IOException;
 
