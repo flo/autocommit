@@ -27,6 +27,8 @@ public class CommonParentPathFinder {
 	public String getCommonPath() {
 		if ((firstPath == null) || (lengthOfPrefix == -1))
 			return null;
+		if (lengthOfPrefix == 0)
+			return ".";
 		return firstPath.substring(0, lengthOfPrefix);
 	}
 }

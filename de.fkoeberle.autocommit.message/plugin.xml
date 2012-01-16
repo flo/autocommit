@@ -17,7 +17,7 @@
          </arguments>
          <messages>
             <message
-                  defaultValue="Worked on {0}"
+                  defaultValue="Worked on &quot;{0}&quot;"
                   fieldName="workedOn">
             </message>
          </messages>
