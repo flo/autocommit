@@ -67,4 +67,17 @@ public class WorkedOnPathCMFTest {
 				.createMessageWithArgs("/some/");
 		assertEquals(expectedMessage, actualMessage);
 	}
+
+	@Test
+	public void testAddedFilesWithNoCommonPath() {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addAddedFile("/some/Point.txt", "(0, 1)");
+		builder.addAddedFile("/other.txt", "(0, 1)");
+
+		WorkedOnPathCMF factory = createFactory(builder.build());
+		String actualMessage = factory.createMessage();
+		final String expectedMessage = factory.workedOn
+				.createMessageWithArgs("/");
+		assertEquals(expectedMessage, actualMessage);
+	}
 }
