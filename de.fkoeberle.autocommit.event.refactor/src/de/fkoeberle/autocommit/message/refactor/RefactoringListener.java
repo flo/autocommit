@@ -1,8 +1,11 @@
 package de.fkoeberle.autocommit.message.refactor;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.ChangeDescriptor;
 import org.eclipse.ltk.core.refactoring.IUndoManager;
@@ -12,9 +15,11 @@ import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 
 import de.fkoeberle.autocommit.AutoCommitPluginActivator;
 import de.fkoeberle.autocommit.IRepository;
+
 public class RefactoringListener implements IUndoManagerListener {
 	private final Set<IRepository> repositoriesWithoutChanges = new HashSet<IRepository>();
 	private RefactoringDescriptor refactoringDescriptor;
+
 	@Override
 	public void undoStackChanged(IUndoManager manager) {
 		// ignore
@@ -28,6 +33,7 @@ public class RefactoringListener implements IUndoManagerListener {
 	private AutoCommitPluginActivator getAutoCommitPlugion() {
 		return AutoCommitPluginActivator.getDefault();
 	}
+
 	@Override
 	public void aboutToPerformChange(IUndoManager manager, Change change) {
 		ChangeDescriptor changeDescriptor = change.getDescriptor();
@@ -37,19 +43,38 @@ public class RefactoringListener implements IUndoManagerListener {
 					.getRefactoringDescriptor();
 
 			for (IRepository repository : getAutoCommitPlugion()) {
-				if (repository.noUncommittedChangesExist()) {
-					repositoriesWithoutChanges.add(repository);
+				try {
+					if (repository.noUncommittedChangesExist()) {
+						repositoriesWithoutChanges.add(repository);
+					}
+				} catch (IOException e) {
+					logError(e);
 				}
 			}
 		}
+	}
+
+	private void logError(IOException e) {
+		RefactorEventPluginActivator
+				.getDefault()
+				.getLog()
+				.log(new Status(IStatus.ERROR,
+						RefactorEventPluginActivator.PLUGIN_ID,
+						"An exception occured", e));
 	}
 
 	@Override
 	public void changePerformed(IUndoManager manager, Change change) {
 		if (refactoringDescriptor != null) {
 			for (IRepository repository : repositoriesWithoutChanges) {
-				RefactoringDescriptorContainer descriptorContainer = new RefactoringDescriptorContainer(refactoringDescriptor);
-				repository.addSessionDataForUncommittedChanges(descriptorContainer);
+				RefactoringDescriptorContainer descriptorContainer = new RefactoringDescriptorContainer(
+						refactoringDescriptor);
+				try {
+					repository
+							.addSessionDataForUncommittedChanges(descriptorContainer);
+				} catch (IOException e) {
+					logError(e);
+				}
 			}
 		}
 		refactoringDescriptor = null;

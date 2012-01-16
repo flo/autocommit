@@ -6,9 +6,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -21,15 +19,11 @@ import org.eclipse.egit.core.IteratorService;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.RmCommand;
-import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
-import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoFilepatternException;
-import org.eclipse.jgit.api.errors.NoHeadException;
-import org.eclipse.jgit.api.errors.NoMessageException;
-import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheIterator;
+import org.eclipse.jgit.errors.UnmergedPathException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
@@ -58,7 +52,7 @@ import de.fkoeberle.autocommit.message.ProfileReferenceXml;
 import de.fkoeberle.autocommit.message.ProfileXml;
 
 /**
- * Enhances and existing git repository to match the interface
+ * Enhances an existing Git repository to match the interface
  * {@link IRepository}. It keeps only a weak reference to the repository, which
  * makes it possible to manage instances of this class in a WeakHashMap from
  * {@link Repository} to {@link GitRepositoryAdapter}.
@@ -74,114 +68,62 @@ public class GitRepositoryAdapter implements IRepository {
 	}
 
 	@Override
-	public void commit() {
+	public void commit() throws IOException {
+		Git git = new Git(repository);
+		stageForCommit(git, FilesToAdd.ADDED_OR_MODIFIED);
+		stageForCommit(git, FilesToAdd.REMOVED_OR_MODIFIED);
+
+		String message = buildCommitMessage();
+		if (message != null) {
+			commitStagedFiles(git, message);
+		}
+	}
+
+	private void commitStagedFiles(Git git, String message)
+			throws UnmergedPathException, IOException {
+		CommitCommand commitCommand = git.commit();
+		commitCommand.setMessage(message);
+
+		try {
+			commitCommand.call();
+		} catch (GitAPIException e) {
+			throw new IOException(e);
+		}
+	}
+
+	private enum FilesToAdd {
+		ADDED_OR_MODIFIED, REMOVED_OR_MODIFIED;
+	}
+
+	private void stageForCommit(Git git, FilesToAdd filesToAdd) {
 		WorkingTreeIterator workingTreeIterator = IteratorService
 				.createInitialIterator(repository);
 		try {
-			IndexDiff indexDiff = new IndexDiff(repository, Constants.HEAD,
-					workingTreeIterator);
-			boolean differencesFound = indexDiff.diff(); // TODO use version
-															// with progress
-															// monitor
-			if (differencesFound) {
-				Git git = new Git(repository);
-				Collection<String> filesToCommit = new HashSet<String>(
-						indexDiff.getChanged());
-				filesToCommit.addAll(indexDiff.getUntracked());
-				filesToCommit.addAll(indexDiff.getModified());
-				filesToCommit.addAll(indexDiff.getAdded());
-
-				if (filesToCommit.size() > 0) {
-					AddCommand addCommand = git.add();
-					for (String path : filesToCommit) {
-						addCommand.addFilepattern(path);
-					}
-					try {
-						addCommand.call();
-					} catch (NoFilepatternException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return;
-					}
-				}
-				Set<String> filesToRemove = indexDiff.getMissing();
-				if (filesToRemove.size() > 0) {
-					RmCommand rmCommand = git.rm();
-					for (String path : indexDiff.getMissing()) {
-						rmCommand.addFilepattern(path);
-					}
-					try {
-						rmCommand.call();
-					} catch (NoFilepatternException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return;
-					}
-				}
-
-				String message;
-				try {
-					message = buildCommitMessage();
-				} catch (NoHeadException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return;
-				}
-				if (message != null) {
-					CommitCommand commitCommand = git.commit();
-					commitCommand.setMessage(message);
-
-					try {
-						commitCommand.call();
-					} catch (NoHeadException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return;
-					} catch (NoMessageException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return;
-					} catch (ConcurrentRefUpdateException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return;
-					} catch (JGitInternalException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return;
-					} catch (WrongRepositoryStateException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return;
-					}
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
+			AddCommand addCommand = git.add();
+			addCommand.addFilepattern(".");
+			addCommand.setWorkingTreeIterator(workingTreeIterator);
+			addCommand.setUpdate(filesToAdd == FilesToAdd.REMOVED_OR_MODIFIED);
+			addCommand.call();
+		} catch (NoFilepatternException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public boolean noUncommittedChangesExist() {
+	public boolean noUncommittedChangesExist() throws IOException {
 		WorkingTreeIterator workingTreeIterator = IteratorService
 				.createInitialIterator(repository);
-		try {
-			IndexDiff indexDiff = new IndexDiff(repository, Constants.HEAD,
-					workingTreeIterator);
-			if (indexDiff.diff()) {
-				return false;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		IndexDiff indexDiff = new IndexDiff(repository, Constants.HEAD,
+				workingTreeIterator);
+		if (indexDiff.diff()) {
 			return false;
 		}
+
 		return true;
 	}
 
-	private String buildCommitMessage() throws IOException, NoHeadException {
+	private String buildCommitMessage() throws IOException {
 		final File commitMessagesFile = getProfileFile();
 		final Profile profile = CommitMessageBuilderPluginActivator
 				.getProfile(commitMessagesFile);
@@ -189,11 +131,13 @@ public class GitRepositoryAdapter implements IRepository {
 		final ICommitMessageBuilder messageBuilder = new CommitMessageBuilder(
 				profile);
 		final ObjectReader reader = repository.newObjectReader();
-		FileSetDeltaVisitor FileDeltaToMessageBuilderAdder = new FileDeltaToMessageBuilderAdder(
+		FileSetDeltaVisitor fileDeltaToMessageBuilderAdder = new FileDeltaToMessageBuilderAdder(
 				reader, messageBuilder);
+		AnyChangeDetectingDeltaVisitor anyChangeDetectingDeltaVisitor = new AnyChangeDetectingDeltaVisitor();
 		if (sessionDataDeltaHash != null) {
 			HashCacluatingDeltaVisitor hashCalculator = new HashCacluatingDeltaVisitor();
-			visitHeadIndexDelta(FileDeltaToMessageBuilderAdder, hashCalculator);
+			visitHeadIndexDelta(fileDeltaToMessageBuilderAdder,
+					anyChangeDetectingDeltaVisitor, hashCalculator);
 			byte[] currentHash = hashCalculator.buildHash();
 			if (Arrays.equals(sessionDataDeltaHash, currentHash)) {
 				for (Object data : sessionData) {
@@ -202,9 +146,14 @@ public class GitRepositoryAdapter implements IRepository {
 			}
 			sessionDataDeltaHash = null;
 		} else {
-			visitHeadIndexDelta(FileDeltaToMessageBuilderAdder);
+			visitHeadIndexDelta(fileDeltaToMessageBuilderAdder,
+					anyChangeDetectingDeltaVisitor);
 		}
-		return messageBuilder.buildMessage();
+		if (anyChangeDetectingDeltaVisitor.hasDetectedChange()) {
+			return messageBuilder.buildMessage();
+		} else {
+			return null;
+		}
 	}
 
 	private File getProfileFile() {
@@ -215,89 +164,20 @@ public class GitRepositoryAdapter implements IRepository {
 		return commitMessagesFile;
 	}
 
-	private void visitHeadIndexDelta(FileSetDeltaVisitor... visitors)
-			throws IOException, NoHeadException {
-		TreeWalk treeWalk = new TreeWalk(repository);
-		treeWalk.setRecursive(true);
-		ObjectId headTreeId = repository.resolve(Constants.HEAD);
-		if (headTreeId == null) {
-			throw new NoHeadException("Failed to resolve HEAD");
+	private ObjectId objectIdOrNullOfMatch(AbstractTreeIterator match) {
+		ObjectId objectId = null;
+		if (match != null) {
+			objectId = match.getEntryObjectId();
 		}
-		RevWalk revWalk = new RevWalk(repository);
-		RevTree revTree = revWalk.parseTree(headTreeId);
-		DirCache dirCache = repository.readDirCache();
-		DirCacheIterator dirCacheTree = new DirCacheIterator(dirCache);
-		int revTreeIndex = treeWalk.addTree(revTree);
-		int dirCacheTreeIndex = treeWalk.addTree(dirCacheTree);
-		TreeFilter filter = AndTreeFilter.create(TreeFilter.ANY_DIFF,
-				new SkipWorkTreeFilter(dirCacheTreeIndex));
-		treeWalk.setFilter(filter);
-
-		while (treeWalk.next()) {
-			AbstractTreeIterator headMatch = treeWalk.getTree(revTreeIndex,
-					AbstractTreeIterator.class);
-			DirCacheIterator dirCacheMatch = treeWalk.getTree(
-					dirCacheTreeIndex, DirCacheIterator.class);
-			final String path = treeWalk.getPathString();
-			ObjectId oldObjectId = null;
-			if (headMatch != null) {
-				oldObjectId = headMatch.getEntryObjectId();
-			}
-			ObjectId newObjectId = null;
-			if (dirCacheMatch != null) {
-				newObjectId = dirCacheMatch.getEntryObjectId();
-			}
-			for (FileSetDeltaVisitor visitor : visitors) {
-				if (newObjectId == null) {
-					visitor.visitRemovedFile(path, oldObjectId);
-				} else if (oldObjectId == null) {
-					visitor.visitAddedFile(path, newObjectId);
-				} else {
-					visitor.visitChangedFile(path, oldObjectId, newObjectId);
-				}
-			}
-		}
+		return objectId;
 	}
 
-	private void visitHeadFileSystemDelta(Repository repository,
-			FileSetDeltaVisitor visitor) throws IOException, NoHeadException {
-		TreeWalk treeWalk = new TreeWalk(repository);
-		treeWalk.setRecursive(true);
-		ObjectId headTreeId = repository.resolve(Constants.HEAD);
-		if (headTreeId == null) {
-			throw new NoHeadException("Failed to resolve HEAD");
-		}
-		RevWalk revWalk = new RevWalk(repository);
-		RevTree revTree = revWalk.parseTree(headTreeId);
-
-		// Using the IteratorService is important
-		// to for example automatically ignore class files in bin/
-		WorkingTreeIterator fileTreeIterator = IteratorService
-				.createInitialIterator(repository);
-		int revTreeIndex = treeWalk.addTree(revTree);
-		int workTreeIndex = treeWalk.addTree(fileTreeIterator);
-		treeWalk.setFilter(TreeFilter.ANY_DIFF);
-
-		while (treeWalk.next()) {
-			AbstractTreeIterator headMatch = treeWalk.getTree(revTreeIndex,
-					AbstractTreeIterator.class);
-			WorkingTreeIterator fileTreeMatch = treeWalk.getTree(workTreeIndex,
-					WorkingTreeIterator.class);
-			// TODO is this check necessary:
-			if (fileTreeMatch != null) {
-				if (fileTreeMatch.isEntryIgnored()) {
-					continue;
-				}
-			}
-			final String path = treeWalk.getPathString();
-			ObjectId oldObjectId = null;
-			if (headMatch != null) {
-				oldObjectId = headMatch.getEntryObjectId();
-			}
-			ObjectId newObjectId = null;
-			if (fileTreeMatch != null) {
-				newObjectId = fileTreeMatch.getEntryObjectId();
-			}
+	void visitDeltaWithAll(String path, AbstractTreeIterator oldTreeMatch,
+			AbstractTreeIterator newTreeMatch, FileSetDeltaVisitor... visitors)
+			throws IOException {
+		ObjectId oldObjectId = objectIdOrNullOfMatch(oldTreeMatch);
+		ObjectId newObjectId = objectIdOrNullOfMatch(newTreeMatch);
+		for (FileSetDeltaVisitor visitor : visitors) {
 			if (newObjectId == null) {
 				visitor.visitRemovedFile(path, oldObjectId);
 			} else if (oldObjectId == null) {
@@ -308,20 +188,95 @@ public class GitRepositoryAdapter implements IRepository {
 		}
 	}
 
-	@Override
-	public void addSessionDataForUncommittedChanges(Object data) {
-		HashCacluatingDeltaVisitor hashCalculator = new HashCacluatingDeltaVisitor();
-		try {
-			visitHeadFileSystemDelta(repository, hashCalculator);
-		} catch (NoHeadException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
+	private void visitHeadIndexDelta(FileSetDeltaVisitor... visitors)
+			throws IOException {
+		TreeWalk treeWalk = new TreeWalk(repository);
+		treeWalk.setRecursive(true);
+		ObjectId headTreeId = repository.resolve(Constants.HEAD);
+		DirCache dirCache = repository.readDirCache();
+		DirCacheIterator dirCacheTree = new DirCacheIterator(dirCache);
+		int dirCacheTreeIndex = treeWalk.addTree(dirCacheTree);
+
+		if (headTreeId == null) {
+			while (treeWalk.next()) {
+				DirCacheIterator dirCacheMatch = treeWalk.getTree(
+						dirCacheTreeIndex, DirCacheIterator.class);
+				final String path = treeWalk.getPathString();
+				ObjectId newObjectId = dirCacheMatch.getEntryObjectId();
+				for (FileSetDeltaVisitor visitor : visitors) {
+					visitor.visitAddedFile(path, newObjectId);
+				}
+			}
+		} else {
+			RevWalk revWalk = new RevWalk(repository);
+			RevTree revTree = revWalk.parseTree(headTreeId);
+			int revTreeIndex = treeWalk.addTree(revTree);
+			TreeFilter filter = AndTreeFilter.create(TreeFilter.ANY_DIFF,
+					new SkipWorkTreeFilter(dirCacheTreeIndex));
+			treeWalk.setFilter(filter);
+
+			while (treeWalk.next()) {
+				AbstractTreeIterator headMatch = treeWalk.getTree(revTreeIndex,
+						AbstractTreeIterator.class);
+				DirCacheIterator dirCacheMatch = treeWalk.getTree(
+						dirCacheTreeIndex, DirCacheIterator.class);
+				final String path = treeWalk.getPathString();
+				visitDeltaWithAll(path, headMatch, dirCacheMatch, visitors);
+			}
 		}
+	}
+
+	private void visitHeadFileSystemDelta(Repository repository,
+			FileSetDeltaVisitor... visitors) throws IOException {
+		TreeWalk treeWalk = new TreeWalk(repository);
+		treeWalk.setRecursive(true);
+		// Using the IteratorService is important
+		// to for example automatically ignore class files in bin/
+		WorkingTreeIterator fileTreeIterator = IteratorService
+				.createInitialIterator(repository);
+		int workTreeIndex = treeWalk.addTree(fileTreeIterator);
+
+		ObjectId headTreeId = repository.resolve(Constants.HEAD);
+		if (headTreeId == null) {
+			while (treeWalk.next()) {
+				WorkingTreeIterator fileTreeMatch = treeWalk.getTree(
+						workTreeIndex, WorkingTreeIterator.class);
+				final String path = treeWalk.getPathString();
+				ObjectId newObjectId = fileTreeMatch.getEntryObjectId();
+				for (FileSetDeltaVisitor visitor : visitors) {
+					visitor.visitAddedFile(path, newObjectId);
+				}
+			}
+		} else {
+			RevWalk revWalk = new RevWalk(repository);
+			RevTree revTree = revWalk.parseTree(headTreeId);
+			int revTreeIndex = treeWalk.addTree(revTree);
+			treeWalk.setFilter(TreeFilter.ANY_DIFF);
+
+			while (treeWalk.next()) {
+				AbstractTreeIterator headMatch = treeWalk.getTree(revTreeIndex,
+						AbstractTreeIterator.class);
+				WorkingTreeIterator fileTreeMatch = treeWalk.getTree(
+						workTreeIndex, WorkingTreeIterator.class);
+				// TODO is this check necessary:
+				if (fileTreeMatch != null) {
+					if (fileTreeMatch.isEntryIgnored()) {
+						continue;
+					}
+				}
+				final String path = treeWalk.getPathString();
+				visitDeltaWithAll(path, headMatch, fileTreeMatch, visitors);
+			}
+		}
+	}
+
+	@Override
+	public void addSessionDataForUncommittedChanges(Object data)
+			throws IOException {
+		HashCacluatingDeltaVisitor hashCalculator = new HashCacluatingDeltaVisitor();
+
+		visitHeadFileSystemDelta(repository, hashCalculator);
+
 		byte[] currentHash = hashCalculator.buildHash();
 		if (!Arrays.equals(currentHash, sessionDataDeltaHash)) {
 			sessionData.clear();

@@ -179,7 +179,15 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 
 				for (IVersionControlSystem vcs : versionControlSystems) {
 					for (IRepository repository : vcs) {
-						repository.commit();
+						try {
+							repository.commit();
+						} catch (IOException e) {
+							return new Status(
+									IStatus.ERROR,
+									AutoCommitPluginActivator.PLUGIN_ID,
+									"An exception occured while automatically commiting to a repository",
+									e);
+						}
 					}
 				}
 				return Status.OK_STATUS;
