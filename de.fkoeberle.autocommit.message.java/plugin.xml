@@ -138,11 +138,11 @@
          </arguments>
          <messages>
             <message
-                  defaultValue="Worked on method {0}\#{1}({2})"
+                  defaultValue="Worked on method {0}#{1}({2})"
                   fieldName="workedOnMethodMessage">
             </message>
             <message
-                  defaultValue="Worked on constructor {0}\#{1}({2})"
+                  defaultValue="Worked on constructor {0}#{1}({2})"
                   fieldName="workedOnConstructorMessage">
             </message>
          </messages>
@@ -195,11 +195,11 @@
          </arguments>
           <messages>
              <message
-                   defaultValue="Added method {0}\#{1}({2})"
+                   defaultValue="Added method {0}#{1}({2})"
                    fieldName="addedMethodMessage">
              </message>
              <message
-                   defaultValue="Added constructor {0}\#{1}({2})"
+                   defaultValue="Added constructor {0}#{1}({2})"
                    fieldName="addedConstructorMessage">
              </message>
           </messages>
@@ -252,11 +252,11 @@
          </arguments>
           <messages>
              <message
-                   defaultValue="Documented method {0}\#{1}({2})"
+                   defaultValue="Documented method {0}#{1}({2})"
                    fieldName="documentedMethodMessage">
              </message>
              <message
-                   defaultValue="Documented constructor {0}\#{1}({2})"
+                   defaultValue="Documented constructor {0}#{1}({2})"
                    fieldName="documentedConstructorMessage">
              </message>
              </messages>
