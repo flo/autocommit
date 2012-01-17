@@ -63,7 +63,7 @@
 		<decorator
 			id="de.fkoeberle.autocommit"
 			label="Enabled State of 'Autocommit' Feature"
-			state="true"
+			state="false"
 			class= "de.fkoeberle.autocommit.AutocommitIconDecorator"
 			adaptable="true">
 			<description>

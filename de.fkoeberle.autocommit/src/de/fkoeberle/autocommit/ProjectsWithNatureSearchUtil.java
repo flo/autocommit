@@ -9,7 +9,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-
 class ProjectsWithNatureSearchUtil {
 
 	/**
@@ -35,7 +34,8 @@ class ProjectsWithNatureSearchUtil {
 			if (o instanceof IProject) {
 				IProject project = (IProject) o;
 				try {
-					if (project.hasNature(Nature.ID) == enabledState) {
+					if (project.isOpen()
+							&& project.hasNature(Nature.ID) == enabledState) {
 						IRepository repository = AutoCommitPluginActivator
 								.getDefault().getRepositoryFor(project);
 						if (repository != null) {

@@ -5,9 +5,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import de.fkoeberle.autocommit.AutoCommitPluginActivator;
-
 public class Activator extends AbstractUIPlugin {
+	private static final String PLUGIN_ID = "de.fkoeberle.autocommit.git";
 	private static Activator plugin;
 
 	@Override
@@ -33,7 +32,6 @@ public class Activator extends AbstractUIPlugin {
 
 	public static void logError(String message, Exception e) {
 		getDefault().getLog().log(
-				new Status(IStatus.ERROR, AutoCommitPluginActivator.PLUGIN_ID,
-						message, e));
+				new Status(IStatus.ERROR, Activator.PLUGIN_ID, message, e));
 	}
 }

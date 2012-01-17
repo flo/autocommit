@@ -37,7 +37,7 @@ public class AutocommitIconDecorator extends LabelProvider implements
 	public Image decorateImage(Image image, Object element) {
 		IProject project = (IProject) Platform.getAdapterManager().getAdapter(
 				element, IProject.class);
-		if (project == null) {
+		if (project == null || !project.isOpen()) {
 			return null;
 		}
 		try {
@@ -46,6 +46,7 @@ public class AutocommitIconDecorator extends LabelProvider implements
 			}
 		} catch (CoreException e) {
 			AutoCommitPluginActivator.logUnexpectedException(e);
+			return null;
 		}
 		DecorationOverlayIcon newImageDescriptor = new DecorationOverlayIcon(
 				image, new ImageDescriptor[] { null, null, null, icon, null });

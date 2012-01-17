@@ -34,7 +34,8 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 				.getProjects();
 		for (IProject project : allProjects) {
 			try {
-				if (!enabledOnly || project.hasNature(Nature.ID)) {
+				if (!enabledOnly || project.isOpen()
+						&& project.hasNature(Nature.ID)) {
 					RepositoryMapping mapping = RepositoryMapping
 							.getMapping(project);
 					if (mapping != null) {
