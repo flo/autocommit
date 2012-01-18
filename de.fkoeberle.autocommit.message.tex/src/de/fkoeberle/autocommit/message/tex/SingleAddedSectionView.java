@@ -82,7 +82,8 @@ public class SingleAddedSectionView extends
 				charRange.getFirstIndex(), addedSection.getFirstIndex());
 		String textAddedAfter = newContent.substring(
 				addedSection.getExlusiveEndIndex(),
-				charRange.getExlusiveEndOfNew());
+				Math.max(addedSection.getExlusiveEndIndex(),
+						charRange.getExlusiveEndOfNew()));
 		String textRemoved = oldContent.substring(charRange.getFirstIndex(),
 				charRange.getExlusiveEndOfOld());
 

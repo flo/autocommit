@@ -199,4 +199,18 @@ public class SingleAddedSectionViewTest {
 				addedSectionInfo.getCharactersAddedAfter());
 		assertEquals("\\subsection{b}", addedSectionInfo.getCharactersRemoved());
 	}
+
+	@Test
+	public void testAddedSubsectionToWhitespaceArea() throws IOException {
+		SingleAddedSectionView view = create(
+				"\\section{A}\n\n\n\n\n\\section{B}",
+				"\\section{A}\n\n\\subsection{X}\n\n\n\\section{B}");
+		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
+		assertNotNull(addedSectionInfo);
+		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
+		assertEquals("", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("", addedSectionInfo.getCharactersAddedAfter());
+		assertEquals("", addedSectionInfo.getCharactersRemoved());
+	}
+
 }

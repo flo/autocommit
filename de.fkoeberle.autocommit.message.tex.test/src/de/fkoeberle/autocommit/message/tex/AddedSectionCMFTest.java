@@ -67,6 +67,22 @@ public class AddedSectionCMFTest {
 	}
 
 	@Test
+	public void testAddedSubsectionToWhitespaceArea() throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile(
+				"/hello.tex",
+				"\\chapter{Chapter One}\\chapter{Chapter Two}\\section{One}\n\n\n\n\n\\section{Two}",
+				"\\chapter{Chapter One}\\chapter{Chapter Two}\\section{One}\n\n\\subsection{New}\n\n\n\\section{Two}");
+		FileSetDelta fileSetDelta = builder.build();
+
+		AddedSectionCMF factory = create(fileSetDelta);
+		String actualMessage = factory.createMessage();
+		String expectedMessage = factory.addedSubsectionMessage
+				.createMessageWithArgs("New");
+		assertEquals(expectedMessage, actualMessage);
+	}
+
+	@Test
 	public void testAddedSubsubsection() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile(
