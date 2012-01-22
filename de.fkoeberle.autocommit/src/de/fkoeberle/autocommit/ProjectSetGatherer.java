@@ -8,7 +8,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
-final class ProjectSetGatherer implements IResourceDeltaVisitor {
+public final class ProjectSetGatherer implements IResourceDeltaVisitor {
 	private final Set<IProject> projects = new HashSet<IProject>();
 
 	@Override

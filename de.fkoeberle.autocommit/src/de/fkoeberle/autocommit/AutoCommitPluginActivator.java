@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IMarker;
@@ -138,7 +140,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
-	public synchronized void commitIfPossible() {
+	public synchronized void commitIfPossible(final Set<IProject> projects) {
 		UIJob job = new UIJob("Auto Commit") {
 
 			@Override
@@ -178,7 +180,11 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 				}
 
 				for (IVersionControlSystem vcs : versionControlSystems) {
-					for (IRepository repository : vcs) {
+					LinkedHashSet<IRepository> repositories = new LinkedHashSet<IRepository>();
+					for (IProject project: projects) {
+						repositories.add(vcs.getRepositoryFor(project));
+					}
+					for (IRepository repository : repositories) {
 						try {
 							repository.commit();
 						} catch (IOException e) {
