@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IMarker;
@@ -84,13 +83,35 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		return null;
 	}
 
-	public Set<IRepository> getAllRepositories() {
+	/**
+	 * 
+	 * @return all {@link IProject}s in the workspace which are enabled for
+	 *         automatic commits.
+	 */
+	public LinkedHashSet<IProject> getAllEnabledProjects() {
 		final IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot()
 				.getProjects();
-		return getRepositoriesFor(allProjects);
+		LinkedHashSet<IProject> enabledProjects = new LinkedHashSet<IProject>();
+		for (IProject project : allProjects) {
+			try {
+				if (project.exists() && project.isOpen()
+						&& project.hasNature(Nature.ID)) {
+					enabledProjects.add(project);
+				}
+			} catch (CoreException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return enabledProjects;
 	}
 
-	private LinkedHashSet<IRepository> getRepositoriesFor(IProject[] projects) {
+	public LinkedHashSet<IRepository> getAllEnabledRepositories() {
+		LinkedHashSet<IProject> allEnabledProjects = getAllEnabledProjects();
+		return getRepositoriesFor(allEnabledProjects);
+	}
+
+	private LinkedHashSet<IRepository> getRepositoriesFor(
+			Iterable<IProject> projects) {
 		LinkedHashSet<IRepository> repositories = new LinkedHashSet<IRepository>();
 		for (IVersionControlSystem vcs : versionControlSystems) {
 			for (IProject project : projects) {
@@ -157,8 +178,8 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
-	public synchronized void commitIfPossible(final Set<IProject> projects) {
-		Job job = new AutoCommitJob("Auto Commit", projects);
+	public synchronized void commitIfPossible() {
+		Job job = new AutoCommitJob("Auto Commit");
 		job.setRule(ResourcesPlugin.getWorkspace().getRoot());
 		job.schedule();
 	}
@@ -169,11 +190,8 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 	}
 
 	private final class AutoCommitJob extends Job {
-		private final Set<IProject> projects;
-
-		private AutoCommitJob(String name, Set<IProject> projects) {
+		private AutoCommitJob(String name) {
 			super(name);
-			this.projects = projects;
 		}
 
 		private boolean noUnsavedContentExists() {
@@ -211,32 +229,15 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		}
 
 		private void commit() {
-			for (IVersionControlSystem vcs : versionControlSystems) {
-				LinkedHashSet<IRepository> repositories = allRepositoriesFor(
-						projects, vcs);
-				for (IRepository repository : repositories) {
-					try {
-						repository.commit();
-					} catch (IOException e) {
-						logException(
-								"An exception occured while automatically commiting to a repository",
-								e);
-					}
+			for (IRepository repository : getAllEnabledRepositories()) {
+				try {
+					repository.commit();
+				} catch (IOException e) {
+					logException(
+							"An exception occured while automatically commiting to a repository",
+							e);
 				}
 			}
-		}
-
-		private LinkedHashSet<IRepository> allRepositoriesFor(
-				final Set<IProject> projects, IVersionControlSystem vcs) {
-			LinkedHashSet<IRepository> repositories = new LinkedHashSet<IRepository>();
-			for (IProject project : projects) {
-				IRepository repository = vcs.getRepositoryFor(project);
-				if (repository != null) {
-					repositories.add(repository);
-				}
-				repositories.add(vcs.getRepositoryFor(project));
-			}
-			return repositories;
 		}
 	}
 
