@@ -42,7 +42,8 @@ public class RefactoringListener implements IUndoManagerListener {
 			refactoringDescriptor = refactoringChangeDescriptor
 					.getRefactoringDescriptor();
 
-			for (IRepository repository : getAutoCommitPlugion()) {
+			for (IRepository repository : getAutoCommitPlugion()
+					.getAllRepositories()) {
 				try {
 					if (repository.noUncommittedChangesExist()) {
 						repositoriesWithoutChanges.add(repository);

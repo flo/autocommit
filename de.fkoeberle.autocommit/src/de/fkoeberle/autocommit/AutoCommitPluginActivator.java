@@ -3,10 +3,8 @@ package de.fkoeberle.autocommit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
@@ -42,8 +40,7 @@ import org.osgi.framework.BundleContext;
  * 
  * Can be used to iterate over the repositories with enabled autocommit support.
  */
-public class AutoCommitPluginActivator extends AbstractUIPlugin implements
-		Iterable<IRepository> {
+public class AutoCommitPluginActivator extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "de.fkoeberle.autocommit"; //$NON-NLS-1$
 	public static final String EXTENSION_POINT_ID = "de.fkoeberle.autocommit.vcs";
@@ -85,6 +82,26 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 			}
 		}
 		return null;
+	}
+
+	public Set<IRepository> getAllRepositories() {
+		final IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot()
+				.getProjects();
+		return getRepositoriesFor(allProjects);
+	}
+
+	private LinkedHashSet<IRepository> getRepositoriesFor(IProject[] projects) {
+		LinkedHashSet<IRepository> repositories = new LinkedHashSet<IRepository>();
+		for (IVersionControlSystem vcs : versionControlSystems) {
+			for (IProject project : projects) {
+				IRepository repository = vcs.getRepositoryFor(project);
+				if (repository != null) {
+					repositories.add(repository);
+				}
+				repositories.add(vcs.getRepositoryFor(project));
+			}
+		}
+		return repositories;
 	}
 
 	public synchronized void updateVersionControlSystemsList() {
@@ -268,48 +285,6 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 		public void added(IExtension[] extensions) {
 			updateVersionControlSystemsList();
 		}
-	}
-
-	@Override
-	public Iterator<IRepository> iterator() {
-		return new Iterator<IRepository>() {
-			private final Iterator<IVersionControlSystem> vcsIterator = versionControlSystems
-					.iterator();
-			private Iterator<IRepository> repositoryIterator = null;
-
-			private void ensureRepositoryIteratorHasNextOrIsNull() {
-				while (repositoryIterator == null
-						|| (!repositoryIterator.hasNext() && vcsIterator
-								.hasNext())) {
-					repositoryIterator = vcsIterator.next().iterator();
-				}
-				if (repositoryIterator != null && !repositoryIterator.hasNext()) {
-					repositoryIterator = null;
-				}
-			}
-
-			@Override
-			public boolean hasNext() {
-				ensureRepositoryIteratorHasNextOrIsNull();
-
-				return repositoryIterator != null;
-			}
-
-			@Override
-			public IRepository next() {
-				ensureRepositoryIteratorHasNextOrIsNull();
-				if (repositoryIterator == null) {
-					throw new NoSuchElementException();
-				}
-				return repositoryIterator.next();
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-
-		};
 	}
 
 	private void fireAutoCommitEnabledStateChanged(IProject project) {
