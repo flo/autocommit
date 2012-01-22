@@ -141,75 +141,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 	}
 
 	public synchronized void commitIfPossible(final Set<IProject> projects) {
-		UIJob job = new UIJob("Auto Commit") {
-
-			@Override
-			public IStatus runInUIThread(IProgressMonitor monitor) {
-
-				for (IWorkbenchWindow window : PlatformUI.getWorkbench()
-						.getWorkbenchWindows()) {
-					for (IWorkbenchPage page : window.getPages()) {
-						IEditorPart[] dirtyEditors = page.getDirtyEditors();
-						if (dirtyEditors.length > 0) {
-							logInfo(String
-									.format("Not committing since there unsaved changes"));
-							return Status.OK_STATUS;
-						}
-					}
-				}
-				IWorkspace workspace = ResourcesPlugin.getWorkspace();
-				IWorkspaceRoot root = workspace.getRoot();
-				int maxProblemServity;
-				try {
-					maxProblemServity = root.findMaxProblemSeverity(
-							IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-				} catch (CoreException e) {
-					logException(
-							"An exception occured while determining if there are problems for an auto commit.",
-							e);
-					return new Status(
-							IStatus.ERROR,
-							AutoCommitPluginActivator.PLUGIN_ID,
-							"An exception occured while determining if there are problems for an auto commit.",
-							e);
-				}
-				if (maxProblemServity == IMarker.SEVERITY_ERROR) {
-					logInfo(String
-							.format("Not committing since there are problem markers"));
-					return Status.OK_STATUS;
-				}
-
-				for (IVersionControlSystem vcs : versionControlSystems) {
-					LinkedHashSet<IRepository> repositories = allRepositoriesFor(
-							projects, vcs);
-					for (IRepository repository : repositories) {
-						try {
-							repository.commit();
-						} catch (IOException e) {
-							return new Status(
-									IStatus.ERROR,
-									AutoCommitPluginActivator.PLUGIN_ID,
-									"An exception occured while automatically commiting to a repository",
-									e);
-						}
-					}
-				}
-				return Status.OK_STATUS;
-			}
-
-			private LinkedHashSet<IRepository> allRepositoriesFor(
-					final Set<IProject> projects, IVersionControlSystem vcs) {
-				LinkedHashSet<IRepository> repositories = new LinkedHashSet<IRepository>();
-				for (IProject project : projects) {
-					IRepository repository = vcs.getRepositoryFor(project);
-					if (repository != null) {
-						repositories.add(repository);
-					}
-					repositories.add(vcs.getRepositoryFor(project));
-				}
-				return repositories;
-			}
-		};
+		UIJob job = new AutoCommitJob("Auto Commit", projects);
 		job.setRule(ResourcesPlugin.getWorkspace().getRoot());
 		job.schedule();
 
@@ -220,9 +152,76 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 				new Status(Status.ERROR, PLUGIN_ID, Status.ERROR, message, e));
 	}
 
-	private void logInfo(String message) {
-		getLog().log(
-				new Status(Status.INFO, PLUGIN_ID, Status.OK, message, null));
+	private final class AutoCommitJob extends UIJob {
+		private final Set<IProject> projects;
+
+		private AutoCommitJob(String name, Set<IProject> projects) {
+			super(name);
+			this.projects = projects;
+		}
+
+		private boolean noUnsavedContentExists() {
+			for (IWorkbenchWindow window : PlatformUI.getWorkbench()
+					.getWorkbenchWindows()) {
+				for (IWorkbenchPage page : window.getPages()) {
+					IEditorPart[] dirtyEditors = page.getDirtyEditors();
+					if (dirtyEditors.length > 0) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
+		private boolean noBuildErrorsExist() {
+			IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			IWorkspaceRoot root = workspace.getRoot();
+			int maxProblemServity;
+			try {
+				maxProblemServity = root.findMaxProblemSeverity(
+						IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+			} catch (CoreException e) {
+				throw new RuntimeException(e);
+			}
+			return (maxProblemServity != IMarker.SEVERITY_ERROR);
+		}
+
+		@Override
+		public IStatus runInUIThread(IProgressMonitor monitor) {
+			if (noUnsavedContentExists() && noBuildErrorsExist()) {
+				commit();
+			}
+			return Status.OK_STATUS;
+		}
+
+		private void commit() {
+			for (IVersionControlSystem vcs : versionControlSystems) {
+				LinkedHashSet<IRepository> repositories = allRepositoriesFor(
+						projects, vcs);
+				for (IRepository repository : repositories) {
+					try {
+						repository.commit();
+					} catch (IOException e) {
+						logException(
+								"An exception occured while automatically commiting to a repository",
+								e);
+					}
+				}
+			}
+		}
+
+		private LinkedHashSet<IRepository> allRepositoriesFor(
+				final Set<IProject> projects, IVersionControlSystem vcs) {
+			LinkedHashSet<IRepository> repositories = new LinkedHashSet<IRepository>();
+			for (IProject project : projects) {
+				IRepository repository = vcs.getRepositoryFor(project);
+				if (repository != null) {
+					repositories.add(repository);
+				}
+				repositories.add(vcs.getRepositoryFor(project));
+			}
+			return repositories;
+		}
 	}
 
 	private final class UpdateAutocommitNatureScheduler implements
