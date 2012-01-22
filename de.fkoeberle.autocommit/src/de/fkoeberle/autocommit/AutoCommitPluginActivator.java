@@ -180,10 +180,8 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 				}
 
 				for (IVersionControlSystem vcs : versionControlSystems) {
-					LinkedHashSet<IRepository> repositories = new LinkedHashSet<IRepository>();
-					for (IProject project: projects) {
-						repositories.add(vcs.getRepositoryFor(project));
-					}
+					LinkedHashSet<IRepository> repositories = allRepositoriesFor(
+							projects, vcs);
 					for (IRepository repository : repositories) {
 						try {
 							repository.commit();
@@ -197,6 +195,19 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 					}
 				}
 				return Status.OK_STATUS;
+			}
+
+			private LinkedHashSet<IRepository> allRepositoriesFor(
+					final Set<IProject> projects, IVersionControlSystem vcs) {
+				LinkedHashSet<IRepository> repositories = new LinkedHashSet<IRepository>();
+				for (IProject project : projects) {
+					IRepository repository = vcs.getRepositoryFor(project);
+					if (repository != null) {
+						repositories.add(repository);
+					}
+					repositories.add(vcs.getRepositoryFor(project));
+				}
+				return repositories;
 			}
 		};
 		job.setRule(ResourcesPlugin.getWorkspace().getRoot());
