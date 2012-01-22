@@ -28,13 +28,13 @@ import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -141,10 +141,9 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 	}
 
 	public synchronized void commitIfPossible(final Set<IProject> projects) {
-		UIJob job = new AutoCommitJob("Auto Commit", projects);
+		Job job = new AutoCommitJob("Auto Commit", projects);
 		job.setRule(ResourcesPlugin.getWorkspace().getRoot());
 		job.schedule();
-
 	}
 
 	private void logException(String message, Exception e) {
@@ -152,7 +151,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 				new Status(Status.ERROR, PLUGIN_ID, Status.ERROR, message, e));
 	}
 
-	private final class AutoCommitJob extends UIJob {
+	private final class AutoCommitJob extends Job {
 		private final Set<IProject> projects;
 
 		private AutoCommitJob(String name, Set<IProject> projects) {
@@ -187,7 +186,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin implements
 		}
 
 		@Override
-		public IStatus runInUIThread(IProgressMonitor monitor) {
+		protected IStatus run(IProgressMonitor monitor) {
 			if (noUnsavedContentExists() && noBuildErrorsExist()) {
 				commit();
 			}
