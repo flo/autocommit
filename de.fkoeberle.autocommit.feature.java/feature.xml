@@ -6,16 +6,16 @@
       license-feature="org.eclipse.platform"
       license-feature-version="3.7.0.v20110530-9gF7UHNFFt4cwE-pkZDJ7oz-mj4OSEIlu9SEv0f">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+      This feature allows more detailed automatically generated commit messages about Java code.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+      Copyright 2011-2012 Florian Köberle
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      This software is provided to you by the terms and conditions of the Eclipse Public License 1.0, which can be downloaded at http://www.eclipse.org/legal/epl-v10.html.
    </license>
 
    <includes

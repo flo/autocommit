@@ -4,16 +4,14 @@
       label="Auto Commit Core Feature"
       version="0.0.1.alpha">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+      Allows to the user to have selected projects commit automatically to a version control system. Install also the feature &quot;Git Auto Commit Support&quot; to allow automatic commits via EGit.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
-   </copyright>
+   <copyright>Copyright 2011-2012 Florian Köberle</copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      This software is provided to you by the terms and conditions of the Eclipse Public License 1.0, which can be downloaded at http://www.eclipse.org/legal/epl-v10.html.
    </license>
 
    <requires>
