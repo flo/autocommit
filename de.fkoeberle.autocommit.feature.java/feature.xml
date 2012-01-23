@@ -2,9 +2,7 @@
 <feature
       id="de.fkoeberle.autocommit.feature.java"
       label="Auto Commit Feature For Java Code"
-      version="0.0.1.alpha"
-      license-feature="org.eclipse.platform"
-      license-feature-version="3.7.0.v20110530-9gF7UHNFFt4cwE-pkZDJ7oz-mj4OSEIlu9SEv0f">
+      version="0.0.1.alpha">
 
    <description>
       This feature allows more detailed automatically generated commit messages about Java code.
