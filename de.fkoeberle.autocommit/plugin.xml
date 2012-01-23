@@ -63,11 +63,11 @@
 		<decorator
 			id="de.fkoeberle.autocommit"
 			label="Enabled State of 'Autocommit' Feature"
-			state="false"
+			state="true"
 			class= "de.fkoeberle.autocommit.AutocommitIconDecorator"
 			adaptable="true">
 			<description>
-			Marks projects which have the "autocommit"-feature enabled with "a" icon at the bottom right.
+			Marks projects which have the &quot;autocommit&quot;-feature enabled with &quot;a&quot; icon at the top left.
 			</description>
 		</decorator>
 	</extension>

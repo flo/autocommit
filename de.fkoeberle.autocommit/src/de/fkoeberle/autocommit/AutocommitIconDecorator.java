@@ -49,7 +49,7 @@ public class AutocommitIconDecorator extends LabelProvider implements
 			return null;
 		}
 		DecorationOverlayIcon newImageDescriptor = new DecorationOverlayIcon(
-				image, new ImageDescriptor[] { null, null, null, icon, null });
+				image, new ImageDescriptor[] { icon, null, null, null, null });
 
 		return newImageDescriptor.createImage();
 	}
