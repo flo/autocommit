@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
@@ -39,8 +40,14 @@ class ProjectsWithNatureSearchUtil {
 		Iterator<?> iterator = structuredSelection.iterator();
 		while (iterator.hasNext()) {
 			Object o = iterator.next();
+			IProject project = null;
 			if (o instanceof IProject) {
-				IProject project = (IProject) o;
+				project = (IProject) o;
+			} else if (o instanceof IAdaptable) {
+				IAdaptable adaptable = (IAdaptable) o;
+				project = (IProject) adaptable.getAdapter(IProject.class);
+			}
+			if (project != null) {
 				try {
 					if (project.isOpen()
 							&& project.hasNature(Nature.ID) == enabledState) {

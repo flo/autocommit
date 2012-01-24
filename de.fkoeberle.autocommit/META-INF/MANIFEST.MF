@@ -9,5 +9,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.core.resources
+Import-Package: org.eclipse.core.expressions,
+ org.eclipse.core.resources
 Export-Package: de.fkoeberle.autocommit

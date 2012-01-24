@@ -2,61 +2,13 @@
 <?eclipse version="3.4"?>
 <plugin>
 	<extension-point id="de.fkoeberle.autocommit.vcs" name="Version Control System For Automatic Commits" schema="schema/de.fkoeberle.autocommit.vcs.exsd"/>
-	<extension
-		point="org.eclipse.ui.popupMenus">
-		<objectContribution
-			adaptable="true"
-			id="org.eclipse.ui.articles.action.contribution.popup.object"
-			objectClass="org.eclipse.core.resources.IProject">
-			<menu
-				id="de.fkoeberle.autocommit"
-				label="Automatic Commits"
-				path="team.main/group1">
-				<separator
-				name="group1">
-				</separator>
-				<separator
-				name="group2">
-				</separator>
-			</menu>
-		</objectContribution>
-		<objectContribution
-			adaptable="true"
-			id="org.eclipse.ui.articles.action.contribution.popup.object"
-			objectClass="org.eclipse.core.resources.IProject">
-			<action
-				class="de.fkoeberle.autocommit.EnableAutomaticCommitsAction"
-				id="de.fkoeberle.autocommit.enable"
-				label="Enable"
-				menubarPath="team.main/de.fkoeberle.autocommit/group1"> 
-			</action>
-			<visibility>
-				<not>
-					<objectState name="projectNature" value="de.fkoeberle.autocommit.nature"></objectState>
-				</not>
-			</visibility>
-		</objectContribution>
-		<objectContribution
-			adaptable="true"
-			id="org.eclipse.ui.articles.action.contribution.popup.object"
-			objectClass="org.eclipse.core.resources.IProject">
-			<action
-				class="de.fkoeberle.autocommit.DisableAutomaticCommitsAction"
-				id="de.fkoeberle.autocommit.disable"
-				label="Disable"
-				menubarPath="team.main/de.fkoeberle.autocommit/group1"> 
-			</action>
-			<visibility>
-				<objectState name="projectNature" value="de.fkoeberle.autocommit.nature"></objectState>
-			</visibility>
-		</objectContribution> 
-	</extension>
-   
-   <extension id="nature" name="Automatic Commits" point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run class="de.fkoeberle.autocommit.Nature">
-         </run>
-      </runtime>
+
+	
+	<extension id="nature" name="Automatic Commits" point="org.eclipse.core.resources.natures">
+		<runtime>
+			<run class="de.fkoeberle.autocommit.Nature">
+			</run>
+		</runtime>
 	</extension>
 	
 	<extension point="org.eclipse.ui.decorators">
@@ -71,4 +23,82 @@
 			</description>
 		</decorator>
 	</extension>
+ <extension
+		point="org.eclipse.core.expressions.propertyTesters">
+	<propertyTester
+			class="de.fkoeberle.autocommit.AutoCommitAvailablePropertyTester"
+			id="de.fkoeberle.autocommit.AutoCommitAblePropertyTester"
+			namespace="de.fkoeberle.autocommit"
+			properties="available"
+			type="org.eclipse.core.resources.IProject">
+	</propertyTester>
+ </extension>
+ <extension
+		point="org.eclipse.ui.commands">
+	<category
+			description="Commands that have to do with the mechanism of creating commits automatically."
+			id="de.fkoeberle.autocommit"
+			name="Auto Commit">
+	</category>
+	<command
+			categoryId="de.fkoeberle.autocommit"
+			defaultHandler="de.fkoeberle.autocommit.EnableAutomaticCommitsHandler"
+			id="de.fkoeberle.autocommit.enable"
+			name="Enable">
+	</command>
+	<command
+			categoryId="de.fkoeberle.autocommit"
+			defaultHandler="de.fkoeberle.autocommit.DisableAutomaticCommitsHandler"
+			id="de.fkoeberle.autocommit.disable"
+			name="Disable">
+	</command>
+ </extension>
+ <extension
+		point="org.eclipse.ui.menus">
+	<menuContribution
+			locationURI="popup:team.main?after=group1">
+		<menu
+			label="Automatic Commits" id="de.fkoeberle.autocommit">
+			<separator name="group1"></separator>
+			<separator name="group2"></separator>
+		</menu>
+	</menuContribution>
+	<menuContribution
+			locationURI="popup:de.fkoeberle.autocommit?after=group1">
+		<command
+			commandId="de.fkoeberle.autocommit.enable">
+			<visibleWhen
+					checkEnabled="false">
+				<iterate>
+					<adapt type="org.eclipse.core.resources.IProject">
+						<and>
+							<test property="de.fkoeberle.autocommit.available" 
+								value="true"/>
+							<not>
+								<test property="org.eclipse.core.resources.projectNature" 
+									value="de.fkoeberle.autocommit.nature"/>
+							</not>
+						</and>
+					</adapt>
+				</iterate>
+			</visibleWhen>
+		</command>
+		<command
+			commandId="de.fkoeberle.autocommit.disable">
+			<visibleWhen
+					checkEnabled="false">
+				<iterate>
+					<adapt type="org.eclipse.core.resources.IProject">
+						<and>
+							<test property="de.fkoeberle.autocommit.available" 
+								value="true"/>
+							<test property="org.eclipse.core.resources.projectNature" 
+								value="de.fkoeberle.autocommit.nature"/>
+						</and>
+					</adapt>
+				</iterate>
+			</visibleWhen>
+		</command>
+	</menuContribution>
+ </extension>
 </plugin>
