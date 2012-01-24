@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-class ProjectsWithNatureSearchUtil {
+class SelectionSearchUtil {
 
 	public static LinkedHashSet<IProject> getSelectedProjects(
 			ISelection selection) {

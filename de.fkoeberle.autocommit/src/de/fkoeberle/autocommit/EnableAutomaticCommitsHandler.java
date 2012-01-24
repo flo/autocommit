@@ -1,6 +1,6 @@
 package de.fkoeberle.autocommit;
 
-import static de.fkoeberle.autocommit.ProjectsWithNatureSearchUtil.searchAutoCommitableProjectsWithEnabledState;
+import static de.fkoeberle.autocommit.SelectionSearchUtil.searchAutoCommitableProjectsWithEnabledState;
 
 import java.util.Set;
 
