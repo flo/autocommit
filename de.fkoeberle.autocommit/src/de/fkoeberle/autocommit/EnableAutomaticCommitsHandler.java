@@ -1,6 +1,6 @@
 package de.fkoeberle.autocommit;
 
-import static de.fkoeberle.autocommit.SelectionSearchUtil.searchAutoCommitableProjectsWithEnabledState;
+import static de.fkoeberle.autocommit.SelectionSearchUtil.searchAutoCommitableProjectsWithEnabledStateIn;
 
 import java.util.Set;
 
@@ -16,7 +16,7 @@ public class EnableAutomaticCommitsHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
-		Set<IProject> selectedProjectsWithoutNature = searchAutoCommitableProjectsWithEnabledState(
+		Set<IProject> selectedProjectsWithoutNature = searchAutoCommitableProjectsWithEnabledStateIn(
 				selection, false);
 		try {
 			for (IProject project : selectedProjectsWithoutNature) {

@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 
 class SelectionSearchUtil {
 
-	public static LinkedHashSet<IProject> getSelectedProjects(
+	public static LinkedHashSet<IProject> searchProjectsIn(
 			ISelection selection) {
 		LinkedHashSet<IProject> projects = new LinkedHashSet<IProject>();
 		if (!(selection instanceof IStructuredSelection)) {
@@ -55,10 +55,10 @@ class SelectionSearchUtil {
 	 * 
 	 * @return never null.
 	 */
-	public static Set<IProject> searchAutoCommitableProjectsWithEnabledState(
+	public static Set<IProject> searchAutoCommitableProjectsWithEnabledStateIn(
 			ISelection selection, boolean enabledState) {
 		Set<IProject> projects = new HashSet<IProject>();
-		for (IProject project : getSelectedProjects(selection)) {
+		for (IProject project : searchProjectsIn(selection)) {
 			try {
 				if (project.isOpen()
 						&& project.hasNature(Nature.ID) == enabledState) {
