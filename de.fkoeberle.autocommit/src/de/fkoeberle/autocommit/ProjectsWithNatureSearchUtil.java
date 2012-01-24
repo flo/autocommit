@@ -10,6 +10,7 @@ package de.fkoeberle.autocommit;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -20,19 +21,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 
 class ProjectsWithNatureSearchUtil {
 
-	/**
-	 * 
-	 * @param selection
-	 *            the projects to check.
-	 * @param enabledState
-	 *            if true only projects in the specified selection will be
-	 *            return which contain the nature {@link Nature}.
-	 * 
-	 * @return never null.
-	 */
-	public static Set<IProject> searchAutoCommitableProjectsWithEnabledState(
-			ISelection selection, boolean enabledState) {
-		Set<IProject> projects = new HashSet<IProject>();
+	public static LinkedHashSet<IProject> getSelectedProjects(
+			ISelection selection) {
+		LinkedHashSet<IProject> projects = new LinkedHashSet<IProject>();
 		if (!(selection instanceof IStructuredSelection)) {
 			return projects;
 		}
@@ -48,26 +39,44 @@ class ProjectsWithNatureSearchUtil {
 				project = (IProject) adaptable.getAdapter(IProject.class);
 			}
 			if (project != null) {
-				try {
-					if (project.isOpen()
-							&& project.hasNature(Nature.ID) == enabledState) {
-						IRepository repository = AutoCommitPluginActivator
-								.getDefault().getRepositoryFor(project);
-						if (repository != null) {
-							projects.add(project);
-						}
+				projects.add(project);
+			}
+		}
+		return projects;
+	}
+
+	/**
+	 * 
+	 * @param selection
+	 *            the projects to check.
+	 * @param enabledState
+	 *            if true only projects in the specified selection will be
+	 *            return which contain the nature {@link Nature}.
+	 * 
+	 * @return never null.
+	 */
+	public static Set<IProject> searchAutoCommitableProjectsWithEnabledState(
+			ISelection selection, boolean enabledState) {
+		Set<IProject> projects = new HashSet<IProject>();
+		for (IProject project : getSelectedProjects(selection)) {
+			try {
+				if (project.isOpen()
+						&& project.hasNature(Nature.ID) == enabledState) {
+					IRepository repository = AutoCommitPluginActivator
+							.getDefault().getRepositoryFor(project);
+					if (repository != null) {
+						projects.add(project);
 					}
-				} catch (CoreException e) {
-					AutoCommitPluginActivator
-							.logError(
-									"Failed determine enabled state of context menu item",
-									e);
-					/*
-					 * Allow the user to use the context menu so that he can get
-					 * a proper error message or a good result anyway.
-					 */
-					projects.add(project);
 				}
+			} catch (CoreException e) {
+				AutoCommitPluginActivator.logError(
+						"Failed determine enabled state of context menu item",
+						e);
+				/*
+				 * Allow the user to use the context menu so that he can get a
+				 * proper error message or a good result anyway.
+				 */
+				projects.add(project);
 			}
 		}
 		return projects;
