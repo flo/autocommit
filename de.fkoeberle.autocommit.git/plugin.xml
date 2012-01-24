@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="de.fkoeberle.autocommit.vcs">
-      <vcs
-            class="de.fkoeberle.autocommit.git.GitVersionControlSystemAdapter">
-      </vcs>
-   </extension>
 	<extension
-		point="org.eclipse.ui.popupMenus">
-		<objectContribution
-			adaptable="true"
-			id="org.eclipse.ui.articles.action.contribution.popup.object"
-			objectClass="org.eclipse.core.resources.IProject">
-			<action
-				class="de.fkoeberle.autocommit.git.EditCommitMessagesAction"
-				id="de.fkoeberle.autocommit.git.EditCommitMessagesAction"
-				label="Edit Commit Messages"
-				menubarPath="team.main/de.fkoeberle.autocommit/group2"> 
-			</action>
-			<visibility>
-				<objectState name="projectPersistentProperty"
-               value="org.eclipse.team.core.repository=org.eclipse.egit.core.GitProvider"></objectState>
-			</visibility>
-		</objectContribution>
-
+		point="de.fkoeberle.autocommit.vcs">
+	<vcs class="de.fkoeberle.autocommit.git.GitVersionControlSystemAdapter"></vcs>
 	</extension>
+	<extension
+		point="org.eclipse.ui.commands">
+		<command
+			categoryId="de.fkoeberle.autocommit"
+			defaultHandler="de.fkoeberle.autocommit.git.EditCommitMessagesHandler"
+			id="de.fkoeberle.autocommit.git.editCommitMessages"
+			name="Edit Commit Messages">
+		</command>
+ 	</extension>
+ 	<extension
+		point="org.eclipse.ui.menus">
+	<menuContribution
+			locationURI="popup:de.fkoeberle.autocommit?after=group2">
+		<command
+			commandId="de.fkoeberle.autocommit.git.editCommitMessages">
+			<visibleWhen
+					checkEnabled="false">
+				<iterate>
+					<adapt type="org.eclipse.core.resources.IProject">
+						<test 
+							property="org.eclipse.core.resources.projectPersistentProperty" 
+							args="org.eclipse.team.core.repository,org.eclipse.egit.core.GitProvider" />
+					</adapt>
+				</iterate>
+			</visibleWhen>
+		</command>
+	</menuContribution>
+ </extension>
+ 	
 </plugin>

@@ -19,10 +19,9 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-class SelectionSearchUtil {
+public class SelectionSearchUtil {
 
-	public static LinkedHashSet<IProject> searchProjectsIn(
-			ISelection selection) {
+	public static LinkedHashSet<IProject> searchProjectsIn(ISelection selection) {
 		LinkedHashSet<IProject> projects = new LinkedHashSet<IProject>();
 		if (!(selection instanceof IStructuredSelection)) {
 			return projects;
