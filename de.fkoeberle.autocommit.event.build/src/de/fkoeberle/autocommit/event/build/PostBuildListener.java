@@ -10,14 +10,20 @@ package de.fkoeberle.autocommit.event.build;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-
-import de.fkoeberle.autocommit.AutoCommitPluginActivator;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.jobs.Job;
 
 public class PostBuildListener implements IResourceChangeListener {
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		AutoCommitPluginActivator.getDefault().commitIfPossible();
+		commitIfPossible();
+	}
+
+	public void commitIfPossible() {
+		Job job = new AutoCommitJob();
+		job.setRule(ResourcesPlugin.getWorkspace().getRoot());
+		job.schedule();
 	}
 
 }

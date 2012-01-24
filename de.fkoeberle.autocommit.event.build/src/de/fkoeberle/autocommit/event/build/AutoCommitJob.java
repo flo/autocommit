@@ -6,9 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.fkoeberle.autocommit;
-
-import java.io.IOException;
+package de.fkoeberle.autocommit.event.build;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -24,6 +22,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+
+import de.fkoeberle.autocommit.AutoCommitPluginActivator;
 
 final class AutoCommitJob extends Job {
 	AutoCommitJob() {
@@ -48,8 +48,8 @@ final class AutoCommitJob extends Job {
 		IWorkspaceRoot root = workspace.getRoot();
 		int maxProblemServity;
 		try {
-			maxProblemServity = root.findMaxProblemSeverity(
-					IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+			maxProblemServity = root.findMaxProblemSeverity(IMarker.PROBLEM,
+					true, IResource.DEPTH_INFINITE);
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
@@ -59,23 +59,9 @@ final class AutoCommitJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		if (noUnsavedContentExists() && noBuildErrorsExist()) {
-			commit();
+			AutoCommitPluginActivator.getDefault().commit();
 		}
 		return Status.OK_STATUS;
 	}
 
-	private void commit() {
-		AutoCommitPluginActivator activator = AutoCommitPluginActivator
-				.getDefault();
-		for (IRepository repository : activator.getAllEnabledRepositories()) {
-			try {
-				repository.commit();
-			} catch (IOException e) {
-				activator
-						.logException(
-								"An exception occured while automatically commiting to a repository",
-								e);
-			}
-		}
-	}
 }

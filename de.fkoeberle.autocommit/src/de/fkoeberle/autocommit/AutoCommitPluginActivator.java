@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -179,12 +178,6 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
-	public void commitIfPossible() {
-		Job job = new AutoCommitJob();
-		job.setRule(ResourcesPlugin.getWorkspace().getRoot());
-		job.schedule();
-	}
-
 	void logException(String message, Exception e) {
 		getLog().log(
 				new Status(Status.ERROR, PLUGIN_ID, Status.ERROR, message, e));
@@ -292,6 +285,22 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		getDefault().getLog().log(
 				new Status(IStatus.ERROR, AutoCommitPluginActivator.PLUGIN_ID,
 						"Unexpected exception", e));
+	}
+
+	/**
+	 * Commits changes in all repositories which belong to projects which are
+	 * enabled for automatic commits.
+	 */
+	public void commit() {
+		for (IRepository repository : getAllEnabledRepositories()) {
+			try {
+				repository.commit();
+			} catch (IOException e) {
+				logException(
+						"An exception occured while automatically commiting to a repository",
+						e);
+			}
+		}
 	}
 
 }
