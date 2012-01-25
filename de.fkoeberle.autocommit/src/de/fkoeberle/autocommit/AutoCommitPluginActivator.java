@@ -87,7 +87,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 	 * @return all {@link IProject}s in the workspace which are enabled for
 	 *         automatic commits.
 	 */
-	public LinkedHashSet<IProject> getAllEnabledProjects() {
+	private LinkedHashSet<IProject> getAllEnabledProjects() {
 		final IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot()
 				.getProjects();
 		LinkedHashSet<IProject> enabledProjects = new LinkedHashSet<IProject>();
@@ -104,7 +104,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		return enabledProjects;
 	}
 
-	public LinkedHashSet<IRepository> getAllEnabledRepositories() {
+	private LinkedHashSet<IRepository> getAllEnabledRepositories() {
 		LinkedHashSet<IProject> allEnabledProjects = getAllEnabledProjects();
 		return getRepositoriesFor(allEnabledProjects);
 	}
