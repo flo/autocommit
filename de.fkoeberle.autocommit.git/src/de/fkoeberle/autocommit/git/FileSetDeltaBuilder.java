@@ -22,7 +22,7 @@ import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.IFileContent;
 import de.fkoeberle.autocommit.message.RemovedFile;
 
-public class FileSetDeltaBuilder implements FileSetDeltaVisitor {
+public class FileSetDeltaBuilder implements GitFileSetDeltaVisitor {
 	private final ObjectReader reader;
 	private final List<ChangedFile> changedFiles;
 	private final List<AddedFile> addedFiles;

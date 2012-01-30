@@ -14,7 +14,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.eclipse.jgit.lib.ObjectId;
 
-public class HashCacluatingDeltaVisitor implements FileSetDeltaVisitor {
+public class HashCacluatingDeltaVisitor implements GitFileSetDeltaVisitor {
 	private final MessageDigest messageDigest;
 	/**
 	 * 0 can be assumed not to occur in the filename string and can thus be used

@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import org.eclipse.jgit.lib.ObjectId;
 
-interface FileSetDeltaVisitor {
+interface GitFileSetDeltaVisitor {
 	void visitAddedFile(String path, ObjectId newObjectId)
 			throws IOException;
 

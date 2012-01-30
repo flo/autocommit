@@ -169,11 +169,11 @@ public class GitRepositoryAdapter implements IRepository {
 	}
 
 	void visitDeltaWithAll(String path, AbstractTreeIterator oldTreeMatch,
-			AbstractTreeIterator newTreeMatch, FileSetDeltaVisitor... visitors)
-			throws IOException {
+			AbstractTreeIterator newTreeMatch,
+			GitFileSetDeltaVisitor... visitors) throws IOException {
 		ObjectId oldObjectId = objectIdOrNullOfMatch(oldTreeMatch);
 		ObjectId newObjectId = objectIdOrNullOfMatch(newTreeMatch);
-		for (FileSetDeltaVisitor visitor : visitors) {
+		for (GitFileSetDeltaVisitor visitor : visitors) {
 			if (newObjectId == null) {
 				visitor.visitRemovedFile(path, oldObjectId);
 			} else if (oldObjectId == null) {
@@ -184,7 +184,7 @@ public class GitRepositoryAdapter implements IRepository {
 		}
 	}
 
-	private void visitHeadIndexDelta(FileSetDeltaVisitor... visitors)
+	private void visitHeadIndexDelta(GitFileSetDeltaVisitor... visitors)
 			throws IOException {
 		TreeWalk treeWalk = new TreeWalk(repository);
 		treeWalk.setRecursive(true);
@@ -199,7 +199,7 @@ public class GitRepositoryAdapter implements IRepository {
 						dirCacheTreeIndex, DirCacheIterator.class);
 				final String path = treeWalk.getPathString();
 				ObjectId newObjectId = dirCacheMatch.getEntryObjectId();
-				for (FileSetDeltaVisitor visitor : visitors) {
+				for (GitFileSetDeltaVisitor visitor : visitors) {
 					visitor.visitAddedFile(path, newObjectId);
 				}
 			}
@@ -223,7 +223,7 @@ public class GitRepositoryAdapter implements IRepository {
 	}
 
 	private void visitHeadFileSystemDelta(Repository repository,
-			FileSetDeltaVisitor... visitors) throws IOException {
+			GitFileSetDeltaVisitor... visitors) throws IOException {
 		TreeWalk treeWalk = new TreeWalk(repository);
 		treeWalk.setRecursive(true);
 		// Using the IteratorService is important
@@ -239,7 +239,7 @@ public class GitRepositoryAdapter implements IRepository {
 						workTreeIndex, WorkingTreeIterator.class);
 				final String path = treeWalk.getPathString();
 				ObjectId newObjectId = fileTreeMatch.getEntryObjectId();
-				for (FileSetDeltaVisitor visitor : visitors) {
+				for (GitFileSetDeltaVisitor visitor : visitors) {
 					visitor.visitAddedFile(path, newObjectId);
 				}
 			}
@@ -280,14 +280,6 @@ public class GitRepositoryAdapter implements IRepository {
 		sessionData.add(data);
 	}
 
-	public void editCommitMessagesFor(IProject project) throws IOException {
-		File profileFile = getProfileFile();
-		if (!profileFile.exists()) {
-			createInitialProfileFile(profileFile);
-		}
-		openEditorForProfileFile(profileFile);
-	}
-
 	private void openEditorForProfileFile(File profileFile) throws IOException {
 		URI profileFileURI = profileFile.toURI();
 		IFileStore fileStore = EFS.getLocalFileSystem()
@@ -299,6 +291,14 @@ public class GitRepositoryAdapter implements IRepository {
 		} catch (PartInitException e) {
 			throw new IOException(e);
 		}
+	}
+
+	public void editCommitMessagesFor(IProject project) throws IOException {
+		File profileFile = getProfileFile();
+		if (!profileFile.exists()) {
+			createInitialProfileFile(profileFile);
+		}
+		openEditorForProfileFile(profileFile);
 	}
 
 	@Override

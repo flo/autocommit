@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import org.eclipse.jgit.lib.ObjectId;
 
-public class AnyChangeDetectingDeltaVisitor implements FileSetDeltaVisitor {
+public class AnyChangeDetectingDeltaVisitor implements GitFileSetDeltaVisitor {
 	private boolean detectedChange = false;
 
 	@Override
