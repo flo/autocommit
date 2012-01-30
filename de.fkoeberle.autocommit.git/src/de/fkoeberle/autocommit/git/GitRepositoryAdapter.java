@@ -50,13 +50,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 import de.fkoeberle.autocommit.IRepository;
-import de.fkoeberle.autocommit.message.CommitMessageBuilder;
 import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
-import de.fkoeberle.autocommit.message.ICommitMessageBuilder;
 import de.fkoeberle.autocommit.message.Profile;
 import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
 import de.fkoeberle.autocommit.message.ProfileReferenceXml;
 import de.fkoeberle.autocommit.message.ProfileXml;
+import de.fkoeberle.autocommit.message.Session;
 
 /**
  * Enhances an existing Git repository to match the interface
@@ -128,29 +127,27 @@ public class GitRepositoryAdapter implements IRepository {
 		final Profile profile = CommitMessageBuilderPluginActivator
 				.getProfile(commitMessagesFile);
 
-		final ICommitMessageBuilder messageBuilder = new CommitMessageBuilder(
-				profile);
 		final ObjectReader reader = repository.newObjectReader();
-		FileSetDeltaVisitor fileDeltaToMessageBuilderAdder = new FileDeltaToMessageBuilderAdder(
-				reader, messageBuilder);
+		FileSetDeltaBuilder fileSetBuilder = new FileSetDeltaBuilder(reader);
 		AnyChangeDetectingDeltaVisitor anyChangeDetectingDeltaVisitor = new AnyChangeDetectingDeltaVisitor();
+		Session session = new Session();
 		if (sessionDataDeltaHash != null) {
 			HashCacluatingDeltaVisitor hashCalculator = new HashCacluatingDeltaVisitor();
-			visitHeadIndexDelta(fileDeltaToMessageBuilderAdder,
-					anyChangeDetectingDeltaVisitor, hashCalculator);
+			visitHeadIndexDelta(fileSetBuilder, anyChangeDetectingDeltaVisitor,
+					hashCalculator);
 			byte[] currentHash = hashCalculator.buildHash();
 			if (Arrays.equals(sessionDataDeltaHash, currentHash)) {
 				for (Object data : sessionData) {
-					messageBuilder.addSessionData(data);
+					session.add(data);
 				}
 			}
 			sessionDataDeltaHash = null;
 		} else {
-			visitHeadIndexDelta(fileDeltaToMessageBuilderAdder,
-					anyChangeDetectingDeltaVisitor);
+			visitHeadIndexDelta(fileSetBuilder, anyChangeDetectingDeltaVisitor);
 		}
+		session.add(fileSetBuilder.build());
 		if (anyChangeDetectingDeltaVisitor.hasDetectedChange()) {
-			return messageBuilder.buildMessage();
+			return profile.generateMessage(session);
 		} else {
 			return null;
 		}

@@ -8,6 +8,7 @@
  */
 package de.fkoeberle.autocommit.message;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,5 +26,16 @@ public class Profile implements Iterable<ICommitMessageFactory> {
 	@Override
 	public Iterator<ICommitMessageFactory> iterator() {
 		return factories.iterator();
+	}
+
+	public String generateMessage(Session session) throws IOException {
+		for (ICommitMessageFactory factory : factories) {
+			session.injectSessionData(factory);
+			String message = factory.createMessage();
+			if (message != null) {
+				return message;
+			}
+		}
+		return null;
 	}
 }
