@@ -45,7 +45,6 @@ public class UniqueIdTransfer extends ByteArrayTransfer {
 
 	@Override
 	protected Object nativeToJava(TransferData transferData) {
-		// TODO Auto-generated method stub
 		byte[] rawBytes = (byte[]) super.nativeToJava(transferData);
 		String longAsString = new String(rawBytes, ASCII);
 		return Long.valueOf(Long.parseLong(longAsString));

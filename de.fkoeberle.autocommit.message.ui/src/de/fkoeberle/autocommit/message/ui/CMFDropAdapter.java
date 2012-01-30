@@ -38,7 +38,6 @@ public class CMFDropAdapter extends ViewerDropAdapter {
 	@Override
 	public boolean validateDrop(Object target, int operation,
 			TransferData transferType) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 

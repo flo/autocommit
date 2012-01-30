@@ -166,7 +166,6 @@ public class GitRepositoryAdapter implements IRepository {
 
 	private File getProfileFile() {
 		File repositoryDirectory = repository.getWorkTree();
-		// TODO handle case no working tree
 		final File commitMessagesFile = new File(repositoryDirectory,
 				".commitmessages");
 		return commitMessagesFile;
@@ -335,8 +334,6 @@ public class GitRepositoryAdapter implements IRepository {
 			marshaller.marshal(profileReferenceXml, profileFile);
 		} catch (JAXBException e) {
 			throw new IOException(e);
-			// TODO better exception handling: e.g. message dialog
-			// or other exception type
 		}
 	}
 
