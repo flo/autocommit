@@ -33,7 +33,6 @@ import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheIterator;
 import org.eclipse.jgit.errors.UnmergedPathException;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
@@ -119,16 +118,9 @@ public class GitRepositoryAdapter implements IRepository {
 
 	@Override
 	public boolean noUncommittedChangesExist() throws IOException {
-		WorkingTreeIterator workingTreeIterator = IteratorService
-				.createInitialIterator(repository);
-
-		IndexDiff indexDiff = new IndexDiff(repository, Constants.HEAD,
-				workingTreeIterator);
-		if (indexDiff.diff()) {
-			return false;
-		}
-
-		return true;
+		AnyChangeDetectingDeltaVisitor changeDetector = new AnyChangeDetectingDeltaVisitor();
+		visitHeadFileSystemDelta(repository, changeDetector);
+		return !changeDetector.hasDetectedChange();
 	}
 
 	private String buildCommitMessage() throws IOException {
@@ -265,7 +257,6 @@ public class GitRepositoryAdapter implements IRepository {
 						AbstractTreeIterator.class);
 				WorkingTreeIterator fileTreeMatch = treeWalk.getTree(
 						workTreeIndex, WorkingTreeIterator.class);
-				// TODO is this check necessary:
 				if (fileTreeMatch != null) {
 					if (fileTreeMatch.isEntryIgnored()) {
 						continue;
