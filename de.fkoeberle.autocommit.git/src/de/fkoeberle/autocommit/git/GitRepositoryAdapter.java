@@ -314,7 +314,9 @@ public class GitRepositoryAdapter implements IRepository {
 		}
 	}
 
-	public void prepareForAutocommits(IProject project) throws IOException {
+	@Override
+	public void prepareProjectForAutomaticCommits(IProject project)
+			throws IOException {
 		File profileFile = getProfileFile();
 		if (!profileFile.exists()) {
 			createInitialProfileFile(profileFile);

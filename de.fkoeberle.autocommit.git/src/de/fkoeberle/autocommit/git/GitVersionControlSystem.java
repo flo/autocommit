@@ -8,7 +8,6 @@
  */
 package de.fkoeberle.autocommit.git;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
@@ -16,12 +15,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.egit.core.project.RepositoryMapping;
 import org.eclipse.jgit.lib.Repository;
 
+import de.fkoeberle.autocommit.IRepository;
 import de.fkoeberle.autocommit.IVersionControlSystem;
 
-public class GitVersionControlSystemAdapter implements IVersionControlSystem {
+public class GitVersionControlSystem implements IVersionControlSystem {
 	private final WeakHashMap<Repository, WeakReference<GitRepositoryAdapter>> repositoryAdapterMap;
 
-	public GitVersionControlSystemAdapter() {
+	public GitVersionControlSystem() {
 		repositoryAdapterMap = new WeakHashMap<Repository, WeakReference<GitRepositoryAdapter>>();
 	}
 
@@ -41,7 +41,7 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 	}
 
 	@Override
-	public GitRepositoryAdapter getRepositoryFor(IProject project) {
+	public IRepository getRepositoryFor(IProject project) {
 		RepositoryMapping mapping = RepositoryMapping.getMapping(project);
 		if (mapping == null) {
 			return null;
@@ -49,13 +49,4 @@ public class GitVersionControlSystemAdapter implements IVersionControlSystem {
 		return getAdapterFor(mapping.getRepository());
 	}
 
-	@Override
-	public void prepareProjectForAutocommits(IProject project)
-			throws IOException {
-		GitRepositoryAdapter repositoryAdapter = getRepositoryFor(project);
-		if (repositoryAdapter == null) {
-			return;
-		}
-		repositoryAdapter.prepareForAutocommits(project);
-	}
 }

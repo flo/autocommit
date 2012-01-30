@@ -10,6 +10,8 @@ package de.fkoeberle.autocommit;
 
 import java.io.IOException;
 
+import org.eclipse.core.resources.IProject;
+
 public interface IRepository {
 	void commit() throws IOException;
 
@@ -27,4 +29,13 @@ public interface IRepository {
 	 * changes.
 	 */
 	void addSessionDataForUncommittedChanges(Object data) throws IOException;
+
+	/**
+	 * This method gets called when a project of a repository gets marked for
+	 * automatic commits.
+	 * 
+	 * @param project
+	 *            the project that should be prepared for automatic commits
+	 */
+	void prepareProjectForAutomaticCommits(IProject project) throws IOException;
 }

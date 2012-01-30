@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -71,6 +70,44 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		autoCommitEnabledStateListenerList = new ArrayList<IAutoCommitEnabledStateListener>();
 	}
 
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		try {
+			Platform.getExtensionRegistry().removeListener(
+					registryEventListener);
+			IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			workspace.removeResourceChangeListener(resourceChangeListener);
+		} finally {
+			plugin = null;
+			super.stop(context);
+		}
+	}
+
+	/**
+	 * Returns the shared instance
+	 * 
+	 * @return the shared instance
+	 */
+	public static AutoCommitPluginActivator getDefault() {
+		return plugin;
+	}
+
+	/**
+	 * Commits changes in all repositories which belong to projects which are
+	 * enabled for automatic commits.
+	 */
+	public void commit() {
+		for (IRepository repository : getAllEnabledRepositories()) {
+			try {
+				repository.commit();
+			} catch (IOException e) {
+				logError(
+						"An exception occured while automatically commiting to a repository",
+						e);
+			}
+		}
+	}
+
 	public IRepository getRepositoryFor(IProject project) {
 		for (IVersionControlSystem versionControlSystem : versionControlSystems) {
 			IRepository repository = versionControlSystem
@@ -104,7 +141,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		return enabledProjects;
 	}
 
-	private LinkedHashSet<IRepository> getAllEnabledRepositories() {
+	public LinkedHashSet<IRepository> getAllEnabledRepositories() {
 		LinkedHashSet<IProject> allEnabledProjects = getAllEnabledProjects();
 		return getRepositoriesFor(allEnabledProjects);
 	}
@@ -136,51 +173,12 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 					newList.add(vcs);
 				}
 			} catch (CoreException ex) {
-				logException(
+				logError(
 						"An exception occured while updating the list of available version control systems for automatic commits.",
 						ex);
 			}
 		}
 		versionControlSystems = newList;
-	}
-
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		try {
-			Platform.getExtensionRegistry().removeListener(
-					registryEventListener);
-			IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			workspace.removeResourceChangeListener(resourceChangeListener);
-		} finally {
-			plugin = null;
-			super.stop(context);
-		}
-	}
-
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
-	public static AutoCommitPluginActivator getDefault() {
-		return plugin;
-	}
-
-	/**
-	 * Returns an image descriptor for the image file at the given plug-in
-	 * relative path
-	 * 
-	 * @param path
-	 *            the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
-	}
-
-	void logException(String message, Exception e) {
-		getLog().log(
-				new Status(Status.ERROR, PLUGIN_ID, Status.ERROR, message, e));
 	}
 
 	private final class UpdateAutocommitNatureScheduler implements
@@ -200,7 +198,7 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 				job.getProjects().addAll(gatherer.getProjects());
 				job.schedule();
 			} catch (CoreException e) {
-				logException(
+				logError(
 						"Catched an CoreException while listening for resource changes to update autocommit natures",
 						e);
 				throw new RuntimeException(e);
@@ -270,7 +268,10 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		projectDescription.setNatureIds(natureIds);
 		project.setDescription(projectDescription, null);
 		for (IVersionControlSystem vcs : versionControlSystems) {
-			vcs.prepareProjectForAutocommits(project);
+			IRepository repository = vcs.getRepositoryFor(project);
+			if (repository != null) {
+				repository.prepareProjectForAutomaticCommits(project);
+			}
 		}
 		fireAutoCommitEnabledStateChanged(project);
 	}
@@ -285,22 +286,6 @@ public class AutoCommitPluginActivator extends AbstractUIPlugin {
 		getDefault().getLog().log(
 				new Status(IStatus.ERROR, AutoCommitPluginActivator.PLUGIN_ID,
 						"Unexpected exception", e));
-	}
-
-	/**
-	 * Commits changes in all repositories which belong to projects which are
-	 * enabled for automatic commits.
-	 */
-	public void commit() {
-		for (IRepository repository : getAllEnabledRepositories()) {
-			try {
-				repository.commit();
-			} catch (IOException e) {
-				logException(
-						"An exception occured while automatically commiting to a repository",
-						e);
-			}
-		}
 	}
 
 }

@@ -8,8 +8,6 @@
  */
 package de.fkoeberle.autocommit;
 
-import java.io.IOException;
-
 import org.eclipse.core.resources.IProject;
 
 /**
@@ -19,7 +17,5 @@ import org.eclipse.core.resources.IProject;
 public interface IVersionControlSystem {
 
 	IRepository getRepositoryFor(IProject project);
-
-	void prepareProjectForAutocommits(IProject project) throws IOException;
 
 }

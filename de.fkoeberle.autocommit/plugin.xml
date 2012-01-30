@@ -71,14 +71,12 @@
 					checkEnabled="false">
 				<iterate>
 					<adapt type="org.eclipse.core.resources.IProject">
-						<and>
-							<test property="de.fkoeberle.autocommit.available" 
-								value="true"/>
-							<not>
-								<test property="org.eclipse.core.resources.projectNature" 
-									value="de.fkoeberle.autocommit.nature"/>
-							</not>
-						</and>
+						<test property="de.fkoeberle.autocommit.available" 
+							value="true"/>
+						<not>
+							<test property="org.eclipse.core.resources.projectNature" 
+								value="de.fkoeberle.autocommit.nature"/>
+						</not>
 					</adapt>
 				</iterate>
 			</visibleWhen>
@@ -89,12 +87,10 @@
 					checkEnabled="false">
 				<iterate>
 					<adapt type="org.eclipse.core.resources.IProject">
-						<and>
-							<test property="de.fkoeberle.autocommit.available" 
-								value="true"/>
-							<test property="org.eclipse.core.resources.projectNature" 
-								value="de.fkoeberle.autocommit.nature"/>
-						</and>
+						<test property="de.fkoeberle.autocommit.available" 
+							value="true"/>
+						<test property="org.eclipse.core.resources.projectNature" 
+							value="de.fkoeberle.autocommit.nature"/>
 					</adapt>
 				</iterate>
 			</visibleWhen>
