@@ -11,6 +11,8 @@ package de.fkoeberle.autocommit.message;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 public class SingleChangedFileViewTest {
@@ -21,7 +23,7 @@ public class SingleChangedFileViewTest {
 	}
 
 	@Test
-	public void testOneChangedFile() {
+	public void testOneChangedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile("/test.txt", "hello", "hello world");
 		FileSetDelta fileSetDelta = builder.build();
@@ -35,7 +37,7 @@ public class SingleChangedFileViewTest {
 	}
 
 	@Test
-	public void testAddedFile() {
+	public void testAddedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
@@ -47,7 +49,7 @@ public class SingleChangedFileViewTest {
 	}
 
 	@Test
-	public void testRemovedFile() {
+	public void testRemovedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addRemovedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
@@ -59,7 +61,7 @@ public class SingleChangedFileViewTest {
 	}
 
 	@Test
-	public void testAddedAndChangedFile() {
+	public void testAddedAndChangedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
@@ -72,7 +74,7 @@ public class SingleChangedFileViewTest {
 	}
 
 	@Test
-	public void testRemovedAndChangedFile() {
+	public void testRemovedAndChangedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addRemovedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
@@ -85,7 +87,7 @@ public class SingleChangedFileViewTest {
 	}
 
 	@Test
-	public void testTwoChangedFiles() {
+	public void testTwoChangedFiles() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile("/test.txt", "hello", "hello world");
 		builder.addChangedFile("/test2.txt", "hello", "hello world");
