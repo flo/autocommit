@@ -8,18 +8,25 @@
  */
 package de.fkoeberle.autocommit.message;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class FileSetDelta {
 	private final List<ChangedFile> changedFiles;
 	private final List<AddedFile> addedFiles;
 	private final List<RemovedFile> removedFiles;
-	
+
 	public FileSetDelta(List<ChangedFile> changedFiles,
 			List<AddedFile> addedFiles, List<RemovedFile> removedFiles) {
 		this.changedFiles = changedFiles;
 		this.addedFiles = addedFiles;
 		this.removedFiles = removedFiles;
+	}
+
+	public FileSetDelta() {
+		this.changedFiles = new ArrayList<ChangedFile>(0);
+		this.addedFiles = new ArrayList<AddedFile>(0);
+		this.removedFiles = new ArrayList<RemovedFile>(0);
 	}
 
 	public List<ChangedFile> getChangedFiles() {
@@ -33,5 +40,5 @@ public final class FileSetDelta {
 	public List<RemovedFile> getRemovedFiles() {
 		return removedFiles;
 	}
-	
+
 }
