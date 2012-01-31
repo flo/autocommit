@@ -8,30 +8,28 @@
  */
 package de.fkoeberle.autocommit.message;
 
+import java.io.IOException;
 
-public class SingleChangedFileView {
-	private boolean changedFileDetermined;
-	private ChangedFile changedFile;
+public class SingleChangedFileView extends AbstractViewWithCache<ChangedFile> {
 
 	@InjectedBySession
 	private FileSetDelta delta;
 
+	public ChangedFile getChangedFile() throws IOException {
+		return getCachableValue();
+	}
 
-	public ChangedFile getChangedFile() {
-		if (!changedFileDetermined) {
-			changedFileDetermined = true;
-			if (delta.getChangedFiles().size() != 1) {
-				return null;
-			}
-			if (delta.getRemovedFiles().size() != 0) {
-				return null;
-			}
-			if (delta.getAddedFiles().size() != 0) {
-				return null;
-			}
-
-			changedFile = delta.getChangedFiles().get(0);
+	@Override
+	protected ChangedFile determineCachableValue() {
+		if (delta.getChangedFiles().size() != 1) {
+			return null;
 		}
-		return changedFile;
+		if (delta.getRemovedFiles().size() != 0) {
+			return null;
+		}
+		if (delta.getAddedFiles().size() != 0) {
+			return null;
+		}
+		return delta.getChangedFiles().get(0);
 	}
 }
