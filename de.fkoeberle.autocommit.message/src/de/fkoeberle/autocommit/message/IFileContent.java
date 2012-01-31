@@ -15,7 +15,7 @@ public interface IFileContent {
 
 	long getSize() throws IOException;
 
-	void copyTo(OutputStream outputStream) throws IOException;
+	void copyTo(OutputStream out) throws IOException;
 
 	byte[] getBytesForReadOnlyPurposes() throws IOException;
 }
