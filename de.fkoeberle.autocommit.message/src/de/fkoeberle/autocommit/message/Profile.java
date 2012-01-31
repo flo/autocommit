@@ -9,10 +9,9 @@
 package de.fkoeberle.autocommit.message;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
-public class Profile implements Iterable<ICommitMessageFactory> {
+public class Profile {
 	private final List<ICommitMessageFactory> factories;
 
 	public Profile(List<ICommitMessageFactory> factories) {
@@ -21,11 +20,6 @@ public class Profile implements Iterable<ICommitMessageFactory> {
 
 	public List<ICommitMessageFactory> getFactories() {
 		return factories;
-	}
-
-	@Override
-	public Iterator<ICommitMessageFactory> iterator() {
-		return factories.iterator();
 	}
 
 	public String generateMessage(Session session) throws IOException {
