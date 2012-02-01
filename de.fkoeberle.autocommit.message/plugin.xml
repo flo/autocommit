@@ -23,5 +23,13 @@
          </messages>
       </factory>
    </extension>
+   <extension
+         point="de.fkoeberle.autocommit.message.profile">
+      <profile
+            id="de.fkoeberle.autocommit.message"
+            name="Commit Messages About Changed Paths"
+            path="default.commitmessages">
+      </profile>
+   </extension>
 
 </plugin>

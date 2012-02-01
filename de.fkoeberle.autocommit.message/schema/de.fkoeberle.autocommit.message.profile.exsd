@@ -6,7 +6,7 @@
          <meta.schema plugin="de.fkoeberle.autocommit.message" id="de.fkoeberle.autocommit.message.profile" name="Commit Message Generation Profile"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         This extension point allows to define ready to use .commitmessages files which can then be refered by other .commitmessages files.
       </documentation>
    </annotation>
 

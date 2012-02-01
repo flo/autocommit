@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.fkoeberle.autocommit.message.java;
+package de.fkoeberle.autocommit.message;
 
 import java.io.IOException;
 

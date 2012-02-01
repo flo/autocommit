@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -52,7 +51,7 @@ import org.eclipse.ui.ide.IDE;
 import de.fkoeberle.autocommit.IRepository;
 import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
 import de.fkoeberle.autocommit.message.Profile;
-import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
+import de.fkoeberle.autocommit.message.ProfileManager;
 import de.fkoeberle.autocommit.message.ProfileReferenceXml;
 import de.fkoeberle.autocommit.message.ProfileXml;
 import de.fkoeberle.autocommit.message.Session;
@@ -327,11 +326,8 @@ public class GitRepositoryAdapter implements IRepository {
 
 	private ProfileReferenceXml determineInitialProfileReferenceXml()
 			throws IOException {
-		Collection<ProfileIdResourceAndName> defaultProfiles = CommitMessageBuilderPluginActivator
-				.getDefaultProfiles();
-		ProfileIdResourceAndName first = defaultProfiles.iterator().next();
 		ProfileReferenceXml profileReferenceXml = new ProfileReferenceXml();
-		profileReferenceXml.setId(first.getId());
+		profileReferenceXml.setId(ProfileManager.DEFAULT_DEFAULT_PROFILE_ID);
 		return profileReferenceXml;
 	}
 

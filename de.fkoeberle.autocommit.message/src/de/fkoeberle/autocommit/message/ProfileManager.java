@@ -31,6 +31,7 @@ import org.osgi.framework.BundleException;
 public class ProfileManager {
 	private static final String FACTORY_EXTENSION_POINT_ID = "de.fkoeberle.autocommit.message.factory";
 	private static final String PROFILE_EXTENSION_POINT_ID = "de.fkoeberle.autocommit.message.profile";
+	public static final String DEFAULT_DEFAULT_PROFILE_ID = "de.fkoeberle.autocommit.message";
 
 	public ProfileManager() throws CoreException {
 	}

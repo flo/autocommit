@@ -17,6 +17,7 @@ import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.OnlyChangedFilesChecker;
 
 public class FormattedJavaFilesOfPackageCMF implements ICommitMessageFactory {
 	@InjectedAfterConstruction

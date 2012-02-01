@@ -9,12 +9,27 @@
 package de.fkoeberle.autocommit.message;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-public class FileContentReader {
+public class FileContentReader extends
+		AbstractViewWithCache<Map<IFileContent, String>> {
 
 	public String getStringFor(IFileContent fileContent) throws IOException {
-		byte[] bytes = fileContent.getBytesForReadOnlyPurposes();
-		return new String(bytes);
+		Map<IFileContent, String> map = getCachableValue();
+		String text = map.get(fileContent);
+		if (text == null) {
+			byte[] bytes = fileContent.getBytesForReadOnlyPurposes();
+			text = new String(bytes);
+			map.put(fileContent, text);
+		}
+		return text;
+	}
+
+	@Override
+	protected Map<IFileContent, String> determineCachableValue()
+			throws IOException {
+		return new HashMap<IFileContent, String>();
 	}
 
 }

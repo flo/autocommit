@@ -8,12 +8,12 @@
  */
 package de.fkoeberle.autocommit.message;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ExtensionsOfAddedModifiedOrChangedFiles {
-	private Set<String> fileExtensions;
-
+public class ExtensionsOfAddedModifiedOrChangedFiles extends
+		AbstractViewWithCache<Set<String>> {
 	@InjectedBySession
 	private FileSetDelta fileSetDelta;
 
@@ -29,23 +29,33 @@ public class ExtensionsOfAddedModifiedOrChangedFiles {
 		return path.substring(lastDot + 1, path.length());
 	}
 
-	public Set<String> getFileExtensions() {
-		if (fileExtensions == null) {
-			fileExtensions = new HashSet<String>();
-			for (ChangedFile file : fileSetDelta.getChangedFiles()) {
-				fileExtensions.add(fileExtensionOf(file.getPath()));
-			}
-			for (AddedFile file : fileSetDelta.getAddedFiles()) {
-				fileExtensions.add(fileExtensionOf(file.getPath()));
-			}
-			for (RemovedFile file : fileSetDelta.getRemovedFiles()) {
-				fileExtensions.add(fileExtensionOf(file.getPath()));
-			}
+	@Override
+	protected Set<String> determineCachableValue() throws IOException {
+		Set<String> fileExtensions = new HashSet<String>();
+		for (ChangedFile file : fileSetDelta.getChangedFiles()) {
+			fileExtensions.add(fileExtensionOf(file.getPath()));
+		}
+		for (AddedFile file : fileSetDelta.getAddedFiles()) {
+			fileExtensions.add(fileExtensionOf(file.getPath()));
+		}
+		for (RemovedFile file : fileSetDelta.getRemovedFiles()) {
+			fileExtensions.add(fileExtensionOf(file.getPath()));
 		}
 		return fileExtensions;
 	}
 
-	public boolean containsOnly(String fileExtension) {
+	public Set<String> getFileExtensions() throws IOException {
+		return getCachableValue();
+	}
+
+	/**
+	 * 
+	 * @param fileExtension
+	 *            extension of the file without the dot.
+	 * @return true if there are only changed, modified or added files with the
+	 *         specified file extension.
+	 */
+	public boolean containsOnly(String fileExtension) throws IOException {
 		return getFileExtensions().size() == 1
 				&& getFileExtensions().contains(fileExtension);
 	}

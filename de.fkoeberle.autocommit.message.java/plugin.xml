@@ -359,7 +359,7 @@
          point="de.fkoeberle.autocommit.message.profile">
       <profile
             id="de.fkoeberle.autocommit.message.java"
-            name="Commit messages for Java code"
+            name="Commit Messages For Java Code"
             path="java.commitmessages">
       </profile>
    </extension>
