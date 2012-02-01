@@ -10,7 +10,7 @@ package de.fkoeberle.autocommit.message;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class CommitMessageTemplateXml {
+public class CommitMessageXml {
 	private String fieldName;
 	private String value;
 

@@ -46,7 +46,7 @@ import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
 import de.fkoeberle.autocommit.message.CommitMessageDescription;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryXml;
-import de.fkoeberle.autocommit.message.CommitMessageTemplateXml;
+import de.fkoeberle.autocommit.message.CommitMessageXml;
 import de.fkoeberle.autocommit.message.ProfileDescription;
 import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
 import de.fkoeberle.autocommit.message.ProfileReferenceXml;
@@ -247,15 +247,15 @@ public class Model {
 		return factoryXml;
 	}
 
-	private List<CommitMessageTemplateXml> createAnMessageTemplateXmlListFor(
+	private List<CommitMessageXml> createAnMessageTemplateXmlListFor(
 			CommitMessageFactoryDescription factoryDescription) {
 		List<CommitMessageDescription> commitMessageDescriptions = factoryDescription
 				.getCommitMessageDescriptions();
-		List<CommitMessageTemplateXml> messageXmlList = new ArrayList<CommitMessageTemplateXml>(
+		List<CommitMessageXml> messageXmlList = new ArrayList<CommitMessageXml>(
 				commitMessageDescriptions.size());
 		for (CommitMessageDescription messageDescription : commitMessageDescriptions) {
 			if (messageDescription.isResetPossible()) {
-				CommitMessageTemplateXml messageXml = new CommitMessageTemplateXml();
+				CommitMessageXml messageXml = new CommitMessageXml();
 				messageXml
 						.setFieldName(messageDescription.getField().getName());
 				messageXml.setValue(messageDescription.getCurrentValue());

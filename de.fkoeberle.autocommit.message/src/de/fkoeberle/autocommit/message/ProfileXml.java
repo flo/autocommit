@@ -42,11 +42,11 @@ public class ProfileXml {
 			factoryXml.setId(factoryDescription.getId());
 			List<CommitMessageDescription> commitMessageDescriptions = factoryDescription
 					.getCommitMessageDescriptions();
-			List<CommitMessageTemplateXml> messageXmlList = new ArrayList<CommitMessageTemplateXml>(
+			List<CommitMessageXml> messageXmlList = new ArrayList<CommitMessageXml>(
 					commitMessageDescriptions.size());
 			for (CommitMessageDescription messageDescription : commitMessageDescriptions) {
 				if (messageDescription.isResetPossible()) {
-					CommitMessageTemplateXml messageXml = new CommitMessageTemplateXml();
+					CommitMessageXml messageXml = new CommitMessageXml();
 					messageXml.setFieldName(messageDescription.getField()
 							.getName());
 					messageXml.setValue(messageDescription.getCurrentValue());
@@ -78,8 +78,8 @@ public class ProfileXml {
 				fieldNameToMessageDescriptionMap.put(messageDescription
 						.getField().getName(), messageDescription);
 			}
-			for (CommitMessageTemplateXml templateXml : factoryXml
-					.getTemplates()) {
+			for (CommitMessageXml templateXml : factoryXml
+					.getMessages()) {
 				String fieldName = templateXml.getFieldName();
 				CommitMessageDescription commitMessageDescription = fieldNameToMessageDescriptionMap
 						.get(fieldName);

@@ -31,11 +31,11 @@ public class ProfileXmlTest {
 		assertEquals(2, profileXml.getFactories().size());
 		CommitMessageFactoryXml factoryXml1 = profileXml.getFactories().get(0);
 		assertEquals(FACTORY_1_ID, factoryXml1.getId());
-		assertEquals(0, factoryXml1.getTemplates().size());
+		assertEquals(0, factoryXml1.getMessages().size());
 
 		CommitMessageFactoryXml factoryXml2 = profileXml.getFactories().get(1);
 		assertEquals(FACTORY_2_ID, factoryXml2.getId());
-		assertEquals(2, factoryXml2.getTemplates().size());
+		assertEquals(2, factoryXml2.getMessages().size());
 	}
 
 	@Test
