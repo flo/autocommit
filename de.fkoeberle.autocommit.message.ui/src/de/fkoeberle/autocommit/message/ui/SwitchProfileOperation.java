@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
+import de.fkoeberle.autocommit.message.MessagePluginActivator;
 import de.fkoeberle.autocommit.message.ProfileDescription;
 import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
 
@@ -44,7 +44,7 @@ public class SwitchProfileOperation extends AbstractOperation {
 		if (newProfileId.getId() != null) {
 			ProfileDescription profileDescription;
 			try {
-				profileDescription = CommitMessageBuilderPluginActivator
+				profileDescription = MessagePluginActivator
 						.createProfileDescription(newProfileId.getResource());
 			} catch (IOException e) {
 				throw new ExecutionException(

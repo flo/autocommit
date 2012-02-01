@@ -42,7 +42,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 
-import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
+import de.fkoeberle.autocommit.message.MessagePluginActivator;
 import de.fkoeberle.autocommit.message.CommitMessageDescription;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
 import de.fkoeberle.autocommit.message.CommitMessageFactoryXml;
@@ -114,7 +114,7 @@ public class Model {
 
 	public void load(IEditorInput editorInput) throws IOException {
 		profiles.clear();
-		profiles.addAll(CommitMessageBuilderPluginActivator
+		profiles.addAll(MessagePluginActivator
 				.getDefaultProfiles());
 		profiles.add(CUSTOM_PROFILE);
 		if (!(editorInput instanceof IURIEditorInput)) {
@@ -126,7 +126,7 @@ public class Model {
 		} catch (MalformedURLException e) {
 			throw new IOException("Unable to handle input as an url", e);
 		}
-		ProfileDescription profileDescription = CommitMessageBuilderPluginActivator
+		ProfileDescription profileDescription = MessagePluginActivator
 				.createProfileDescription(url);
 		loadFactoriesFor(profileDescription);
 		String profileId = profileDescription.getDefaultProfileId();
@@ -152,7 +152,7 @@ public class Model {
 		usedFactories.clear();
 		usedFactories.addAll(profileDescription.getFactoryDescriptions());
 		unusedFactories.clear();
-		unusedFactories.addAll(CommitMessageBuilderPluginActivator
+		unusedFactories.addAll(MessagePluginActivator
 				.findMissingFactories(profileDescription));
 	}
 

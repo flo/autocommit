@@ -49,7 +49,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 import de.fkoeberle.autocommit.IRepository;
-import de.fkoeberle.autocommit.message.CommitMessageBuilderPluginActivator;
+import de.fkoeberle.autocommit.message.MessagePluginActivator;
 import de.fkoeberle.autocommit.message.Profile;
 import de.fkoeberle.autocommit.message.ProfileManager;
 import de.fkoeberle.autocommit.message.ProfileReferenceXml;
@@ -123,7 +123,7 @@ public class GitRepositoryAdapter implements IRepository {
 
 	private String buildCommitMessage() throws IOException {
 		final File commitMessagesFile = getProfileFile();
-		final Profile profile = CommitMessageBuilderPluginActivator
+		final Profile profile = MessagePluginActivator
 				.getProfile(commitMessagesFile);
 
 		final ObjectReader reader = repository.newObjectReader();

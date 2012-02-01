@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 public class CommitMessageFactoryXml {
 	private String id;
-	private List<CommitMessageXml> templates;
+	private List<CommitMessageXml> messages;
 
 	@XmlElement(name = "id", required = true)
 	public String getId() {
@@ -30,14 +30,14 @@ public class CommitMessageFactoryXml {
 	@XmlElementWrapper(name = "commit-message-templates")
 	@XmlElement(name = "template")
 	public List<CommitMessageXml> getMessages() {
-		if (templates == null) {
-			this.templates = new ArrayList<CommitMessageXml>(0);
+		if (messages == null) {
+			this.messages = new ArrayList<CommitMessageXml>(0);
 		}
-		return templates;
+		return messages;
 	}
 
 	public void setTemplates(List<CommitMessageXml> templates) {
-		this.templates = templates;
+		this.messages = templates;
 	}
 
 }

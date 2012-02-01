@@ -16,12 +16,12 @@ import java.util.Collection;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
-public class CommitMessageBuilderPluginActivator extends Plugin {
+public class MessagePluginActivator extends Plugin {
 	public static final String PLUGIN_ID = "de.fkoeberle.autocommit.message"; //$NON-NLS-1$
-	private static CommitMessageBuilderPluginActivator plugin;
+	private static MessagePluginActivator plugin;
 	private ProfileManager profileManager;
 
-	public CommitMessageBuilderPluginActivator() {
+	public MessagePluginActivator() {
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class CommitMessageBuilderPluginActivator extends Plugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static CommitMessageBuilderPluginActivator getDefault() {
+	public static MessagePluginActivator getDefault() {
 		return plugin;
 	}
 
