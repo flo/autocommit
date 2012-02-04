@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
 
 public class ProfileManager {
 	private static final String FACTORY_EXTENSION_POINT_ID = "de.fkoeberle.autocommit.message.factory";
@@ -206,19 +205,6 @@ public class ProfileManager {
 
 		String contributorName = element.getContributor().getName();
 		Bundle contributorBundle = Platform.getBundle(contributorName);
-		/*
-		 * It's necessary to make sure the bundle is started, since that doesn't
-		 * happen when a resource gets requested. TODO true? I think the problem
-		 * was not to include refactor.commitmessages TODO getEntry better then
-		 * getResource?
-		 */
-		try {
-			contributorBundle.start();
-		} catch (BundleException e) {
-			throw new IOException(
-					"An exception occured while starting a bundle with a requested commit message factories profile",
-					e);
-		}
 		URL resource = contributorBundle.getResource(resourcePath);
 		if (resource == null) {
 			throw new IOException(String.format(
