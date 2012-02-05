@@ -95,6 +95,7 @@ public class CMFMultiPageEditorPart extends FormEditor {
 			actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
 					new RedoActionHandler(site, model.getUndoContext()));
 		}
+		actionBars.updateActionBars();
 	}
 
 	public static void reportError(Shell shell, String message, Exception e) {
