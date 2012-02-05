@@ -14,10 +14,10 @@ import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
-import de.fkoeberle.autocommit.message.java.JavaDocSearchResult;
-import de.fkoeberle.autocommit.message.java.JavaDocSearchUtility;
-import de.fkoeberle.autocommit.message.java.SingleChangedTypeView;
-import de.fkoeberle.autocommit.message.java.TypeDelta;
+import de.fkoeberle.autocommit.message.java.helper.JavaDocSearchResult;
+import de.fkoeberle.autocommit.message.java.helper.JavaDocSearchUtility;
+import de.fkoeberle.autocommit.message.java.helper.SingleChangedTypeView;
+import de.fkoeberle.autocommit.message.java.helper.delta.TypeDelta;
 
 public class DocumentedTypeCMF implements ICommitMessageFactory {
 

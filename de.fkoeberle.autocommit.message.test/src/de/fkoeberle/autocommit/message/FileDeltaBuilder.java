@@ -11,6 +11,11 @@ package de.fkoeberle.autocommit.message;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.fkoeberle.autocommit.message.AddedFile;
+import de.fkoeberle.autocommit.message.ChangedFile;
+import de.fkoeberle.autocommit.message.FileSetDelta;
+import de.fkoeberle.autocommit.message.RemovedFile;
+
 public class FileDeltaBuilder {
 	private final List<ChangedFile> changedFiles = new ArrayList<ChangedFile>();
 	private final List<AddedFile> addedFiles = new ArrayList<AddedFile>();

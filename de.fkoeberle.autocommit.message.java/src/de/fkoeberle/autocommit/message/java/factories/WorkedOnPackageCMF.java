@@ -17,9 +17,9 @@ import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
-import de.fkoeberle.autocommit.message.java.CachingJavaFileContentParser;
-import de.fkoeberle.autocommit.message.java.CommonParentPackageFinder;
-import de.fkoeberle.autocommit.message.java.PackageSetBuilder;
+import de.fkoeberle.autocommit.message.java.helper.CachingJavaFileContentParser;
+import de.fkoeberle.autocommit.message.java.helper.CommonParentPackageFinder;
+import de.fkoeberle.autocommit.message.java.helper.PackageSetBuilder;
 
 public class WorkedOnPackageCMF implements ICommitMessageFactory {
 	@InjectedAfterConstruction

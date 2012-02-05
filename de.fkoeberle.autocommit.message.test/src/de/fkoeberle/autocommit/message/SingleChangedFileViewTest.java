@@ -15,6 +15,11 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.ChangedFile;
+import de.fkoeberle.autocommit.message.FileSetDelta;
+import de.fkoeberle.autocommit.message.Session;
+import de.fkoeberle.autocommit.message.SingleChangedFileView;
+
 public class SingleChangedFileViewTest {
 	private SingleChangedFileView create(FileSetDelta delta) {
 		Session session = new Session();

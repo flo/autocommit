@@ -18,6 +18,16 @@ import java.util.List;
 
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.CommitMessageDescription;
+import de.fkoeberle.autocommit.message.CommitMessageFactoryDescription;
+import de.fkoeberle.autocommit.message.CommitMessageFactoryXml;
+import de.fkoeberle.autocommit.message.CommitMessageTemplate;
+import de.fkoeberle.autocommit.message.ICMFDescriptionFactory;
+import de.fkoeberle.autocommit.message.ICommitMessageFactory;
+import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
+import de.fkoeberle.autocommit.message.ProfileDescription;
+import de.fkoeberle.autocommit.message.ProfileXml;
+
 public class ProfileXmlTest {
 
 	private static final String FACTORY_1_ID = "dummy1";

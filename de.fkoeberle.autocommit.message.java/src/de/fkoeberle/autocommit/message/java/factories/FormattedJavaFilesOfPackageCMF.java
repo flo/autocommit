@@ -18,12 +18,12 @@ import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 import de.fkoeberle.autocommit.message.OnlyChangedFilesChecker;
-import de.fkoeberle.autocommit.message.java.CachingJavaFileContentParser;
-import de.fkoeberle.autocommit.message.java.CommonParentPackageFinder;
-import de.fkoeberle.autocommit.message.java.JavaFileDelta;
-import de.fkoeberle.autocommit.message.java.JavaFileDeltaProvider;
-import de.fkoeberle.autocommit.message.java.JavaFormatationChecker;
-import de.fkoeberle.autocommit.message.java.PackageSetBuilder;
+import de.fkoeberle.autocommit.message.java.helper.CachingJavaFileContentParser;
+import de.fkoeberle.autocommit.message.java.helper.CommonParentPackageFinder;
+import de.fkoeberle.autocommit.message.java.helper.JavaFileDeltaProvider;
+import de.fkoeberle.autocommit.message.java.helper.JavaFormatationChecker;
+import de.fkoeberle.autocommit.message.java.helper.PackageSetBuilder;
+import de.fkoeberle.autocommit.message.java.helper.delta.JavaFileDelta;
 
 public class FormattedJavaFilesOfPackageCMF implements ICommitMessageFactory {
 	@InjectedAfterConstruction

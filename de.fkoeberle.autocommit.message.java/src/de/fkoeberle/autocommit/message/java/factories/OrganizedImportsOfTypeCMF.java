@@ -22,10 +22,10 @@ import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
-import de.fkoeberle.autocommit.message.java.BodyDeclarationChangeType;
-import de.fkoeberle.autocommit.message.java.JavaFileDelta;
-import de.fkoeberle.autocommit.message.java.SingleChangedJavaFileView;
-import de.fkoeberle.autocommit.message.java.TypeUtil;
+import de.fkoeberle.autocommit.message.java.helper.SingleChangedJavaFileView;
+import de.fkoeberle.autocommit.message.java.helper.TypeUtil;
+import de.fkoeberle.autocommit.message.java.helper.delta.BodyDeclarationChangeType;
+import de.fkoeberle.autocommit.message.java.helper.delta.JavaFileDelta;
 
 public class OrganizedImportsOfTypeCMF implements ICommitMessageFactory {
 

@@ -12,6 +12,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.ChangedRange;
+import de.fkoeberle.autocommit.message.ChangedTextFile;
+
 public class ChangedTextFileTest {
 
 	@Test

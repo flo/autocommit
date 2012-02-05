@@ -14,8 +14,8 @@ import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
-import de.fkoeberle.autocommit.message.java.SingleChangedTypeView;
-import de.fkoeberle.autocommit.message.java.TypeDelta;
+import de.fkoeberle.autocommit.message.java.helper.SingleChangedTypeView;
+import de.fkoeberle.autocommit.message.java.helper.delta.TypeDelta;
 
 public class WorkedOnTypeCMF implements ICommitMessageFactory {
 

@@ -12,6 +12,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
+import de.fkoeberle.autocommit.message.FileSetDelta;
+import de.fkoeberle.autocommit.message.Session;
+import de.fkoeberle.autocommit.message.WorkedOnPathCMF;
+
 public class WorkedOnPathCMFTest {
 
 	private WorkedOnPathCMF createFactory(FileSetDelta delta) {

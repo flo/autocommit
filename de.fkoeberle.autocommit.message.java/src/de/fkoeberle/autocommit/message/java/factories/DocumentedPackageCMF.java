@@ -19,11 +19,11 @@ import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 import de.fkoeberle.autocommit.message.OnlyChangedFilesChecker;
-import de.fkoeberle.autocommit.message.java.CachingJavaFileContentParser;
-import de.fkoeberle.autocommit.message.java.CommonParentPackageFinder;
-import de.fkoeberle.autocommit.message.java.JavaDocSearchResult;
-import de.fkoeberle.autocommit.message.java.JavaDocSearchUtility;
-import de.fkoeberle.autocommit.message.java.PackageSetBuilder;
+import de.fkoeberle.autocommit.message.java.helper.CachingJavaFileContentParser;
+import de.fkoeberle.autocommit.message.java.helper.CommonParentPackageFinder;
+import de.fkoeberle.autocommit.message.java.helper.JavaDocSearchResult;
+import de.fkoeberle.autocommit.message.java.helper.JavaDocSearchUtility;
+import de.fkoeberle.autocommit.message.java.helper.PackageSetBuilder;
 
 public class DocumentedPackageCMF implements ICommitMessageFactory {
 

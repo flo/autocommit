@@ -31,7 +31,7 @@ import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.IFileContent;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
-import de.fkoeberle.autocommit.message.java.CachingJavaFileContentParser;
+import de.fkoeberle.autocommit.message.java.helper.CachingJavaFileContentParser;
 
 public class AddedClassCMF implements ICommitMessageFactory {
 
