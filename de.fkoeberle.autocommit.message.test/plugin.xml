@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="de.fkoeberle.autocommit.message.factory">
+      <factory
+            class="de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory0"
+            description="Just a dummy CMF so that unused CMF list has some entries"
+            id="de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory0">
+         <messages>
+            <message
+                  defaultValue="default value"
+                  fieldName="message">
+            </message>
+         </messages>
+      </factory>
+      <factory
+            class="de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory1"
+            description="Just a dummy CMF so that unused CMF list has some entries"
+            id="de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory1">
+      </factory>
+      <factory
+            class="de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory2"
+            description="Just a dummy CMF so that unused CMF list has some entries"
+            id="de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory2">
+      </factory>
+      <factory
+            class="de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory3"
+            description="Just a dummy CMF so that unused CMF list has some entries"
+            id="de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory3">
+      </factory>
+      <factory
+            class="de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory4"
+            description="Just a dummy CMF so that unused CMF list has some entries"
+            id="de.fkoeberle.autocommit.message.ui.DummyCommitMessageFactory4">
+      </factory>
+   </extension>
+   <extension
+         point="de.fkoeberle.autocommit.message.profile">
+      <profile
+            id="fiveDummiesId"
+            name="Five Dummies"
+            path="fiveDummies.commitmessages">
+      </profile>
+   </extension>
+</plugin>

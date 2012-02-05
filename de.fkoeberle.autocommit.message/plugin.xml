@@ -31,5 +31,13 @@
             path="default.commitmessages">
       </profile>
    </extension>
-
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.fkoeberle.autocommit.message.ui.CMFMultiPageEditorPart"
+            extensions="commitmessages"
+            id="de.fkoeberle.autocommit.message.ui.CommitMessagesEditorPart"
+            name="Commit Messages Editor">
+      </editor>
+   </extension>
 </plugin>
