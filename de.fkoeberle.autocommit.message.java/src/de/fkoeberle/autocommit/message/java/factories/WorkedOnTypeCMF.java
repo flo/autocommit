@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.fkoeberle.autocommit.message.java;
+package de.fkoeberle.autocommit.message.java.factories;
 
 import java.io.IOException;
 
@@ -14,6 +14,8 @@ import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.java.SingleChangedTypeView;
+import de.fkoeberle.autocommit.message.java.TypeDelta;
 
 public class WorkedOnTypeCMF implements ICommitMessageFactory {
 

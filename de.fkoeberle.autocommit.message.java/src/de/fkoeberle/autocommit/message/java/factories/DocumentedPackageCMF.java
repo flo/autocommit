@@ -6,59 +6,82 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.fkoeberle.autocommit.message.java;
+package de.fkoeberle.autocommit.message.java.factories;
 
 import java.io.IOException;
 import java.util.Set;
 
 import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
+import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 import de.fkoeberle.autocommit.message.OnlyChangedFilesChecker;
+import de.fkoeberle.autocommit.message.java.CachingJavaFileContentParser;
+import de.fkoeberle.autocommit.message.java.CommonParentPackageFinder;
+import de.fkoeberle.autocommit.message.java.JavaDocSearchResult;
+import de.fkoeberle.autocommit.message.java.JavaDocSearchUtility;
+import de.fkoeberle.autocommit.message.java.PackageSetBuilder;
 
-public class FormattedJavaFilesOfPackageCMF implements ICommitMessageFactory {
-	@InjectedAfterConstruction
-	CommitMessageTemplate formattedSourceInPackageMessage;
-
-	@InjectedAfterConstruction
-	CommitMessageTemplate formattedSourceInSubPackagesOfMessage;
-
-	@InjectedAfterConstruction
-	CommitMessageTemplate formattedSourceInTheDefaultPackageMessage;
+public class DocumentedPackageCMF implements ICommitMessageFactory {
 
 	@InjectedAfterConstruction
-	CommitMessageTemplate formattedSourceMessage;
+	CommitMessageTemplate documentedSourceInTheDefaultPackageMessage;
 
-	@InjectedBySession
-	private JavaFormatationChecker formatationChecker;
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedSourceInPackageMessage;
 
-	@InjectedBySession
-	private OnlyChangedFilesChecker onlyChangedFilesChecker;
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedSourceInSubPackagesOfMessage;
+
+	@InjectedAfterConstruction
+	CommitMessageTemplate documentedSourceMessage;
 
 	@InjectedBySession
 	private FileSetDelta fileSetDelta;
 
 	@InjectedBySession
+	private OnlyChangedFilesChecker onlyChangedFilesChecker;
+
+	@InjectedBySession
+	private ExtensionsOfAddedModifiedOrChangedFiles extensions;
+
+	@InjectedBySession
 	private CachingJavaFileContentParser parser;
 
 	@InjectedBySession
-	private JavaFileDeltaProvider javaFileDeltaProvider;
+	private JavaDocSearchUtility javaDocSearch;
 
 	@Override
 	public String createMessage() throws IOException {
 		if (onlyChangedFilesChecker.checkFailed()) {
 			return null;
 		}
+		if (!extensions.containsOnly("java")) {
+			return null;
+		}
+		boolean javaDocAddedOrChanged = false;
 		for (ChangedFile changedFile : fileSetDelta.getChangedFiles()) {
-			JavaFileDelta javaFileDelta = javaFileDeltaProvider
-					.getDeltaFor(changedFile);
-			if (!formatationChecker
-					.foundJavaFormatationChangesOnly(javaFileDelta)) {
+			JavaDocSearchResult searchResult = javaDocSearch
+					.search(changedFile);
+			switch (searchResult) {
+			case GOT_ADDED_OR_MODIFIED_ONLY:
+				javaDocAddedOrChanged = true;
+				break;
+			case OTHER_CHANGES_FOUND:
 				return null;
+			case NO_CHANGES_OR_JUST_JAVADOC_REMOVALS:
+				// do nothing
+				break;
 			}
+		}
+		if (!javaDocAddedOrChanged) {
+			/*
+			 * If the user is removing javadoc he isn't documenting.
+			 */
+			return null;
 		}
 		PackageSetBuilder packageSetBuilder = new PackageSetBuilder(parser);
 		packageSetBuilder.addPackagesOf(fileSetDelta);
@@ -67,10 +90,11 @@ public class FormattedJavaFilesOfPackageCMF implements ICommitMessageFactory {
 		if (packages.size() == 1) {
 			String p = packages.iterator().next();
 			if (p.equals("")) { //$NON-NLS-1$
-				return formattedSourceInTheDefaultPackageMessage
+				return documentedSourceInTheDefaultPackageMessage
 						.createMessageWithArgs();
 			} else {
-				return formattedSourceInPackageMessage.createMessageWithArgs(p);
+				return documentedSourceInPackageMessage
+						.createMessageWithArgs(p);
 			}
 		}
 
@@ -78,10 +102,11 @@ public class FormattedJavaFilesOfPackageCMF implements ICommitMessageFactory {
 		commonParentPackageFinder.checkPackages(packages);
 		String commonPackage = commonParentPackageFinder.getCommonPackage();
 		if (commonPackage != null) {
-			return formattedSourceInSubPackagesOfMessage
+			return documentedSourceInSubPackagesOfMessage
 					.createMessageWithArgs(commonPackage);
 		} else {
-			return formattedSourceMessage.createMessageWithArgs();
+			return documentedSourceMessage.createMessageWithArgs();
 		}
 	}
+
 }

@@ -6,22 +6,26 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.fkoeberle.autocommit.message.java;
+package de.fkoeberle.autocommit.message.java.factories;
 
 import java.io.IOException;
+import java.util.EnumSet;
 
 import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.java.BodyDeclarationChangeType;
+import de.fkoeberle.autocommit.message.java.MethodDelta;
+import de.fkoeberle.autocommit.message.java.SingleChangedBodyDeclarationView;
 
-public class WorkedOnMethodCMF implements ICommitMessageFactory {
+public class DocumentedMethodCMF implements ICommitMessageFactory {
 
 	@InjectedAfterConstruction
-	CommitMessageTemplate workedOnMethodMessage;
+	CommitMessageTemplate documentedMethodMessage;
 
 	@InjectedAfterConstruction
-	CommitMessageTemplate workedOnConstructorMessage;
+	CommitMessageTemplate documentedConstructorMessage;
 
 	@InjectedBySession
 	SingleChangedBodyDeclarationView singleChangedMethodView;
@@ -32,19 +36,21 @@ public class WorkedOnMethodCMF implements ICommitMessageFactory {
 		if (methodDelta == null) {
 			return null;
 		}
-
+		if (!methodDelta.getChangeTypes().equals(
+				EnumSet.of(BodyDeclarationChangeType.JAVADOC))) {
+			return null;
+		}
+		CommitMessageTemplate message;
+		if (methodDelta.getNewDeclaration().isConstructor()) {
+			message = documentedConstructorMessage;
+		} else {
+			message = documentedMethodMessage;
+		}
 		String fullTypeName = methodDelta.getFullTypeName();
 		String methodName = methodDelta.getMethodName();
 		String parameterTypes = methodDelta.getParameterTypes();
 		String typeName = methodDelta.getSimpleTypeName();
-		CommitMessageTemplate messageTemplate;
-		if (methodDelta.getOldDeclaration().isConstructor()) {
-			messageTemplate = workedOnConstructorMessage;
-		} else {
-			messageTemplate = workedOnMethodMessage;
-		}
-		return messageTemplate.createMessageWithArgs(fullTypeName, methodName,
+		return message.createMessageWithArgs(fullTypeName, methodName,
 				parameterTypes, typeName);
 	}
-
 }

@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.fkoeberle.autocommit.message.java;
+package de.fkoeberle.autocommit.message.java.factories;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,6 +19,7 @@ import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
+import de.fkoeberle.autocommit.message.java.factories.FormattedJavaFileCMF;
 
 public class FormattedJavaFileCMFTest {
 

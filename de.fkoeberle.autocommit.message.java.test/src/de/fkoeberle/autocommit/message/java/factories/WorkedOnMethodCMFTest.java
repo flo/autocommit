@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.fkoeberle.autocommit.message.java;
+package de.fkoeberle.autocommit.message.java.factories;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,10 +18,11 @@ import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
+import de.fkoeberle.autocommit.message.java.factories.WorkedOnMethodCMF;
 
-public class DocumentedMethodCMFTest {
-	private DocumentedMethodCMF createFactory(FileSetDelta delta) {
-		DocumentedMethodCMF factory = new DocumentedMethodCMF();
+public class WorkedOnMethodCMFTest {
+	private WorkedOnMethodCMF createFactory(FileSetDelta delta) {
+		WorkedOnMethodCMF factory = new WorkedOnMethodCMF();
 		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 4);
 		Session session = new Session();
 		session.add(delta);
@@ -30,36 +31,49 @@ public class DocumentedMethodCMFTest {
 	}
 
 	@Test
-	public void testAddedJavaDocToMethod() throws IOException {
+	public void testWorkedOnMethod() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile(
 				"/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {class Inner{int myMethod(String s, int i) {return 0;}}}",
-				"package org.example;\n\nclass Test {class Inner{/** New Docu*/ int myMethod(String s, int i) {return 0;}}}");
-		DocumentedMethodCMF factory = createFactory(builder.build());
+				"package org.example;\n\nclass Test {class Inner{int myMethod(String s, int i) {return 1;}}}");
+		WorkedOnMethodCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
-		String expectedMessage = factory.documentedMethodMessage
+		String expectedMessage = factory.workedOnMethodMessage
 				.createMessageWithArgs("Test.Inner", "myMethod", "String, int",
 						"Inner");
-
 		assertEquals(expectedMessage, actualMessage);
 	}
 
 	@Test
-	public void testAddedJavaDocToConstructor() throws IOException {
+	public void testWorkedOnConstructor() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile(
 				"/project1/org/example/Test.java",
-				"package org.example;\n\nclass Test {class Inner{Inner(String s, int i) {}}}",
-				"package org.example;\n\nclass Test {class Inner{/** New Docu*/ Inner(String s, int i) {}}}");
-		DocumentedMethodCMF factory = createFactory(builder.build());
+				"package org.example;\n\nclass Test {class Inner{Inner(String s, int i) {}}",
+				"package org.example;\n\nclass Test {class Inner{/** changed constructor */Inner(String s, int i) {}}");
+		WorkedOnMethodCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
-		String expectedMessage = factory.documentedConstructorMessage
+		String expectedMessage = factory.workedOnConstructorMessage
 				.createMessageWithArgs("Test.Inner", "Inner", "String, int",
 						"Inner");
-
 		assertEquals(expectedMessage, actualMessage);
 	}
+
+	@Test
+	public void testMadeClassPublicWhileChangingMethod() throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile(
+				"/project1/org/example/Test.java",
+				"package org.example;\n\nclass Test {class Inner{int myMethod(String s, int i) {return 0;}}}",
+				"package org.example;\n\nclass Test {public class Inner{int myMethod(String s, int i) {return 1;}}}");
+		WorkedOnMethodCMF factory = createFactory(builder.build());
+
+		String actualMessage = factory.createMessage();
+		String expectedMessage = null;
+		assertEquals(expectedMessage, actualMessage);
+	}
+
 }

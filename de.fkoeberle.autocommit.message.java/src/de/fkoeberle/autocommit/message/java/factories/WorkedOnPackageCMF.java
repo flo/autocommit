@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.fkoeberle.autocommit.message.java;
+package de.fkoeberle.autocommit.message.java.factories;
 
 import java.io.IOException;
 import java.util.Set;
@@ -17,6 +17,9 @@ import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.java.CachingJavaFileContentParser;
+import de.fkoeberle.autocommit.message.java.CommonParentPackageFinder;
+import de.fkoeberle.autocommit.message.java.PackageSetBuilder;
 
 public class WorkedOnPackageCMF implements ICommitMessageFactory {
 	@InjectedAfterConstruction

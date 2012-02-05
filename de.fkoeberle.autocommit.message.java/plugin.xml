@@ -4,7 +4,7 @@
    <extension
          point="de.fkoeberle.autocommit.message.factory">
       <factory
-            class="de.fkoeberle.autocommit.message.java.FormattedJavaFilesOfPackageCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.FormattedJavaFilesOfPackageCMF"
             description="Generates for commits a message in which only whitespace of java files got modified. It will tell in the commit message which java package got formatted."
             id="de.fkoeberle.autocommit.message.java.FormattedJavaFilesOfPackageCMF">
          <arguments>
@@ -32,7 +32,7 @@
          </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.AddedClassCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.AddedClassCMF"
             description="Generates a commit message for the case that only a single file got added which contains a single type. The commit message depends on the kind of type."
             id="de.fkoeberle.autocommit.message.java.AddedClassCMF">
          <arguments>
@@ -64,7 +64,7 @@
          </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.WorkedOnPackageCMF"
             description="Generates a commit message for all changes that affect only java files."
             id="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF">
          <arguments>
@@ -88,7 +88,7 @@
          </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.WorkedOnTypeCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.WorkedOnTypeCMF"
             description="Generates a commit message for all changes where just a single java type got modified."
             id="de.fkoeberle.autocommit.message.java.WorkedOnTypeCMF">
          <arguments>
@@ -119,7 +119,7 @@
          </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.WorkedOnMethodCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.WorkedOnMethodCMF"
             description="Generates a commit message when only a single method or constructor got modified."
             id="de.fkoeberle.autocommit.message.java.WorkedOnMethodCMF">
          <arguments>
@@ -148,7 +148,7 @@
          </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.FormattedJavaTypeCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.FormattedJavaTypeCMF"
             description="Describes either whitespace changes within a single java type or within java file with a single type."
             id="de.fkoeberle.autocommit.message.java.FormattedJavaTypeCMF">
          <arguments>
@@ -176,7 +176,7 @@
          </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.AddedMethodCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.AddedMethodCMF"
             description="Generates a commit message when only a single method or constructor got added."
             id="de.fkoeberle.autocommit.message.java.AddedMethodCMF">
           <arguments>
@@ -205,7 +205,7 @@
           </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.DocumentedTypeCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.DocumentedTypeCMF"
             description="Generates a commit message when all existing changes are javadoc changes of a single type."
             id="de.fkoeberle.autocommit.message.java.DocumentedTypeCMF">
          <arguments>
@@ -233,7 +233,7 @@
          </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.DocumentedMethodCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.DocumentedMethodCMF"
             description="Generates a commit message when a javadoc tag of a method or constructor got modified or added."
             id="de.fkoeberle.autocommit.message.java.DocumentedMethodCMF">
           <arguments>
@@ -262,7 +262,7 @@
              </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.AddedGettersAndSettersCMF"
             description="Generates a commit message when getters or setters got added to a class."
             id="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF">
          <arguments>
@@ -298,7 +298,7 @@
          </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.OrganizedImportsOfTypeCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.OrganizedImportsOfTypeCMF"
             description="Generates a commit message when the import statements of a java file got modified which contains only a single top level type."
             id="de.fkoeberle.autocommit.message.java.OrganizedImportsOfTypeCMF">
          <arguments>
@@ -326,7 +326,7 @@
          </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.DocumentedPackageCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.DocumentedPackageCMF"
             description="Generates a commit message when only javadoc tags got added or modified. It also generates messages when javadoc tags got removed as long as at least one javadoc tag got modified or added."
             id="de.fkoeberle.autocommit.message.java.DocumentedPackageCMF">
          <arguments>

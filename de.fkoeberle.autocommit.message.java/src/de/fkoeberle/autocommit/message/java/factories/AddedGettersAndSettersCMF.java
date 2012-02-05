@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.fkoeberle.autocommit.message.java;
+package de.fkoeberle.autocommit.message.java.factories;
 
 import java.io.IOException;
 
@@ -19,6 +19,10 @@ import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.java.DeclarationListDelta;
+import de.fkoeberle.autocommit.message.java.SingleChangedTypeView;
+import de.fkoeberle.autocommit.message.java.TypeDelta;
+import de.fkoeberle.autocommit.message.java.TypeDeltaType;
 
 public class AddedGettersAndSettersCMF implements ICommitMessageFactory {
 	@InjectedAfterConstruction
