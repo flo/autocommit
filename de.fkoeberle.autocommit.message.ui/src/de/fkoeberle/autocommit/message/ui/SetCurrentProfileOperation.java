@@ -24,16 +24,16 @@ import de.fkoeberle.autocommit.message.MessagePluginActivator;
 import de.fkoeberle.autocommit.message.ProfileDescription;
 import de.fkoeberle.autocommit.message.ProfileIdResourceAndName;
 
-public class SwitchProfileOperation extends AbstractOperation {
+public class SetCurrentProfileOperation extends AbstractOperation {
 	private final Model model;
 	private ProfileIdResourceAndName oldProfileId;
 	private final ProfileIdResourceAndName newProfileId;
 	private List<Object> oldUsedFactories;
 	private List<Object> oldUnusedFactories;
 
-	public SwitchProfileOperation(Model model,
+	public SetCurrentProfileOperation(Model model,
 			ProfileIdResourceAndName newProfileId) {
-		super("Switch Profile Operation");
+		super("Set Profile Operation");
 		this.model = model;
 		this.newProfileId = newProfileId;
 	}

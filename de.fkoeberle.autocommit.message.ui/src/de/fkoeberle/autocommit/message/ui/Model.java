@@ -377,7 +377,7 @@ public class Model {
 		void currentProfileChanged();
 	}
 
-	public void switchToProfile(ProfileIdResourceAndName profile)
+	public void setCurrentProfile(ProfileIdResourceAndName profile)
 			throws ExecutionException {
 		/*
 		 * Avoid unnecessary undo entries and a set dirty flag at start.
@@ -385,7 +385,7 @@ public class Model {
 		if (profile.equals(currentProfile)) {
 			return;
 		}
-		runOperation(new SwitchProfileOperation(this, profile));
+		runOperation(new SetCurrentProfileOperation(this, profile));
 	}
 
 	void setCurrentProfileForOperations(ProfileIdResourceAndName profile) {

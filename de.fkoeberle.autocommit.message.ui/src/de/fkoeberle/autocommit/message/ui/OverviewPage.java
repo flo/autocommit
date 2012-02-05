@@ -170,7 +170,7 @@ public class OverviewPage extends FormPage {
 			getEditor().setActivePage(AdvancedPage.ID);
 			if (profile != null) {
 				try {
-					model.switchToProfile(profile);
+					model.setCurrentProfile(profile);
 				} catch (ExecutionException e) {
 					AdvancedPage.reportError(shell,
 							"Failed to switch profile for customization", e);
@@ -195,7 +195,7 @@ public class OverviewPage extends FormPage {
 		@Override
 		public void widgetSelected(SelectionEvent event) {
 			try {
-				model.switchToProfile(profile);
+				model.setCurrentProfile(profile);
 			} catch (ExecutionException e) {
 				AdvancedPage.reportError(radioButton.getShell(),
 						"Failed to switch profile", e);
@@ -205,7 +205,7 @@ public class OverviewPage extends FormPage {
 		@Override
 		public void widgetDefaultSelected(SelectionEvent event) {
 			try {
-				model.switchToProfile(profile);
+				model.setCurrentProfile(profile);
 			} catch (ExecutionException e) {
 				AdvancedPage.reportError(radioButton.getShell(),
 						"Failed to switch profile", e);

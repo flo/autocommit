@@ -258,7 +258,7 @@ public class AdvancedPage extends FormPage {
 					.getSelection();
 			Object selectedObject = selection.iterator().next();
 			try {
-				model.switchToProfile((ProfileIdResourceAndName) selectedObject);
+				model.setCurrentProfile((ProfileIdResourceAndName) selectedObject);
 			} catch (ExecutionException e) {
 				reportError(combo.getShell(), "Failed to switch profile", e);
 			}
