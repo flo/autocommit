@@ -27,8 +27,8 @@ public class CommitMessageFactoryXml {
 		this.id = id;
 	}
 
-	@XmlElementWrapper(name = "commit-message-templates")
-	@XmlElement(name = "template")
+	@XmlElementWrapper(name = "messages")
+	@XmlElement(name = "message")
 	public List<CommitMessageXml> getMessages() {
 		if (messages == null) {
 			this.messages = new ArrayList<CommitMessageXml>(0);
