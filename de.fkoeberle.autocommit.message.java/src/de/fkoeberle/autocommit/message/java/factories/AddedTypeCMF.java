@@ -33,7 +33,7 @@ import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
 import de.fkoeberle.autocommit.message.java.helper.CachingJavaFileContentParser;
 
-public class AddedClassCMF implements ICommitMessageFactory {
+public class AddedTypeCMF implements ICommitMessageFactory {
 
 	@InjectedAfterConstruction
 	CommitMessageTemplate addedInterfaceMessage;
@@ -59,7 +59,7 @@ public class AddedClassCMF implements ICommitMessageFactory {
 	@InjectedBySession
 	private ExtensionsOfAddedModifiedOrChangedFiles extensions;
 
-	public AddedClassCMF() {
+	public AddedTypeCMF() {
 	}
 
 	@Override

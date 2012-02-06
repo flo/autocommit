@@ -29,7 +29,7 @@ import de.fkoeberle.autocommit.message.java.helper.SingleChangedJavaFileView;
 import de.fkoeberle.autocommit.message.java.helper.TypeUtil;
 import de.fkoeberle.autocommit.message.java.helper.delta.JavaFileDelta;
 
-public class FormattedJavaTypeCMF implements ICommitMessageFactory {
+public class FormattedTypeCMF implements ICommitMessageFactory {
 	@InjectedAfterConstruction
 	CommitMessageTemplate formattedClassMessage;
 

@@ -25,7 +25,7 @@ import de.fkoeberle.autocommit.message.java.helper.JavaFormatationChecker;
 import de.fkoeberle.autocommit.message.java.helper.PackageSetBuilder;
 import de.fkoeberle.autocommit.message.java.helper.delta.JavaFileDelta;
 
-public class FormattedJavaFilesOfPackageCMF implements ICommitMessageFactory {
+public class FormattedPackageCMF implements ICommitMessageFactory {
 	@InjectedAfterConstruction
 	CommitMessageTemplate formattedSourceInPackageMessage;
 

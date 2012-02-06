@@ -18,11 +18,11 @@ import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.factories.FormattedJavaFilesOfPackageCMF;
+import de.fkoeberle.autocommit.message.java.factories.FormattedPackageCMF;
 
 public class FormattedJavaFilesOfPackageCMFTest {
-	private FormattedJavaFilesOfPackageCMF createFactory(FileSetDelta delta) {
-		FormattedJavaFilesOfPackageCMF factory = new FormattedJavaFilesOfPackageCMF();
+	private FormattedPackageCMF createFactory(FileSetDelta delta) {
+		FormattedPackageCMF factory = new FormattedPackageCMF();
 		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 1);
 		Session session = new Session();
 		session.add(delta);
@@ -38,7 +38,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 				"package org.example;\n\ninterface MyInterface {int  m();}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
 
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceInPackageMessage
 				.createMessageWithArgs("org.example");
@@ -54,7 +54,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		builder.addChangedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {int  m();}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceInPackageMessage
 				.createMessageWithArgs("org.example");
@@ -70,7 +70,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		builder.addChangedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {int  m();}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceInSubPackagesOfMessage
 				.createMessageWithArgs("org.example");
@@ -86,7 +86,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		builder.addChangedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {int  m();}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceMessage
 				.createMessageWithArgs();
@@ -103,7 +103,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		builder.addChangedFile("/project1/src/MyInterface.java",
 				"interface MyInterface {int  m();}",
 				"interface MyInterface {int m();}");
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceMessage
 				.createMessageWithArgs();
@@ -120,7 +120,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		builder.addChangedFile("/project1/src/com/example/test1/IClass.java",
 				"package org.example.test1;\n\nclass MyClass {void m() {};}",
 				"package org.example.test1;\n\nclass MyClass {void m() {\n};}");
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceMessage
 				.createMessageWithArgs();
@@ -137,7 +137,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		builder.addChangedFile("/project1/src/org/example/MyClass.java",
 				"package org.example;\n\nclass MyClass {void m() {};}",
 				"package org.example;\n\nclass MyClass {void m() {\n};}");
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceMessage
 				.createMessageWithArgs();
@@ -155,7 +155,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 				"/project1/src/org/example/NumberProvider.java",
 				"package org.example;\n\npublic class NumberProvider {\n\n\tpublic int returnANumber(Object newParam) {\n\t\t// TODO Auto-generated method stub\n\t\treturn 21;\n\n\t}\n\n}",
 				"package org.example;\n\npublic class NumberProvider {\n\n\tpublic int returnANumber(Object newParam) {\n\t\t// TODO Auto-generated method stub\n\t\treturn 21;\n\t}\n\n}");
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceMessage
 				.createMessageWithArgs();
@@ -172,7 +172,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		builder.addChangedFile("/project1/src/org/example/NumberProvider.java",
 				"package org.example;\n\nclass NumberProvider {\n}",
 				"package org.example;\n\nclass NumberProvider {}");
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceMessage
 				.createMessageWithArgs();
@@ -188,7 +188,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		builder.addChangedFile("/project1/MyInterface.java",
 				"interface MyInterface {int  m();}",
 				"interface MyInterface {int m();}");
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceInTheDefaultPackageMessage
 				.createMessageWithArgs();
@@ -200,7 +200,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile("/project1/MyEnum.java",
 				"enum MyEnum {NEW,OLD;}", "enum MyEnum {NEW, OLD;}");
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceInTheDefaultPackageMessage
 				.createMessageWithArgs();
@@ -212,7 +212,7 @@ public class FormattedJavaFilesOfPackageCMFTest {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile("/project1/MyClass.java", "class MyClass {}",
 				"class MyClass { }");
-		FormattedJavaFilesOfPackageCMF factory = createFactory(builder.build());
+		FormattedPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.formattedSourceInTheDefaultPackageMessage
 				.createMessageWithArgs();

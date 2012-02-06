@@ -4,9 +4,9 @@
    <extension
          point="de.fkoeberle.autocommit.message.factory">
       <factory
-            class="de.fkoeberle.autocommit.message.java.factories.FormattedJavaFilesOfPackageCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.FormattedPackageCMF"
             description="Generates for commits a message in which only whitespace of java files got modified. It will tell in the commit message which java package got formatted."
-            id="de.fkoeberle.autocommit.message.java.FormattedJavaFilesOfPackageCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.FormattedPackageCMF">
          <arguments>
             <argument
                   description="The java package which contains the changes, or when multiple java files got modified the &quot;parent&quot; package that contains the other packages. e.g. if there were changes in the package org.example.a and org.example.b then this argument will be org.example.">
@@ -32,9 +32,9 @@
          </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.factories.AddedClassCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.AddedTypeCMF"
             description="Generates a commit message for the case that only a single file got added which contains a single type. The commit message depends on the kind of type."
-            id="de.fkoeberle.autocommit.message.java.AddedClassCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.AddedTypeCMF">
          <arguments>
             <argument
                   description="The full name of the added type.">
@@ -66,7 +66,7 @@
       <factory
             class="de.fkoeberle.autocommit.message.java.factories.WorkedOnPackageCMF"
             description="Generates a commit message for all changes that affect only java files."
-            id="de.fkoeberle.autocommit.message.java.WorkedOnPackageCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.WorkedOnPackageCMF">
          <arguments>
             <argument
                   description="The java package which contains the changes, or when multiple java files got modified the &quot;parent&quot; package that contains the other packages. e.g. if there were changes in the package org.example.a and org.example.b then this argument will be org.example. It doesn&apos;t have an usable value if the changes are in the default pacakge or in packages which have no parent package in common.">
@@ -90,7 +90,7 @@
       <factory
             class="de.fkoeberle.autocommit.message.java.factories.WorkedOnTypeCMF"
             description="Generates a commit message for all changes where just a single java type got modified."
-            id="de.fkoeberle.autocommit.message.java.WorkedOnTypeCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.WorkedOnTypeCMF">
          <arguments>
             <argument
                   description="The name of the changed class without any prefix">
@@ -121,7 +121,7 @@
       <factory
             class="de.fkoeberle.autocommit.message.java.factories.WorkedOnMethodCMF"
             description="Generates a commit message when only a single method or constructor got modified."
-            id="de.fkoeberle.autocommit.message.java.WorkedOnMethodCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.WorkedOnMethodCMF">
          <arguments>
             <argument
                   description="The name of the changed class prefixed with the outer types. Example: &quot;OuterClass.MiddleClass.InnerClass&quot;.">
@@ -148,9 +148,9 @@
          </messages>
       </factory>
       <factory
-            class="de.fkoeberle.autocommit.message.java.factories.FormattedJavaTypeCMF"
+            class="de.fkoeberle.autocommit.message.java.factories.FormattedTypeCMF"
             description="Describes either whitespace changes within a single java type or within java file with a single type."
-            id="de.fkoeberle.autocommit.message.java.FormattedJavaTypeCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.FormattedTypeCMF">
          <arguments>
             <argument
                   description="The type with the whitespace changes. It is either an class, interface, enum or an annotation)">
@@ -178,7 +178,7 @@
       <factory
             class="de.fkoeberle.autocommit.message.java.factories.AddedMethodCMF"
             description="Generates a commit message when only a single method or constructor got added."
-            id="de.fkoeberle.autocommit.message.java.AddedMethodCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.AddedMethodCMF">
           <arguments>
             <argument
                   description="The name of changed class prefixed with the outer types. Example: &quot;OuterClass.MiddleClass.InnerClass&quot;.">
@@ -207,7 +207,7 @@
       <factory
             class="de.fkoeberle.autocommit.message.java.factories.DocumentedTypeCMF"
             description="Generates a commit message when all existing changes are javadoc changes of a single type."
-            id="de.fkoeberle.autocommit.message.java.DocumentedTypeCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.DocumentedTypeCMF">
          <arguments>
             <argument
                   description="The name of documented type prefixed with the outer types. Example: &quot;OuterClass.MiddleClass.InnerClass&quot;.">
@@ -235,7 +235,7 @@
       <factory
             class="de.fkoeberle.autocommit.message.java.factories.DocumentedMethodCMF"
             description="Generates a commit message when a javadoc tag of a method or constructor got modified or added."
-            id="de.fkoeberle.autocommit.message.java.DocumentedMethodCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.DocumentedMethodCMF">
           <arguments>
             <argument
                   description="The name of documented type prefixed with the outer types. Example: &quot;OuterClass.MiddleClass.InnerClass&quot;.">
@@ -264,7 +264,7 @@
       <factory
             class="de.fkoeberle.autocommit.message.java.factories.AddedGettersAndSettersCMF"
             description="Generates a commit message when getters or setters got added to a class."
-            id="de.fkoeberle.autocommit.message.java.AddedGettersAndSettersCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.AddedGettersAndSettersCMF">
          <arguments>
             <argument
                   description="The name of changed type prefixed with the outer types. Example: &quot;OuterClass.MiddleClass.InnerClass&quot;.">
@@ -300,7 +300,7 @@
       <factory
             class="de.fkoeberle.autocommit.message.java.factories.OrganizedImportsOfTypeCMF"
             description="Generates a commit message when the import statements of a java file got modified which contains only a single top level type."
-            id="de.fkoeberle.autocommit.message.java.OrganizedImportsOfTypeCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.OrganizedImportsOfTypeCMF">
          <arguments>
             <argument
                   description="The name of top level type prefixed with the outer types. Example: &quot;OuterClass.MiddleClass.InnerClass&quot;.">
@@ -328,7 +328,7 @@
       <factory
             class="de.fkoeberle.autocommit.message.java.factories.DocumentedPackageCMF"
             description="Generates a commit message when only javadoc tags got added or modified. It also generates messages when javadoc tags got removed as long as at least one javadoc tag got modified or added."
-            id="de.fkoeberle.autocommit.message.java.DocumentedPackageCMF">
+            id="de.fkoeberle.autocommit.message.java.factories.DocumentedPackageCMF">
          <arguments>
             <argument
                   description="The java package which contains the javadoc changes, or when multiple java files got modified the &quot;parent&quot; package that contains the other packages. e.g. if there were changes in the package org.example.a and org.example.b then this argument will be org.example. It doesn&apos;t have an usable value if the changes are in the default pacakge or in packages which have no parent package in common.">

@@ -18,11 +18,11 @@ import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.factories.FormattedJavaTypeCMF;
+import de.fkoeberle.autocommit.message.java.factories.FormattedTypeCMF;
 
 public class FormattedJavaTypeCMFTest {
-	private FormattedJavaTypeCMF createFactory(FileSetDelta delta) {
-		FormattedJavaTypeCMF factory = new FormattedJavaTypeCMF();
+	private FormattedTypeCMF createFactory(FileSetDelta delta) {
+		FormattedTypeCMF factory = new FormattedTypeCMF();
 		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 1);
 		Session session = new Session();
 		session.add(delta);
@@ -36,7 +36,7 @@ public class FormattedJavaTypeCMFTest {
 		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}",
 				"package org.example;\n\nclass Test { }");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.formattedClassMessage
@@ -50,7 +50,7 @@ public class FormattedJavaTypeCMFTest {
 		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nenum Test {}",
 				"package org.example;\n\nenum Test { }");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.formattedEnumMessage
@@ -64,7 +64,7 @@ public class FormattedJavaTypeCMFTest {
 		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\n@interface Test {}",
 				"package org.example;\n\n@interface Test { }");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.formattedAnnotationMessage
@@ -78,7 +78,7 @@ public class FormattedJavaTypeCMFTest {
 		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\ninterface Test {}",
 				"package org.example;\n\ninterface Test { }");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.formattedInterfaceMessage
@@ -92,7 +92,7 @@ public class FormattedJavaTypeCMFTest {
 		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}",
 				"package  org.example;\n\nclass Test {}");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.formattedClassMessage
@@ -106,7 +106,7 @@ public class FormattedJavaTypeCMFTest {
 		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {} class Other{}",
 				"package  org.example;\n\nclass Test {} class Other{}");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = null;
@@ -119,7 +119,7 @@ public class FormattedJavaTypeCMFTest {
 		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {} class Second {}",
 				"package org.example;\n\nclass Test { } class Second {}");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.formattedClassMessage
@@ -133,7 +133,7 @@ public class FormattedJavaTypeCMFTest {
 		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass First{} class Test {}",
 				"package org.example;\n\nclass First{} class Test { }");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String expectedMessage = factory.createMessage();
 		final String actualMessage = factory.formattedClassMessage
@@ -147,7 +147,7 @@ public class FormattedJavaTypeCMFTest {
 		builder.addChangedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass First{ } class Test {}",
 				"package org.example;\n\nclass First{} class Test {}");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.formattedClassMessage
@@ -162,7 +162,7 @@ public class FormattedJavaTypeCMFTest {
 				"/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {class First { } class Second{}}",
 				"package org.example;\n\nclass Test {class First {} class Second{}}");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.formattedClassMessage
@@ -177,7 +177,7 @@ public class FormattedJavaTypeCMFTest {
 				"/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {class First {} class Second{int x;}}",
 				"package org.example;\n\nclass Test {class First {} class Second{int  x;}}");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.formattedClassMessage
@@ -192,7 +192,7 @@ public class FormattedJavaTypeCMFTest {
 				"/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {class Middle {class Inner{}}}",
 				"package org.example;\n\nclass Test {class Middle {class Inner{\n}}}");
-		FormattedJavaTypeCMF factory = createFactory(builder.build());
+		FormattedTypeCMF factory = createFactory(builder.build());
 
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.formattedClassMessage

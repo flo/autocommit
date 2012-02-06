@@ -18,12 +18,12 @@ import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.factories.AddedClassCMF;
+import de.fkoeberle.autocommit.message.java.factories.AddedTypeCMF;
 
 public class AddedClassCMFTest {
 
-	private AddedClassCMF createFactory(FileSetDelta delta) {
-		AddedClassCMF factory = new AddedClassCMF();
+	private AddedTypeCMF createFactory(FileSetDelta delta) {
+		AddedTypeCMF factory = new AddedTypeCMF();
 		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 1);
 		Session session = new Session();
 		session.add(delta);
@@ -36,7 +36,7 @@ public class AddedClassCMFTest {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addAddedFile("/project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
-		AddedClassCMF factory = createFactory(builder.build());
+		AddedTypeCMF factory = createFactory(builder.build());
 
 		String message = factory.createMessage();
 		final String expected = factory.addedStubClassMessage
@@ -51,7 +51,7 @@ public class AddedClassCMFTest {
 				"/project1/org/example/AddedClass.java",
 				"package org.example;\n\nclass AddedClass { String test() { return \"real value\";}}");
 
-		AddedClassCMF factory = createFactory(builder.build());
+		AddedTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.addedClassMessage
 				.createMessageWithArgs("AddedClass");
@@ -64,7 +64,7 @@ public class AddedClassCMFTest {
 		builder.addAddedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}");
 
-		AddedClassCMF factory = createFactory(builder.build());
+		AddedTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.addedInterfaceMessage
 				.createMessageWithArgs("MyInterface");
@@ -77,7 +77,7 @@ public class AddedClassCMFTest {
 		builder.addAddedFile("/project1/org/example/MyEnum.java",
 				"package org.example;\n\npublic enum MyEnum {\n\n}\n");
 
-		AddedClassCMF factory = createFactory(builder.build());
+		AddedTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.addedEnumMessage
 				.createMessageWithArgs("MyEnum");
@@ -91,7 +91,7 @@ public class AddedClassCMFTest {
 				"/project1/org/example/MyFieldAnnotation.java",
 				"pacakge org.example\n\n@Target(ElementType.FIELD)\npublic @interface MyFieldAnnotation {}");
 
-		AddedClassCMF factory = createFactory(builder.build());
+		AddedTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = factory.addedAnotationMessage
 				.createMessageWithArgs("MyFieldAnnotation");
@@ -107,7 +107,7 @@ public class AddedClassCMFTest {
 		builder.addAddedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}");
 
-		AddedClassCMF factory = createFactory(builder.build());
+		AddedTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = null;
 		assertEquals(expected, message);
@@ -122,7 +122,7 @@ public class AddedClassCMFTest {
 		builder.addRemovedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}");
 
-		AddedClassCMF factory = createFactory(builder.build());
+		AddedTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = null;
 		assertEquals(expected, message);
@@ -134,7 +134,7 @@ public class AddedClassCMFTest {
 		builder.addRemovedFile("/project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}");
 
-		AddedClassCMF factory = createFactory(builder.build());
+		AddedTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = null;
 		assertEquals(expected, message);
@@ -150,7 +150,7 @@ public class AddedClassCMFTest {
 				"package org.example;\n\ninterface MyInterface {}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
 
-		AddedClassCMF factory = createFactory(builder.build());
+		AddedTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = null;
 		assertEquals(expected, message);
@@ -163,7 +163,7 @@ public class AddedClassCMFTest {
 				"package org.example;\n\ninterface MyInterface {}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
 
-		AddedClassCMF factory = createFactory(builder.build());
+		AddedTypeCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
 		final String expected = null;
 		assertEquals(expected, message);
