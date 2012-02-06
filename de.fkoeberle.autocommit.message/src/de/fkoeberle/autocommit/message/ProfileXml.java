@@ -69,7 +69,7 @@ public class ProfileXml {
 			ICMFDescriptionFactory cmfFactory, String defaultProfileId)
 			throws IOException {
 		List<CommitMessageFactoryDescription> createdFactories = new ArrayList<CommitMessageFactoryDescription>();
-		for (CommitMessageFactoryXml factoryXml : factories) {
+		for (CommitMessageFactoryXml factoryXml : getFactories()) {
 			CommitMessageFactoryDescription factory;
 			factory = cmfFactory.createFactoryDescription(factoryXml.getId());
 			Map<String, CommitMessageDescription> fieldNameToMessageDescriptionMap = new HashMap<String, CommitMessageDescription>();
@@ -78,8 +78,7 @@ public class ProfileXml {
 				fieldNameToMessageDescriptionMap.put(messageDescription
 						.getField().getName(), messageDescription);
 			}
-			for (CommitMessageXml templateXml : factoryXml
-					.getMessages()) {
+			for (CommitMessageXml templateXml : factoryXml.getMessages()) {
 				String fieldName = templateXml.getFieldName();
 				CommitMessageDescription commitMessageDescription = fieldNameToMessageDescriptionMap
 						.get(fieldName);
