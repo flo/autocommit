@@ -9,18 +9,17 @@
 package de.fkoeberle.autocommit.message.java.helper;
 
 import java.io.IOException;
-import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
+import de.fkoeberle.autocommit.message.AbstractViewWithCache;
 import de.fkoeberle.autocommit.message.java.helper.delta.JavaFileDelta;
 
-public class JavaFormatationChecker {
-	private SoftReference<Map<JavaFileDelta, Boolean>> cache;
-
+public class JavaFormatationChecker extends
+		AbstractViewWithCache<Map<JavaFileDelta, Boolean>> {
 	/**
 	 * 
 	 * @param changedFile
@@ -30,15 +29,7 @@ public class JavaFormatationChecker {
 	 */
 	public boolean foundJavaFormatationChangesOnly(JavaFileDelta javaFileDelta)
 			throws IOException {
-
-		Map<JavaFileDelta, Boolean> map = null;
-		if (cache != null) {
-			map = cache.get();
-		}
-		if (map == null) {
-			map = new HashMap<JavaFileDelta, Boolean>();
-			cache = new SoftReference<Map<JavaFileDelta, Boolean>>(map);
-		}
+		Map<JavaFileDelta, Boolean> map = getCachableValue();
 		Boolean result = map.get(javaFileDelta);
 		if (result == null) {
 			CompilationUnit oldContent = javaFileDelta.getOldDeclaration();
@@ -57,6 +48,12 @@ public class JavaFormatationChecker {
 		}
 
 		return result.booleanValue();
+	}
+
+	@Override
+	protected Map<JavaFileDelta, Boolean> determineCachableValue()
+			throws IOException {
+		return new HashMap<JavaFileDelta, Boolean>();
 	}
 
 	private static boolean containsProblems(CompilationUnit compUnit) {
