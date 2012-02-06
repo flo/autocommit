@@ -63,8 +63,7 @@ public class CMFMultiPageEditorPart extends FormEditor {
 		try {
 			model.load(input);
 		} catch (IOException e) {
-			reportError(this.getSite().getShell(),
-					"Loading failed. See error log for details", e);
+			throw new PartInitException(e.getMessage(), e);
 		}
 		model.addDirtyPropertyListener(new IDirtyPropertyListener() {
 
