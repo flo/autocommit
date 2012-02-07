@@ -18,7 +18,7 @@ import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
-import de.fkoeberle.autocommit.message.java.helper.SingleAddedBodyDeclarationView;
+import de.fkoeberle.autocommit.message.java.helper.SingleAddedInnerBodyDeclarationView;
 import de.fkoeberle.autocommit.message.java.helper.TypeUtil;
 
 public class AddedMethodCMF implements ICommitMessageFactory {
@@ -29,7 +29,7 @@ public class AddedMethodCMF implements ICommitMessageFactory {
 	CommitMessageTemplate addedConstructorMessage;
 
 	@InjectedBySession
-	private SingleAddedBodyDeclarationView singleAddedBodyDeclarationView;
+	private SingleAddedInnerBodyDeclarationView singleAddedBodyDeclarationView;
 
 	@Override
 	public String createMessage() throws IOException {

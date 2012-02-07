@@ -18,17 +18,17 @@ import org.junit.Test;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.helper.SingleChangedBodyDeclarationView;
+import de.fkoeberle.autocommit.message.java.helper.SingleChangedInnerBodyDeclarationView;
 import de.fkoeberle.autocommit.message.java.helper.delta.BodyDeclarationChangeType;
 import de.fkoeberle.autocommit.message.java.helper.delta.MethodDelta;
 
 public class MethodDeltaTest {
-	private SingleChangedBodyDeclarationView createView(FileSetDelta delta)
+	private SingleChangedInnerBodyDeclarationView createView(FileSetDelta delta)
 			throws IOException {
 		Session session = new Session();
 		session.add(delta);
-		SingleChangedBodyDeclarationView view = session
-				.getInstanceOf(SingleChangedBodyDeclarationView.class);
+		SingleChangedInnerBodyDeclarationView view = session
+				.getInstanceOf(SingleChangedInnerBodyDeclarationView.class);
 		return view;
 	}
 
@@ -39,7 +39,7 @@ public class MethodDeltaTest {
 				"class Test {int m() {return 0;};}",
 				"class Test {int m() {return 1;};}");
 
-		SingleChangedBodyDeclarationView view = createView(builder.build());
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
 		MethodDelta methodDelta = view.getMethodDelta();
 
 		assertEquals(EnumSet.of(BodyDeclarationChangeType.METHOD_BODY),
@@ -53,7 +53,7 @@ public class MethodDeltaTest {
 				"abstract class Test {abstract int m();}",
 				"abstract class Test {int m() {return 1;};}");
 
-		SingleChangedBodyDeclarationView view = createView(builder.build());
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
 		MethodDelta methodDelta = view.getMethodDelta();
 
 		assertEquals(EnumSet.of(BodyDeclarationChangeType.METHOD_BODY,
@@ -68,7 +68,7 @@ public class MethodDeltaTest {
 				"abstract class Test {int m() {return 1;};}",
 				"abstract class Test {abstract int m();}");
 
-		SingleChangedBodyDeclarationView view = createView(builder.build());
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
 		MethodDelta methodDelta = view.getMethodDelta();
 
 		assertEquals(EnumSet.of(BodyDeclarationChangeType.METHOD_BODY,
@@ -83,7 +83,7 @@ public class MethodDeltaTest {
 				"abstract class Test {Test() {};}",
 				"abstract class Test {Test() {int x;x++;};}");
 
-		SingleChangedBodyDeclarationView view = createView(builder.build());
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
 		MethodDelta methodDelta = view.getMethodDelta();
 
 		assertEquals(EnumSet.of(BodyDeclarationChangeType.METHOD_BODY),
@@ -98,7 +98,7 @@ public class MethodDeltaTest {
 				"abstract class Test {int m() {return null;};}",
 				"abstract class Test {int m()[] {return null;};}");
 
-		SingleChangedBodyDeclarationView view = createView(builder.build());
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
 		MethodDelta methodDelta = view.getMethodDelta();
 
 		assertEquals(
@@ -113,7 +113,7 @@ public class MethodDeltaTest {
 				"abstract class Test {int m() { return null;};}",
 				"abstract class Test {String m() {return null;};}");
 
-		SingleChangedBodyDeclarationView view = createView(builder.build());
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
 		MethodDelta methodDelta = view.getMethodDelta();
 
 		assertEquals(EnumSet.of(BodyDeclarationChangeType.RETURN_TYPE),
@@ -127,7 +127,7 @@ public class MethodDeltaTest {
 				"class Test {int m() {return null;};}",
 				"class Test {/** new */ int m() {return null;};}");
 
-		SingleChangedBodyDeclarationView view = createView(builder.build());
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
 		MethodDelta methodDelta = view.getMethodDelta();
 
 		assertEquals(EnumSet.of(BodyDeclarationChangeType.JAVADOC),
@@ -141,7 +141,7 @@ public class MethodDeltaTest {
 				"class Test {/** old */ int m() {return null;};}",
 				"class Test {int m() {return null;};}");
 
-		SingleChangedBodyDeclarationView view = createView(builder.build());
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
 		MethodDelta methodDelta = view.getMethodDelta();
 
 		assertEquals(EnumSet.of(BodyDeclarationChangeType.JAVADOC),
@@ -155,7 +155,7 @@ public class MethodDeltaTest {
 				"class Test {/** old */ int m() {return null;};}",
 				"class Test {/** new */ int m() {return null;};}");
 
-		SingleChangedBodyDeclarationView view = createView(builder.build());
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
 		MethodDelta methodDelta = view.getMethodDelta();
 
 		assertEquals(EnumSet.of(BodyDeclarationChangeType.JAVADOC),

@@ -14,7 +14,7 @@ import de.fkoeberle.autocommit.message.CommitMessageTemplate;
 import de.fkoeberle.autocommit.message.ICommitMessageFactory;
 import de.fkoeberle.autocommit.message.InjectedAfterConstruction;
 import de.fkoeberle.autocommit.message.InjectedBySession;
-import de.fkoeberle.autocommit.message.java.helper.SingleChangedBodyDeclarationView;
+import de.fkoeberle.autocommit.message.java.helper.SingleChangedInnerBodyDeclarationView;
 import de.fkoeberle.autocommit.message.java.helper.delta.MethodDelta;
 
 public class WorkedOnMethodCMF implements ICommitMessageFactory {
@@ -26,7 +26,7 @@ public class WorkedOnMethodCMF implements ICommitMessageFactory {
 	CommitMessageTemplate workedOnConstructorMessage;
 
 	@InjectedBySession
-	SingleChangedBodyDeclarationView singleChangedMethodView;
+	SingleChangedInnerBodyDeclarationView singleChangedMethodView;
 
 	@Override
 	public String createMessage() throws IOException {

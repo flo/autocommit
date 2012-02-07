@@ -21,16 +21,16 @@ import org.junit.Test;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.helper.SingleAddedBodyDeclarationView;
+import de.fkoeberle.autocommit.message.java.helper.SingleAddedInnerBodyDeclarationView;
 import de.fkoeberle.autocommit.message.java.helper.TypeUtil;
 
-public class SingleAddedBodyDeclarationViewTest {
-	private SingleAddedBodyDeclarationView createView(FileSetDelta delta)
+public class SingleAddedInnerBodyDeclarationViewTest {
+	private SingleAddedInnerBodyDeclarationView createView(FileSetDelta delta)
 			throws IOException {
 		Session session = new Session();
 		session.add(delta);
-		SingleAddedBodyDeclarationView view = session
-				.getInstanceOf(SingleAddedBodyDeclarationView.class);
+		SingleAddedInnerBodyDeclarationView view = session
+				.getInstanceOf(SingleAddedInnerBodyDeclarationView.class);
 		return view;
 	}
 
@@ -41,7 +41,7 @@ public class SingleAddedBodyDeclarationViewTest {
 				"class Test {int x() {\nreturn 0;}\n}",
 				"class Test {int x() {\nreturn 0;}\nint y(){return 1;}\n}");
 
-		SingleAddedBodyDeclarationView view = createView(builder.build());
+		SingleAddedInnerBodyDeclarationView view = createView(builder.build());
 		BodyDeclaration addedDeclaration = view.getAddedDeclaration();
 		assertTrue(addedDeclaration instanceof MethodDeclaration);
 		MethodDeclaration methodDeclaration = (MethodDeclaration) addedDeclaration;
@@ -54,7 +54,7 @@ public class SingleAddedBodyDeclarationViewTest {
 		builder.addChangedFile("/Test.java", "class Test {}",
 				"/** Use me! */class Test {int x;}");
 
-		SingleAddedBodyDeclarationView view = createView(builder.build());
+		SingleAddedInnerBodyDeclarationView view = createView(builder.build());
 		BodyDeclaration addedDeclaration = view.getAddedDeclaration();
 		assertEquals(null, addedDeclaration);
 	}
@@ -65,7 +65,7 @@ public class SingleAddedBodyDeclarationViewTest {
 		builder.addChangedFile("/Test.java", "class Test {\n}",
 				"class Test {int x;\n}");
 
-		SingleAddedBodyDeclarationView view = createView(builder.build());
+		SingleAddedInnerBodyDeclarationView view = createView(builder.build());
 		BodyDeclaration addedDeclaration = view.getAddedDeclaration();
 		assertTrue(addedDeclaration instanceof FieldDeclaration);
 		FieldDeclaration fieldDeclaration = (FieldDeclaration) addedDeclaration;
@@ -79,7 +79,7 @@ public class SingleAddedBodyDeclarationViewTest {
 		builder.addChangedFile("/Test.java", "class Test {\n}",
 				"class Test {int x; int getX(){return x;};\n}");
 
-		SingleAddedBodyDeclarationView view = createView(builder.build());
+		SingleAddedInnerBodyDeclarationView view = createView(builder.build());
 		BodyDeclaration addedDeclaration = view.getAddedDeclaration();
 		assertEquals(null, addedDeclaration);
 	}
@@ -90,7 +90,7 @@ public class SingleAddedBodyDeclarationViewTest {
 		builder.addChangedFile("/Test.java", "class Test {}",
 				"class Test {int x; int y;\n}");
 
-		SingleAddedBodyDeclarationView view = createView(builder.build());
+		SingleAddedInnerBodyDeclarationView view = createView(builder.build());
 		BodyDeclaration addedDeclaration = view.getAddedDeclaration();
 		assertEquals(null, addedDeclaration);
 	}
@@ -102,7 +102,7 @@ public class SingleAddedBodyDeclarationViewTest {
 				"class Test {int x() {\nreturn 0;}\nint y(){return 1;}\n}}",
 				"class Test {int x() {\nreturn 0;}\n");
 
-		SingleAddedBodyDeclarationView view = createView(builder.build());
+		SingleAddedInnerBodyDeclarationView view = createView(builder.build());
 		BodyDeclaration addedDeclaration = view.getAddedDeclaration();
 		assertEquals(null, addedDeclaration);
 	}
@@ -114,7 +114,7 @@ public class SingleAddedBodyDeclarationViewTest {
 				"class Test {int x() {\nreturn 0;}\nint y(){return 0;}\n}}",
 				"class Test {int x() {\nreturn 0;}\nint y(){return 1;}\n}}");
 
-		SingleAddedBodyDeclarationView view = createView(builder.build());
+		SingleAddedInnerBodyDeclarationView view = createView(builder.build());
 		BodyDeclaration addedDeclaration = view.getAddedDeclaration();
 		assertEquals(null, addedDeclaration);
 	}
@@ -126,7 +126,7 @@ public class SingleAddedBodyDeclarationViewTest {
 				"class Test {int x() {\nreturn 0;}\nint y;}\n}}",
 				"class Test {int x() {\nreturn 0;}\n@Changed int y;\n}}");
 
-		SingleAddedBodyDeclarationView view = createView(builder.build());
+		SingleAddedInnerBodyDeclarationView view = createView(builder.build());
 		BodyDeclaration addedDeclaration = view.getAddedDeclaration();
 		assertEquals(null, addedDeclaration);
 	}

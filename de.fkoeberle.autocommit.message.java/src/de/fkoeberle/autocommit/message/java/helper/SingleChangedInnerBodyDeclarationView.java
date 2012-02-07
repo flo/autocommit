@@ -17,7 +17,7 @@ import de.fkoeberle.autocommit.message.java.helper.delta.DeclarationListDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.MethodDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.TypeDelta;
 
-public class SingleChangedBodyDeclarationView extends
+public class SingleChangedInnerBodyDeclarationView extends
 		AbstractViewWithCache<DeclarationDelta<?>> {
 
 	@InjectedBySession
