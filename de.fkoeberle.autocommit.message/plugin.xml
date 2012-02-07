@@ -40,4 +40,23 @@
             name="Commit Messages Editor">
       </editor>
    </extension>
+   <extension
+         point="de.fkoeberle.autocommit.message.factory">
+      <factory
+            class="de.fkoeberle.autocommit.message.WorkedOnFileCMF"
+            description="Generates a message when only one file gets modified and tells the user in the message about the changed path."
+            id="de.fkoeberle.autocommit.message.WorkedOnFileCMF">
+         <arguments>
+            <argument
+                  description="The path of the changed file">
+            </argument>
+         </arguments>
+         <messages>
+            <message
+                  defaultValue="Worked on file {0}"
+                  fieldName="workedOn">
+            </message>
+         </messages>
+      </factory>
+   </extension>
 </plugin>
