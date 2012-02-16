@@ -70,6 +70,11 @@ public class OutlineNodeDelta {
 		return foundDelta;
 	}
 
+	/**
+	 * 
+	 * @return an {@link ChangedRange} instance describing which child indices
+	 *         have changed.
+	 */
 	public ChangedRange getChangedChildIndices() {
 		if (changedChildIndices == null) {
 			setChangedChildIndicesAndSmartChangedCharacterRange();
@@ -77,6 +82,13 @@ public class OutlineNodeDelta {
 		return changedChildIndices;
 	}
 
+	/**
+	 * 
+	 * @return an {@link ChangedRange} instance describing the changed character
+	 *         range in the old and new document. It tries to interpret the
+	 *         change in a smart way considering the borders of the child
+	 *         elements.
+	 */
 	public ChangedRange getSmartChangedCharacterRange() {
 		if (smartChangedCharacterRange == null) {
 			setChangedChildIndicesAndSmartChangedCharacterRange();

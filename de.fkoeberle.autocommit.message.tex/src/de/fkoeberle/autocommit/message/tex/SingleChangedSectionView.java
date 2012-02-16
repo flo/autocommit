@@ -21,14 +21,14 @@ public class SingleChangedSectionView extends
 
 	@Override
 	protected OutlineNodeDelta determineCachableValue() throws IOException {
-		OutlineNodeDelta delta = singleChangedTexFileView.getDelta();
+		OutlineNodeDelta delta = singleChangedTexFileView.getRootDelta();
 		if (delta == null) {
 			return delta;
 		}
 		return delta.findMostSpecificDelta();
 	}
 
-	public OutlineNodeDelta getDelta() throws IOException {
+	public OutlineNodeDelta getSpecificDelta() throws IOException {
 		return getCachableValue();
 	}
 

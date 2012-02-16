@@ -34,7 +34,7 @@ public class SingleChangedTexFileViewTest {
 
 		FileSetDelta fileSetDelta = builder.build();
 		SingleChangedTexFileView view = create(fileSetDelta);
-		OutlineNodeDelta delta = view.getDelta();
+		OutlineNodeDelta delta = view.getRootDelta();
 		assertEquals(1, delta.getOldOutlineNode().getChildNodes().size());
 		assertEquals(2, delta.getNewOutlineNode().getChildNodes().size());
 	}
@@ -49,7 +49,7 @@ public class SingleChangedTexFileViewTest {
 
 		FileSetDelta fileSetDelta = builder.build();
 		SingleChangedTexFileView view = create(fileSetDelta);
-		OutlineNodeDelta delta = view.getDelta();
+		OutlineNodeDelta delta = view.getRootDelta();
 		assertEquals(null, delta);
 	}
 
@@ -60,7 +60,7 @@ public class SingleChangedTexFileViewTest {
 
 		FileSetDelta fileSetDelta = builder.build();
 		SingleChangedTexFileView view = create(fileSetDelta);
-		OutlineNodeDelta delta = view.getDelta();
+		OutlineNodeDelta delta = view.getRootDelta();
 		assertEquals(null, delta);
 	}
 }

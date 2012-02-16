@@ -34,7 +34,7 @@ public class WorkedOnSectionCMF implements ICommitMessageFactory {
 
 	@Override
 	public String createMessage() throws IOException {
-		OutlineNodeDelta delta = singleChangedHeadlineView.getDelta();
+		OutlineNodeDelta delta = singleChangedHeadlineView.getSpecificDelta();
 		if (delta == null) {
 			return null;
 		}

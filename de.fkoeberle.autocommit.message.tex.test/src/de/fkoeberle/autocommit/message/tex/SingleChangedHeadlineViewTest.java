@@ -36,7 +36,7 @@ public class SingleChangedHeadlineViewTest {
 
 		FileSetDelta fileSetDelta = builder.build();
 		SingleChangedSectionView view = create(fileSetDelta);
-		OutlineNodeDelta delta = view.getDelta();
+		OutlineNodeDelta delta = view.getSpecificDelta();
 		assertEquals(
 				"\\chapter{Chapter Two}\\section{One}\\section{Two}\\subsection{Hello}\\section{Three}",
 				delta.getOldOutlineNode().getText());
@@ -55,7 +55,7 @@ public class SingleChangedHeadlineViewTest {
 
 		FileSetDelta fileSetDelta = builder.build();
 		SingleChangedSectionView view = create(fileSetDelta);
-		OutlineNodeDelta delta = view.getDelta();
+		OutlineNodeDelta delta = view.getSpecificDelta();
 		assertEquals("\\section{Two}\\subsection{Hello}", delta
 				.getOldOutlineNode().getText());
 		assertEquals("\\section{Two}X\\subsection{Hello}", delta
@@ -72,7 +72,7 @@ public class SingleChangedHeadlineViewTest {
 
 		FileSetDelta fileSetDelta = builder.build();
 		SingleChangedSectionView view = create(fileSetDelta);
-		OutlineNodeDelta delta = view.getDelta();
+		OutlineNodeDelta delta = view.getSpecificDelta();
 		assertEquals("\\subsection{Hello}", delta.getOldOutlineNode().getText());
 		assertEquals("\\subsection{Hello}X", delta.getNewOutlineNode()
 				.getText());
@@ -88,7 +88,7 @@ public class SingleChangedHeadlineViewTest {
 
 		FileSetDelta fileSetDelta = builder.build();
 		SingleChangedSectionView view = create(fileSetDelta);
-		OutlineNodeDelta delta = view.getDelta();
+		OutlineNodeDelta delta = view.getSpecificDelta();
 		assertEquals("\\subsubsection{sub}", delta.getOldOutlineNode()
 				.getText());
 		assertEquals("\\subsubsection{sub}X", delta.getNewOutlineNode()
@@ -105,7 +105,7 @@ public class SingleChangedHeadlineViewTest {
 
 		FileSetDelta fileSetDelta = builder.build();
 		SingleChangedSectionView view = create(fileSetDelta);
-		OutlineNodeDelta delta = view.getDelta();
+		OutlineNodeDelta delta = view.getSpecificDelta();
 		assertEquals(null, delta);
 	}
 }

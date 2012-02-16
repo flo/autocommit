@@ -19,12 +19,12 @@ public class TexParser {
 	Pattern COMMENT_PATTERN = compile("(#.*)(\n|\r)");
 	Pattern HEADLINE_PATTERN = compile("\\\\(chapter|section|subsection|subsubsection)\\s*\\{(.*?)\\}");
 
-	OutlineNode parse(String filename, String text) {
+	public OutlineNode parse(String documentName, String text) {
 		CharSequence noCommentsText = withoutComments(text);
 		Matcher headlineMatcher = HEADLINE_PATTERN.matcher(noCommentsText);
 		Deque<OutlineNode> nodeStack = new ArrayDeque<OutlineNode>();
-		OutlineNode root = new OutlineNode(OutlineNodeType.DOCUMENT, filename,
-				text, 0, 0);
+		OutlineNode root = new OutlineNode(OutlineNodeType.DOCUMENT,
+				documentName, text, 0, 0);
 		nodeStack.addLast(root);
 		while (headlineMatcher.find()) {
 			String typeString = headlineMatcher.group(1);

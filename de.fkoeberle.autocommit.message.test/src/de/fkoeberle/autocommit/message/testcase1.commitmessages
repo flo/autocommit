@@ -4,15 +4,15 @@
 	</factory>
 	<factory>
 		<id>dummy2</id>
-		<commit-message-templates>
-			<template>
+		<messages>
+			<message>
 				<field>messageA</field>
 				<value>value for A</value>
-			</template>
-			<template>
+			</message>
+			<message>
 				<field>messageB</field>
 				<value>value for B</value>
-			</template>
-		</commit-message-templates>
+			</message>
+		</messages>
 	</factory>
 </commit-message-factories>

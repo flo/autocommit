@@ -23,7 +23,7 @@ public class SingleAddedSectionView extends
 
 	@Override
 	protected AddedSectionInfo determineCachableValue() throws IOException {
-		OutlineNodeDelta parentDelta = singleChangedSectionView.getDelta();
+		OutlineNodeDelta parentDelta = singleChangedSectionView.getSpecificDelta();
 		if (parentDelta == null) {
 			return null;
 		}

@@ -46,7 +46,7 @@ public class SingleChangedTexFileView extends
 		return delta;
 	}
 
-	public OutlineNodeDelta getDelta() throws IOException {
+	public OutlineNodeDelta getRootDelta() throws IOException {
 		return getCachableValue();
 	}
 

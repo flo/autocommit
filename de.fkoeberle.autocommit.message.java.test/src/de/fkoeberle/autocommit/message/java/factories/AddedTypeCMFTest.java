@@ -20,7 +20,7 @@ import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.factories.AddedTypeCMF;
 
-public class AddedClassCMFTest {
+public class AddedTypeCMFTest {
 
 	private AddedTypeCMF createFactory(FileSetDelta delta) {
 		AddedTypeCMF factory = new AddedTypeCMF();

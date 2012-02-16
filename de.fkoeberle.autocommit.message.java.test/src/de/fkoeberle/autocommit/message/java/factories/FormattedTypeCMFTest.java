@@ -20,7 +20,7 @@ import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.factories.FormattedTypeCMF;
 
-public class FormattedJavaTypeCMFTest {
+public class FormattedTypeCMFTest {
 	private FormattedTypeCMF createFactory(FileSetDelta delta) {
 		FormattedTypeCMF factory = new FormattedTypeCMF();
 		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 1);

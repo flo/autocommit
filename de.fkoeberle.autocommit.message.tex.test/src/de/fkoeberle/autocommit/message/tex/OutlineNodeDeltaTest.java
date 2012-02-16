@@ -29,7 +29,7 @@ public class OutlineNodeDeltaTest {
 		session.add(fileSetDelta);
 		SingleChangedTexFileView view = session
 				.getInstanceOf(SingleChangedTexFileView.class);
-		return view.getDelta();
+		return view.getRootDelta();
 	}
 
 	@Test

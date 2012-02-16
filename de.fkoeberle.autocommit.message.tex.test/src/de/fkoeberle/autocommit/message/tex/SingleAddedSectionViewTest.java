@@ -46,6 +46,20 @@ public class SingleAddedSectionViewTest {
 	}
 
 	@Test
+	public void testAddedSectionInMiddleSimple() throws IOException {
+		SingleAddedSectionView view = create(
+				"\\section{A}Inhalt von A\\section{B}",
+				"\\section{A}Inhalt von A\\section{X}\\section{B}");
+
+		AddedSectionInfo addedSectionInfo = view.getAddedSectionInfo();
+		assertNotNull(addedSectionInfo);
+		assertEquals("X", addedSectionInfo.getAddedSection().getCaption());
+		assertEquals("", addedSectionInfo.getCharactersAddedBefore());
+		assertEquals("", addedSectionInfo.getCharactersAddedAfter());
+		assertEquals("", addedSectionInfo.getCharactersRemoved());
+	}
+
+	@Test
 	public void testAddedSectionInMiddleWithPrefix() throws IOException {
 		SingleAddedSectionView view = create(
 				"intro\\section{A}\\section{B}\\section{C}\\section{D}\\section{E}",
