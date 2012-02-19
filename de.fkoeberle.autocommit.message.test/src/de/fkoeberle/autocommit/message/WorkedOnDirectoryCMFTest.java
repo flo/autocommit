@@ -12,15 +12,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
-import de.fkoeberle.autocommit.message.FileSetDelta;
-import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.WorkedOnPathCMF;
+public class WorkedOnDirectoryCMFTest {
 
-public class WorkedOnPathCMFTest {
-
-	private WorkedOnPathCMF createFactory(FileSetDelta delta) {
-		WorkedOnPathCMF factory = new WorkedOnPathCMF();
+	private WorkedOnDirectoryCMF createFactory(FileSetDelta delta) {
+		WorkedOnDirectoryCMF factory = new WorkedOnDirectoryCMF();
 		DummyCommitMessageUtil.insertUniqueCommitMessagesWithNArgs(factory, 1);
 		Session session = new Session();
 		session.add(delta);
@@ -34,10 +29,10 @@ public class WorkedOnPathCMFTest {
 		builder.addAddedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 
-		WorkedOnPathCMF factory = createFactory(builder.build());
+		WorkedOnDirectoryCMF factory = createFactory(builder.build());
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.workedOn
-				.createMessageWithArgs("project1/org/example/Test.java");
+				.createMessageWithArgs("project1/org/example/");
 		assertEquals(expectedMessage, actualMessage);
 	}
 
@@ -47,10 +42,10 @@ public class WorkedOnPathCMFTest {
 		builder.addRemovedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 
-		WorkedOnPathCMF factory = createFactory(builder.build());
+		WorkedOnDirectoryCMF factory = createFactory(builder.build());
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.workedOn
-				.createMessageWithArgs("project1/org/example/Test.java");
+				.createMessageWithArgs("project1/org/example/");
 		assertEquals(expectedMessage, actualMessage);
 	}
 
@@ -60,10 +55,10 @@ public class WorkedOnPathCMFTest {
 		builder.addChangedFile("some/Path/test.txt", "old content",
 				"new content");
 
-		WorkedOnPathCMF factory = createFactory(builder.build());
+		WorkedOnDirectoryCMF factory = createFactory(builder.build());
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.workedOn
-				.createMessageWithArgs("some/Path/test.txt");
+				.createMessageWithArgs("some/Path/");
 		assertEquals(expectedMessage, actualMessage);
 	}
 
@@ -74,7 +69,7 @@ public class WorkedOnPathCMFTest {
 				"new content");
 		builder.addAddedFile("some/Point.txt", "(0, 1)");
 
-		WorkedOnPathCMF factory = createFactory(builder.build());
+		WorkedOnDirectoryCMF factory = createFactory(builder.build());
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.workedOn
 				.createMessageWithArgs("some/");
@@ -87,10 +82,10 @@ public class WorkedOnPathCMFTest {
 		builder.addAddedFile("some/Point.txt", "(0, 1)");
 		builder.addAddedFile("other.txt", "(0, 1)");
 
-		WorkedOnPathCMF factory = createFactory(builder.build());
+		WorkedOnDirectoryCMF factory = createFactory(builder.build());
 		String actualMessage = factory.createMessage();
 		final String expectedMessage = factory.workedOn
-				.createMessageWithArgs(".");
+				.createMessageWithArgs("./");
 		assertEquals(expectedMessage, actualMessage);
 	}
 }

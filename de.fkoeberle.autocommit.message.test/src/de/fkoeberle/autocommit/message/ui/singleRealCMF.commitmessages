@@ -1,5 +1,5 @@
 <commit-message-factories>
 	<factory>
-		<id>de.fkoeberle.autocommit.message.WorkedOnPathCMF</id>
+		<id>de.fkoeberle.autocommit.message.WorkedOnDirectoryCMF</id>
 	</factory>
 </commit-message-factories>

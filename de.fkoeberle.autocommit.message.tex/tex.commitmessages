@@ -9,6 +9,9 @@
 		<id>de.fkoeberle.autocommit.message.tex.WorkedOnSectionCMF</id>
 	</factory>
 	<factory>
-		<id>de.fkoeberle.autocommit.message.WorkedOnPathCMF</id>
+		<id>de.fkoeberle.autocommit.message.WorkedOnFileCMF</id>
+	</factory>
+	<factory>
+		<id>de.fkoeberle.autocommit.message.WorkedOnDirectoryCMF</id>
 	</factory>
 </commit-message-factories>
