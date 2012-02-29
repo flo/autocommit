@@ -24,6 +24,12 @@ import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.IFileContent;
 import de.fkoeberle.autocommit.message.RemovedFile;
 
+/**
+ * A one time use helper class. It can be used to determine all packages that
+ * contain the changes of a {@link FileSetDelta} object. It tries to avoid
+ * parsing files and guess packages by directory names.
+ * 
+ */
 public final class PackageSetBuilder {
 	private final Set<String> packageNames = new HashSet<String>();
 	private final List<String> sourceFolders = new ArrayList<String>();
