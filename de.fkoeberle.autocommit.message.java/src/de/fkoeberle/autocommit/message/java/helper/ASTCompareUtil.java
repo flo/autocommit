@@ -13,11 +13,23 @@ import java.util.List;
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.ASTNode;
 
+/**
+ * Utility class for comparing {@link ASTNode} objects.
+ * 
+ */
 public final class ASTCompareUtil {
 	private ASTCompareUtil() {
 		// Utility class
 	}
 
+	/**
+	 * 
+	 * @param oldList
+	 *            must be a list of {@link ASTNode} objects.
+	 * @param newList
+	 *            must be a list of {@link ASTNode} objects.
+	 * @return true if the two list of abstract syntax trees don't match.
+	 */
 	public static boolean listsOfASTNodesDiffer(List<?> oldList, List<?> newList) {
 		if (oldList.size() != newList.size()) {
 			return true;
@@ -41,8 +53,8 @@ public final class ASTCompareUtil {
 	 *            can be null.
 	 * @param newNode
 	 *            can be null.
-	 * @return true if and only if the nodes match when compared with a
-	 *         {@link ASTMatcher}.
+	 * @return false if and only if the nodes match when compared with a
+	 *         {@link ASTMatcher}. Otherwise true gets returned
 	 */
 	public static boolean astNodesDiffer(ASTNode oldNode, ASTNode newNode) {
 		if (oldNode == null || newNode == null) {
