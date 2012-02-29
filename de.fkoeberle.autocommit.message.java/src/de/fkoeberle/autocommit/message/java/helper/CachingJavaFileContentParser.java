@@ -21,8 +21,21 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import de.fkoeberle.autocommit.message.FileContentReader;
 import de.fkoeberle.autocommit.message.IFileContent;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.SoftReferenceOrNull;
 
+/**
+ * 
+ * This class offers a {@link #getInstanceFor(IFileContent)} method which can be
+ * used to obtain a {@link CompilationUnit} instance for a {@link IFileContent}
+ * instance. The object obtained this way should only be used for read only
+ * purposes since it gets cached.
+ * 
+ * This class has fields annotated with {@link InjectedBySession}. Thus it
+ * should be used as an field annotated with {@link InjectedBySession} which in
+ * turn gets initialized by a {@link Session} object.
+ * 
+ */
 public class CachingJavaFileContentParser {
 	private final WeakHashMap<IFileContent, SoftReferenceOrNull<CompilationUnit>> cache;
 
@@ -44,6 +57,12 @@ public class CachingJavaFileContentParser {
 		return unit;
 	}
 
+	/**
+	 * 
+	 * @param fileContent
+	 *            a {@link IFileContent} object that represents a java file
+	 * @return a {@link CompilationUnit} object that must not be modified.
+	 */
 	public CompilationUnit getInstanceFor(IFileContent fileContent)
 			throws IOException {
 		SoftReferenceOrNull<CompilationUnit> softReferenceOrNull = cache
