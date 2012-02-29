@@ -14,8 +14,15 @@ import de.fkoeberle.autocommit.message.AbstractViewWithCache;
 import de.fkoeberle.autocommit.message.ChangedTextFile;
 import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.SingleChangedTextFileView;
 
+/**
+ * This is a helper class to determine if only one LaTeX document got modified.
+ * It should be used as an field annotated with {@link InjectedBySession} which
+ * in turn gets initialized by a {@link Session} object.
+ * 
+ */
 public class SingleChangedTexFileView extends
 		AbstractViewWithCache<OutlineNodeDelta> {
 	@InjectedBySession
@@ -46,6 +53,12 @@ public class SingleChangedTexFileView extends
 		return delta;
 	}
 
+	/**
+	 * 
+	 * @return the changed latex document in form of a {@link OutlineNodeDelta}
+	 *         object when it represents all the changes made. If there is not
+	 *         just one modified LaTeX document this method returns null.
+	 */
 	public OutlineNodeDelta getRootDelta() throws IOException {
 		return getCachableValue();
 	}
