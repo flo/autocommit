@@ -12,11 +12,18 @@ import java.io.IOException;
 
 import de.fkoeberle.autocommit.message.AbstractViewWithCache;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.helper.delta.DeclarationDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.DeclarationListDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.JavaFileDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.TypeDelta;
 
+/**
+ * This is a helper class to determine if only one type has changed. It should
+ * be used as an field annotated with {@link InjectedBySession} which in turn
+ * gets initialized by a {@link Session} object.
+ * 
+ */
 public class SingleChangedTypeView extends AbstractViewWithCache<TypeDelta> {
 
 	@InjectedBySession
@@ -63,6 +70,11 @@ public class SingleChangedTypeView extends AbstractViewWithCache<TypeDelta> {
 		return typeDelta;
 	}
 
+	/**
+	 * 
+	 * @return the changed type or null, if that were all changes. If there is
+	 *         no single changed type this method return null.
+	 */
 	public TypeDelta getTypeDelta() throws IOException {
 		return getCachableValue();
 	}
