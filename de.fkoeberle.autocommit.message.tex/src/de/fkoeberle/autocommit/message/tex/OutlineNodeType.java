@@ -8,7 +8,10 @@
  */
 package de.fkoeberle.autocommit.message.tex;
 
-
+/**
+ * Describes the type of a headline of a {@link OutlineNode} object.
+ * 
+ */
 public enum OutlineNodeType {
 	DOCUMENT, CHAPTER, SECTION, SUBSECTION, SUBSUBSECTION;
 
