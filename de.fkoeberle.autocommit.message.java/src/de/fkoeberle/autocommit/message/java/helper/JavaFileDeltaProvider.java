@@ -14,8 +14,17 @@ import java.util.Map;
 
 import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.helper.delta.JavaFileDelta;
 
+/**
+ * An helper class with a method {@link #getDeltaFor(ChangedFile)}.
+ * 
+ * This class has a field annotated with {@link InjectedBySession}. Thus it
+ * should be used as an field annotated with {@link InjectedBySession} which in
+ * turn gets initialized by a {@link Session} object.
+ * 
+ */
 public class JavaFileDeltaProvider {
 	private final Map<ChangedFile, SoftReference<JavaFileDelta>> changedFileToDeltaRefMap;
 
@@ -26,6 +35,15 @@ public class JavaFileDeltaProvider {
 		this.changedFileToDeltaRefMap = new HashMap<ChangedFile, SoftReference<JavaFileDelta>>();
 	}
 
+	/**
+	 * 
+	 * @param changedFile
+	 *            the {@link ChangedFile} object which should be converted into
+	 *            a {@link Java FileDelta} object.
+	 * @return a {@link JavaFileDelta} instance which represents old and new
+	 *         syntax tree of the specified java file. The result must not be
+	 *         modified.
+	 */
 	public JavaFileDelta getDeltaFor(ChangedFile changedFile) {
 		SoftReference<JavaFileDelta> ref = changedFileToDeltaRefMap
 				.get(changedFile);
