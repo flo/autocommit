@@ -15,6 +15,16 @@ import java.util.Deque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.Session;
+
+/**
+ * This is a helper class to create {@link OutlineNode} data structures. It
+ * should be used as an field annotated with {@link InjectedBySession} which in
+ * turn gets initialized by a {@link Session} object. Even if it does not cache
+ * data yet, it might do so in future.
+ * 
+ */
 public class TexParser {
 	Pattern COMMENT_PATTERN = compile("(#.*)(\n|\r)");
 	Pattern HEADLINE_PATTERN = compile("\\\\(chapter|section|subsection|subsubsection)\\s*\\{(.*?)\\}");
