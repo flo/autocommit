@@ -13,6 +13,11 @@ import java.util.List;
 import de.fkoeberle.autocommit.message.ChangedRange;
 import de.fkoeberle.autocommit.message.ChangedTextFile;
 
+/**
+ * This class describes the changes between an old and new version of an
+ * {@link OutlineNode}.
+ * 
+ */
 public class OutlineNodeDelta {
 	private final ChangedTextFile changedTextFile;
 	private final OutlineNode oldOutlineNode;
