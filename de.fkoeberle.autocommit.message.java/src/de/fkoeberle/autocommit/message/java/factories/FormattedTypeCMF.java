@@ -29,6 +29,12 @@ import de.fkoeberle.autocommit.message.java.helper.SingleChangedJavaFileView;
 import de.fkoeberle.autocommit.message.java.helper.TypeUtil;
 import de.fkoeberle.autocommit.message.java.helper.delta.JavaFileDelta;
 
+/**
+ * 
+ * A commit message factory that generates messages for formation changes of
+ * single types.
+ * 
+ */
 public class FormattedTypeCMF implements ICommitMessageFactory {
 	@InjectedAfterConstruction
 	CommitMessageTemplate formattedClassMessage;
@@ -81,7 +87,6 @@ public class FormattedTypeCMF implements ICommitMessageFactory {
 	 * 
 	 * @return the most specific formatted type or null if it can't be said that
 	 *         a type got formatted.
-	 * @throws IOException
 	 */
 	private AbstractTypeDeclaration determineFormattedType() throws IOException {
 		JavaFileDelta javaFileDelta = singleChangedJavaFileView.getDelta();
@@ -100,7 +105,8 @@ public class FormattedTypeCMF implements ICommitMessageFactory {
 		int firstDiff = firstIndexWithDifference(oldFile, newFile);
 		int lastDiffInNewFile = lastNewFileIndexWithDifference(oldFile, newFile);
 
-		// TODO reduce interval to non whitespace
+		// Possible Improvement:
+		// reduce interval to non whitespace
 
 		CompilationUnit newCompilationUnit = javaFileDelta.getNewDeclaration();
 		if (newCompilationUnit == null) {
