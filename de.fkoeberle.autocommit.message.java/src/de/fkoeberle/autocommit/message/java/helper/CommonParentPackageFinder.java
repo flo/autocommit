@@ -10,11 +10,19 @@ package de.fkoeberle.autocommit.message.java.helper;
 
 import java.util.Set;
 
-
+/**
+ * One time use helper class to find in a collection of packages the parent
+ * package. The pacakges needs to be passed by calling
+ * {@link #checkPackage(String)} or {@link #checkPackages(Set)}. Once all
+ * packages got passed, the method {@link #getCommonPackage()} can be called to
+ * obtain the common parent package.
+ * 
+ * 
+ */
 public class CommonParentPackageFinder {
 	private String first;
 	private int lengthOfPrefix;
-	
+
 	public void checkPackage(String p) {
 		if (first == null) {
 			first = p;
@@ -27,7 +35,7 @@ public class CommonParentPackageFinder {
 				}
 				return;
 			}
-			for (int i = 0; i < lengthOfPrefix; i++ ) {
+			for (int i = 0; i < lengthOfPrefix; i++) {
 				if ((i >= p.length())) {
 					lengthOfPrefix = first.lastIndexOf('.', i);
 					return;
@@ -41,7 +49,11 @@ public class CommonParentPackageFinder {
 			}
 		}
 	}
-	
+
+	/**
+	 * 
+	 * @return the common parent package or null.
+	 */
 	public String getCommonPackage() {
 		if ((first == null) || (lengthOfPrefix == -1))
 			return null;
