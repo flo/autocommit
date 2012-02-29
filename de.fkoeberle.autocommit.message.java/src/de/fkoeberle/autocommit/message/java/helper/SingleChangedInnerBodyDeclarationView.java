@@ -12,11 +12,18 @@ import java.io.IOException;
 
 import de.fkoeberle.autocommit.message.AbstractViewWithCache;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.helper.delta.DeclarationDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.DeclarationListDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.MethodDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.TypeDelta;
 
+/**
+ * This is a helper class to determine if only one declaration has changed. It
+ * should be used as an field annotated with {@link InjectedBySession} which in
+ * turn gets initialized by a {@link Session} object.
+ * 
+ */
 public class SingleChangedInnerBodyDeclarationView extends
 		AbstractViewWithCache<DeclarationDelta<?>> {
 
@@ -60,6 +67,12 @@ public class SingleChangedInnerBodyDeclarationView extends
 		}
 	}
 
+	/**
+	 * 
+	 * @return an {@link DeclarationDelta} instance if the only change was the
+	 *         modification of that declaration. Otherwise this method returns
+	 *         null.
+	 */
 	public DeclarationDelta<?> getDelta() throws IOException {
 		return getCachableValue();
 	}
