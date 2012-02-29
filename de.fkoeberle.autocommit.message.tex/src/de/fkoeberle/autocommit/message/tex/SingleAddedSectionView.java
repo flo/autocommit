@@ -14,7 +14,15 @@ import java.util.List;
 import de.fkoeberle.autocommit.message.AbstractViewWithCache;
 import de.fkoeberle.autocommit.message.ChangedRange;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.Session;
 
+/**
+ * This is a helper class to determine if only one section got added to a latex
+ * document. It should be used as an field annotated with
+ * {@link InjectedBySession} which in turn gets initialized by a {@link Session}
+ * object.
+ * 
+ */
 public class SingleAddedSectionView extends
 		AbstractViewWithCache<AddedSectionInfo> {
 
@@ -23,7 +31,8 @@ public class SingleAddedSectionView extends
 
 	@Override
 	protected AddedSectionInfo determineCachableValue() throws IOException {
-		OutlineNodeDelta parentDelta = singleChangedSectionView.getSpecificDelta();
+		OutlineNodeDelta parentDelta = singleChangedSectionView
+				.getSpecificDelta();
 		if (parentDelta == null) {
 			return null;
 		}
@@ -99,6 +108,12 @@ public class SingleAddedSectionView extends
 				textAddedBefore, textAddedAfter, textRemoved);
 	}
 
+	/**
+	 * 
+	 * @return a description of the added section. It tries to return a value
+	 *         even if the surroundings of the added section got modified too.
+	 *         When no single section got added this method returns null.
+	 */
 	public AddedSectionInfo getAddedSectionInfo() throws IOException {
 		return getCachableValue();
 	}
