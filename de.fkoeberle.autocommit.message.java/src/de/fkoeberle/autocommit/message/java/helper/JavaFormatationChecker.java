@@ -16,13 +16,25 @@ import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import de.fkoeberle.autocommit.message.AbstractViewWithCache;
+import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.helper.delta.JavaFileDelta;
 
+/**
+ * A helper class which offers a method
+ * {@link #foundJavaFormatationChangesOnly(JavaFileDelta)}. It should be used as
+ * an field annotated with {@link InjectedBySession} which in turn gets
+ * initialized by a {@link Session} object.
+ * 
+ * 
+ */
 public class JavaFormatationChecker extends
 		AbstractViewWithCache<Map<JavaFileDelta, Boolean>> {
 	/**
+	 * Checks for a given file if there are only whitespace changes.
 	 * 
 	 * @param changedFile
+	 *            the file to check.
 	 * @return true if it can be guaranteed that there were only formation
 	 *         changes and false otherwise.
 	 * @throws IOException
