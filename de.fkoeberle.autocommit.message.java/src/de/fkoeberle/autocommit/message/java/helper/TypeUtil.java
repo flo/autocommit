@@ -24,6 +24,12 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.WildcardType;
 
+/**
+ * Utility class with static methods around converting type and method
+ * declarations into strings.
+ * 
+ */
+
 public class TypeUtil {
 
 	public static String parameterTypesOf(MethodDeclaration methodDeclaration) {
