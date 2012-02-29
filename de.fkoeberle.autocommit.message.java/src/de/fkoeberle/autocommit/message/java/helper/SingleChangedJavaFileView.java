@@ -14,9 +14,16 @@ import de.fkoeberle.autocommit.message.AbstractViewWithCache;
 import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.ExtensionsOfAddedModifiedOrChangedFiles;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.SingleChangedFileView;
 import de.fkoeberle.autocommit.message.java.helper.delta.JavaFileDelta;
 
+/**
+ * This is a helper class to determine if only one java file has changed. It
+ * should be used as an field annotated with {@link InjectedBySession} which in
+ * turn gets initialized by a {@link Session} object.
+ * 
+ */
 public class SingleChangedJavaFileView extends
 		AbstractViewWithCache<JavaFileDelta> {
 	@InjectedBySession
@@ -40,6 +47,11 @@ public class SingleChangedJavaFileView extends
 		return javaFileDeltaProvider.getDeltaFor(changedFile);
 	}
 
+	/**
+	 * 
+	 * @return the changed java file or null if there was not just this single
+	 *         change.
+	 */
 	public JavaFileDelta getDelta() throws IOException {
 		return getCachableValue();
 	}
