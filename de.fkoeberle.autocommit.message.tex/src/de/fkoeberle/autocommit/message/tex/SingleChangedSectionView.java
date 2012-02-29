@@ -12,7 +12,15 @@ import java.io.IOException;
 
 import de.fkoeberle.autocommit.message.AbstractViewWithCache;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.Session;
 
+/**
+ * This is a helper class to determine if only one section of a LaTeX document
+ * got modified. It should be used as an field annotated with
+ * {@link InjectedBySession} which in turn gets initialized by a {@link Session}
+ * object.
+ * 
+ */
 public class SingleChangedSectionView extends
 		AbstractViewWithCache<OutlineNodeDelta> {
 
