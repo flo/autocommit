@@ -13,6 +13,7 @@ import java.util.EnumSet;
 
 import de.fkoeberle.autocommit.message.ChangedFile;
 import de.fkoeberle.autocommit.message.InjectedBySession;
+import de.fkoeberle.autocommit.message.Session;
 import de.fkoeberle.autocommit.message.java.helper.delta.BodyDeclarationChangeType;
 import de.fkoeberle.autocommit.message.java.helper.delta.DeclarationDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.DeclarationListDelta;
@@ -20,6 +21,15 @@ import de.fkoeberle.autocommit.message.java.helper.delta.JavaFileDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.PackageDeclationDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.TypeDelta;
 
+/**
+ * An utility class what javadoc changes exist in a {@link DeclarationDelta},
+ * {@link DeclarationListDelta} or {@link ChangedFile} object.
+ * 
+ * This class has a field annotated with {@link InjectedBySession}. Thus it
+ * should be used as an field annotated with {@link InjectedBySession} which in
+ * turn gets initialized by a {@link Session} object.
+ * 
+ */
 public class JavaDocSearchUtility {
 
 	@InjectedBySession
