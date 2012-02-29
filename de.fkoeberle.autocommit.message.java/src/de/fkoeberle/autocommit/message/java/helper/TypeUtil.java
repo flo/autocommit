@@ -67,6 +67,10 @@ public class TypeUtil {
 			appendTypeTo(arrayType.getComponentType(), builder);
 			builder.append("[]"); //$NON-NLS-1$
 		} else if (type instanceof QualifiedType) {
+			// There aren't test for this case,
+			// since it seems to be impossible to get an instance of
+			// QualifiedType.
+			// Outer.Inner gets parsed as SimpleType
 			QualifiedType qualifiedType = (QualifiedType) type;
 			builder.append(qualifiedType.getQualifier());
 			builder.append('.');

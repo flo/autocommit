@@ -18,7 +18,6 @@ import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.factories.FormattedTypeCMF;
 
 public class FormattedTypeCMFTest {
 	private FormattedTypeCMF createFactory(FileSetDelta delta) {
@@ -33,7 +32,7 @@ public class FormattedTypeCMFTest {
 	@Test
 	public void testFormattedSimpleClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}",
 				"package org.example;\n\nclass Test { }");
 		FormattedTypeCMF factory = createFactory(builder.build());
@@ -47,7 +46,7 @@ public class FormattedTypeCMFTest {
 	@Test
 	public void testFormattedSimpleEnum() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nenum Test {}",
 				"package org.example;\n\nenum Test { }");
 		FormattedTypeCMF factory = createFactory(builder.build());
@@ -61,7 +60,7 @@ public class FormattedTypeCMFTest {
 	@Test
 	public void testFormattedSimpleAnnotation() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\n@interface Test {}",
 				"package org.example;\n\n@interface Test { }");
 		FormattedTypeCMF factory = createFactory(builder.build());
@@ -75,7 +74,7 @@ public class FormattedTypeCMFTest {
 	@Test
 	public void testFormattedSimpleInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\ninterface Test {}",
 				"package org.example;\n\ninterface Test { }");
 		FormattedTypeCMF factory = createFactory(builder.build());
@@ -89,7 +88,7 @@ public class FormattedTypeCMFTest {
 	@Test
 	public void testFormattedPackageWithOneType() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}",
 				"package  org.example;\n\nclass Test {}");
 		FormattedTypeCMF factory = createFactory(builder.build());
@@ -103,7 +102,7 @@ public class FormattedTypeCMFTest {
 	@Test
 	public void testFormattedPackageWithTwoTypes() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {} class Other{}",
 				"package  org.example;\n\nclass Test {} class Other{}");
 		FormattedTypeCMF factory = createFactory(builder.build());
@@ -116,7 +115,7 @@ public class FormattedTypeCMFTest {
 	@Test
 	public void testFormattedMainWithTwoTopLevelClasses() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {} class Second {}",
 				"package org.example;\n\nclass Test { } class Second {}");
 		FormattedTypeCMF factory = createFactory(builder.build());
@@ -130,7 +129,7 @@ public class FormattedTypeCMFTest {
 	@Test
 	public void testFormattedMainAsSecondTopLevelClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass First{} class Test {}",
 				"package org.example;\n\nclass First{} class Test { }");
 		FormattedTypeCMF factory = createFactory(builder.build());
@@ -144,7 +143,7 @@ public class FormattedTypeCMFTest {
 	@Test
 	public void testFormattedOtherTopLevelClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass First{ } class Test {}",
 				"package org.example;\n\nclass First{} class Test {}");
 		FormattedTypeCMF factory = createFactory(builder.build());

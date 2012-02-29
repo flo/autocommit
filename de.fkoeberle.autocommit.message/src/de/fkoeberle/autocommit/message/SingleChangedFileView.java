@@ -15,6 +15,12 @@ public class SingleChangedFileView extends AbstractViewWithCache<ChangedFile> {
 	@InjectedBySession
 	private FileSetDelta delta;
 
+	/**
+	 * 
+	 * @return a {@link ChangedFile} instance, if there was exactly one changed
+	 *         file and no other change. Otherwise this method returns
+	 *         <code>null</code>.
+	 */
 	public ChangedFile getChangedFile() throws IOException {
 		return getCachableValue();
 	}

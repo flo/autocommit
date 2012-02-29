@@ -18,7 +18,6 @@ import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.factories.WorkedOnTypeCMF;
 
 public class WorkedOnTypeTest {
 	private WorkedOnTypeCMF createFactory(FileSetDelta delta) {
@@ -33,7 +32,7 @@ public class WorkedOnTypeTest {
 	@Test
 	public void testWorkedOnClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {int x;}",
 				"package org.example;\n\nclass Test {int y;}");
 
@@ -48,7 +47,7 @@ public class WorkedOnTypeTest {
 	public void testWorkedOnInnerClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile(
-				"/project1/org/example/Test.java",
+				"project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {class MyInnerClass{int x;}}",
 				"package org.example;\n\nclass Test {class MyInnerClass{int y;}}");
 
@@ -63,7 +62,7 @@ public class WorkedOnTypeTest {
 	public void testChangedModifierAndInnerClasses() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile(
-				"/project1/org/example/Test.java",
+				"project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {class MyInnerClass{int x;}}",
 				"package org.example;\n\npublic class Test {class MyInnerClass{int y;}}");
 
@@ -78,7 +77,7 @@ public class WorkedOnTypeTest {
 	public void testWorkedOnInnerInnerClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile(
-				"/project1/org/example/Hello.java",
+				"project1/org/example/Hello.java",
 				"package org.example;\n\nclass Hello {class World{class MyInnerClass{int x;}}}",
 				"package org.example;\n\nclass Hello {class World{class MyInnerClass{int y;}}}");
 
@@ -93,7 +92,7 @@ public class WorkedOnTypeTest {
 	@Test
 	public void testWorkedOnEnum() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/MyEnum.java",
+		builder.addChangedFile("project1/org/example/MyEnum.java",
 				"package org.example;\n\nenum MyEnum {X;}",
 				"package org.example;\n\nenum MyEnum {X,Y;}");
 
@@ -107,7 +106,7 @@ public class WorkedOnTypeTest {
 	@Test
 	public void testWorkedOnInnerEnum() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Hello.java",
+		builder.addChangedFile("project1/org/example/Hello.java",
 				"package org.example;\n\nclass Hello {enum MyEnum {X;}}",
 				"package org.example;\n\nclass Hello {enum MyEnum {X,Y;}}");
 
@@ -121,7 +120,7 @@ public class WorkedOnTypeTest {
 	@Test
 	public void testWorkedOnAnnotation() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/MyAnnotation.java",
+		builder.addChangedFile("project1/org/example/MyAnnotation.java",
 				"package org.example;\n\n@interface MyAnnotation {}",
 				"package org.example;\n\n@interface MyAnnotation {int x();}");
 
@@ -136,7 +135,7 @@ public class WorkedOnTypeTest {
 	public void testWorkedOnInnerAnnotation() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile(
-				"/project1/org/example/Hello.java",
+				"project1/org/example/Hello.java",
 				"package org.example;\n\nclass Hello {@interface MyAnnotation {}}",
 				"package org.example;\n\nclass Hello {@interface MyAnnotation {int x();}}");
 
@@ -150,7 +149,7 @@ public class WorkedOnTypeTest {
 	@Test
 	public void testWorkedOnInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\ninterface Test {int x();}",
 				"package org.example;\n\ninterface Test {int y();}");
 
@@ -165,7 +164,7 @@ public class WorkedOnTypeTest {
 	public void testWorkedOnInnerInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile(
-				"/project1/org/example/Hello.java",
+				"project1/org/example/Hello.java",
 				"package org.example;\n\nclass Hello {interface Test {int x();}}",
 				"package org.example;\n\nclass Hello {interface Test {int y();}}");
 
@@ -173,6 +172,20 @@ public class WorkedOnTypeTest {
 		String message = factory.createMessage();
 		final String expected = factory.workedOnInterfaceMessage
 				.createMessageWithArgs("Test", "Hello.Test");
+		assertEquals(expected, message);
+	}
+
+	@Test
+	public void testTypeOfTypeChange() throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile("project1/org/example/Hello.java",
+				"package org.example;\n\nclass Hello {}",
+				"package org.example;\n\ninterface Hello {}}");
+
+		WorkedOnTypeCMF factory = createFactory(builder.build());
+		String message = factory.createMessage();
+		final String expected = factory.workedOnClassMessage
+				.createMessageWithArgs("Hello", "Hello");
 		assertEquals(expected, message);
 	}
 }

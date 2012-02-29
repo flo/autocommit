@@ -15,6 +15,14 @@ import java.util.Map;
 public class FileContentReader extends
 		AbstractViewWithCache<Map<IFileContent, String>> {
 
+	/**
+	 * 
+	 * @param fileContent
+	 *            an object that implements {@link IFileContent}.
+	 * @return the content of the specified {@link IFileContent} instance as a
+	 *         string.
+	 * @throws IOException
+	 */
 	public String getStringFor(IFileContent fileContent) throws IOException {
 		Map<IFileContent, String> map = getCachableValue();
 		String text = map.get(fileContent);

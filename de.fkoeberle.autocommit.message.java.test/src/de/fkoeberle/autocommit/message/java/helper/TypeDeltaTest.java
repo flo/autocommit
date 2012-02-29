@@ -18,7 +18,6 @@ import org.junit.Test;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.helper.SingleChangedTypeView;
 import de.fkoeberle.autocommit.message.java.helper.delta.BodyDeclarationChangeType;
 import de.fkoeberle.autocommit.message.java.helper.delta.TypeDelta;
 
@@ -36,7 +35,7 @@ public class TypeDeltaTest {
 	public void testGetChangeTypesWithOnlyOneChangedBodyDeclaration()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"class Test {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -50,7 +49,7 @@ public class TypeDeltaTest {
 	public void testGetChangeTypesWithOnlyOneChangedBodyDeclarationAndSuperClass()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test extends OldSuperClass {int x;}",
 				"class Test extends NewSuperClass {int y;}");
 
@@ -65,7 +64,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetChangeTypesWithAddedSuperClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"class Test extends NewSuperClass {int x;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -78,8 +77,8 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetChangeTypesWithRemovedSuperClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
-				"class Test  extends Old {int x;}", "class Test {int x;}");
+		builder.addChangedFile("Test.java", "class Test  extends Old {int x;}",
+				"class Test {int x;}");
 
 		SingleChangedTypeView view = createView(builder.build());
 		TypeDelta typeDelta = view.getTypeDelta();
@@ -91,7 +90,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetChangeTypesWithChangedInterfaceList() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test implements MyInterface, IOld {int x;}",
 				"class Test implements MyInterface, INew {int x;}");
 
@@ -106,7 +105,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetChangeTypesWithAddedInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"class Test implements INew {int x;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -120,7 +119,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetChangeTypesWithRemovedInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test implements IOld {int x;}", "class Test {int x;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -134,7 +133,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetChangeTypesWithAddedModifier() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"public class Test {int x;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -147,7 +146,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetChangeTypesWithRemovedModifier() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "public class Test {int x;}",
+		builder.addChangedFile("Test.java", "public class Test {int x;}",
 				"class Test {int x;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -160,7 +159,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetChangeTypesWithChangedModifier() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "public class Test {int x;}",
+		builder.addChangedFile("Test.java", "public class Test {int x;}",
 				"final class Test {int x;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -173,7 +172,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetChangeTypesWithAddedJavaDoc() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"/** new */ class Test {int x;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -182,12 +181,11 @@ public class TypeDeltaTest {
 		assertEquals(EnumSet.of(BodyDeclarationChangeType.JAVADOC),
 				typeDelta.getChangeTypes());
 	}
-	
 
 	@Test
 	public void testGetChangeTypesWithRemovedJavaDoc() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "/** old */  class Test {int x;}",
+		builder.addChangedFile("Test.java", "/** old */  class Test {int x;}",
 				"class Test {int x;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -200,7 +198,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetChangeTypesWithChangedJavaDoc() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "/** old */  class Test {int x;}",
+		builder.addChangedFile("Test.java", "/** old */  class Test {int x;}",
 				"/** new */ class Test {int x;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -213,7 +211,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetFullTypeName() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Outer.java",
+		builder.addChangedFile("Outer.java",
 				"class Outer { class Inner {int x;}}",
 				"class Outer {class Inner {int y;}}");
 
@@ -226,7 +224,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetOuterTypeName() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Outer.java",
+		builder.addChangedFile("Outer.java",
 				"class Outer { class Middle {class Inner {int x;}}}",
 				"class Outer {class Middle {class Inner {int y;}}}");
 
@@ -239,7 +237,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetOuterTypeNameWithoutOuterClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"class Test {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -251,7 +249,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetDeclarationListDelta() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {}",
+		builder.addChangedFile("Test.java", "class Test {}",
 				"class Test {int x; int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -270,7 +268,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetOldDeclaration() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "@One @Two @Three class Test {}",
+		builder.addChangedFile("Test.java", "@One @Two @Three class Test {}",
 				"@One @Two class Test {}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -281,7 +279,7 @@ public class TypeDeltaTest {
 	@Test
 	public void testGetNewDeclaration() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "@One @Two @Three class Test {}",
+		builder.addChangedFile("Test.java", "@One @Two @Three class Test {}",
 				"@One @Two class Test {}");
 
 		SingleChangedTypeView view = createView(builder.build());

@@ -20,6 +20,35 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import de.fkoeberle.autocommit.message.java.helper.ASTCompareUtil;
 import de.fkoeberle.autocommit.message.java.helper.TypeUtil;
 
+/**
+ * This class represents the result of comparison between an old and new version
+ * of a {@link AbstractTypeDeclaration}.
+ * 
+ * 
+ * This class can describe changes where the type of the declared type changes.
+ * For example an enum that gets converted into an class. In such a case the
+ * method {@link #getChangeTypes()} will return a set which contains
+ * {@link BodyDeclarationChangeType#TYPE_OF_TYPE}.
+ * 
+ * When the declared type extends from another type in the new version then the
+ * set returned by the method {@link #getChangeTypes()} will contain an instance
+ * of {@link BodyDeclarationChangeType#SUPER_CLASS}.
+ * 
+ * When the implemented interface list got changed then the set returned by the
+ * method {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#PACKAGE_NAME}.
+ * 
+ * When the list of declared enum constants got changed then the set returned by
+ * the method {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#ENUM_CONSTANTS}. The method
+ * {@link #getEnumConstantsDelta()} can then be used to obtain details about
+ * that change.
+ * 
+ * When the declaration list got changed then the set returned by the method
+ * {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#DECLARATION_LIST}.
+ * 
+ */
 public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 	private DeclarationListDelta declarationListDelta;
 	private final EnumSet<BodyDeclarationChangeType> declarationListChange = EnumSet
@@ -98,13 +127,15 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 			EnumDeclaration newEnum) {
 		List<?> oldDeclarations = oldEnum.enumConstants();
 		List<?> newDeclarations = newEnum.enumConstants();
-		return ASTCompareUtil.listsOfASTNodesDiffer(oldDeclarations, newDeclarations);
+		return ASTCompareUtil.listsOfASTNodesDiffer(oldDeclarations,
+				newDeclarations);
 	}
 
 	private boolean containsDeclarationListChange() {
 		List<?> oldDeclarations = oldDeclaration.bodyDeclarations();
 		List<?> newDeclarations = newDeclaration.bodyDeclarations();
-		return ASTCompareUtil.listsOfASTNodesDiffer(oldDeclarations, newDeclarations);
+		return ASTCompareUtil.listsOfASTNodesDiffer(oldDeclarations,
+				newDeclarations);
 	}
 
 	private boolean isTypeOfTypeChange() {
@@ -137,7 +168,8 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 			TypeDeclaration newTypeDeclaration) {
 		List<?> oldInterfaces = oldTypeDeclaration.superInterfaceTypes();
 		List<?> newInterfaces = newTypeDeclaration.superInterfaceTypes();
-		return ASTCompareUtil.listsOfASTNodesDiffer(oldInterfaces, newInterfaces);
+		return ASTCompareUtil.listsOfASTNodesDiffer(oldInterfaces,
+				newInterfaces);
 	}
 
 	private static boolean isSuperInterfaceListChange(
@@ -145,7 +177,8 @@ public final class TypeDelta extends DeclarationDelta<AbstractTypeDeclaration> {
 			EnumDeclaration newTypeDeclaration) {
 		List<?> oldInterfaces = oldTypeDeclaration.superInterfaceTypes();
 		List<?> newInterfaces = newTypeDeclaration.superInterfaceTypes();
-		return ASTCompareUtil.listsOfASTNodesDiffer(oldInterfaces, newInterfaces);
+		return ASTCompareUtil.listsOfASTNodesDiffer(oldInterfaces,
+				newInterfaces);
 	}
 
 	public String getSimpleTypeName() {

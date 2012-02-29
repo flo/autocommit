@@ -153,7 +153,7 @@
             id="de.fkoeberle.autocommit.message.java.factories.FormattedTypeCMF">
          <arguments>
             <argument
-                  description="The type with the whitespace changes. It is either an class, interface, enum or an annotation)">
+                  description="The type with the whitespace changes. It is either an class, interface, enum or an annotation">
             </argument>
          </arguments>
          <messages>

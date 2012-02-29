@@ -18,7 +18,6 @@ import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.factories.WorkedOnPackageCMF;
 
 public class WorkedOnPackageCMFTest {
 
@@ -34,7 +33,7 @@ public class WorkedOnPackageCMFTest {
 	@Test
 	public void testSingleAddedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/example/Test.java",
+		builder.addAddedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 
 		WorkedOnPackageCMF factory = createFactory(builder.build());
@@ -47,7 +46,7 @@ public class WorkedOnPackageCMFTest {
 	@Test
 	public void testSingleRemovedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addRemovedFile("/project1/org/example/Test.java",
+		builder.addRemovedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 
 		WorkedOnPackageCMF factory = createFactory(builder.build());
@@ -60,7 +59,7 @@ public class WorkedOnPackageCMFTest {
 	@Test
 	public void testSingleModifiedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {int x;}",
 				"package org.example;\n\nclass Test {}");
 
@@ -74,9 +73,9 @@ public class WorkedOnPackageCMFTest {
 	@Test
 	public void testAddedAndModifiedFileInSamePackage() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/example/AddedClass.java",
+		builder.addAddedFile("project1/org/example/AddedClass.java",
 				"package org.example;\n\nclass AddedClass {}");
-		builder.addChangedFile("/project1/org/example/Mod.java",
+		builder.addChangedFile("project1/org/example/Mod.java",
 				"package org.example;\n\nclass Mod {int x;}",
 				"package org.example;\n\nclass Mod {}");
 
@@ -90,9 +89,9 @@ public class WorkedOnPackageCMFTest {
 	@Test
 	public void testMovedFileBetweenPackages() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addRemovedFile("/project1/org/example/oldpackage/Test.java",
+		builder.addRemovedFile("project1/org/example/oldpackage/Test.java",
 				"package org.example.oldpackage;\n\nclass Test {}");
-		builder.addAddedFile("/project1/org/example/newpackage/Test.java",
+		builder.addAddedFile("project1/org/example/newpackage/Test.java",
 				"package org.example.newpackage;\n\nclass Test {}");
 
 		WorkedOnPackageCMF factory = createFactory(builder.build());
@@ -105,9 +104,9 @@ public class WorkedOnPackageCMFTest {
 	@Test
 	public void testMoveToSamePackageInOtherFolder() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addRemovedFile("/project1/org/example/Test.java",
+		builder.addRemovedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
-		builder.addAddedFile("/project2/org/example/Test.java",
+		builder.addAddedFile("project2/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 
 		WorkedOnPackageCMF factory = createFactory(builder.build());
@@ -120,7 +119,7 @@ public class WorkedOnPackageCMFTest {
 	@Test
 	public void testDefaultPackage() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/Test.java", "class Test {}");
+		builder.addAddedFile("project1/Test.java", "class Test {}");
 
 		WorkedOnPackageCMF factory = createFactory(builder.build());
 		String message = factory.createMessage();
@@ -132,7 +131,7 @@ public class WorkedOnPackageCMFTest {
 	@Test
 	public void testNonMatchingPath() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/other/Test.java",
+		builder.addAddedFile("project1/org/other/Test.java",
 				"package org.example;\n\nclass Test {}");
 
 		WorkedOnPackageCMF factory = createFactory(builder.build());
@@ -152,9 +151,9 @@ public class WorkedOnPackageCMFTest {
 	@Test
 	public void testThatPerformanceOptimizationGotUsed() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/example/One.java",
+		builder.addAddedFile("project1/org/example/One.java",
 				"package org.example;\n\nclass One {}");
-		builder.addAddedFile("/project1/org/other/Two.java",
+		builder.addAddedFile("project1/org/other/Two.java",
 				"package org.example;\n\nclass Two {}");
 
 		WorkedOnPackageCMF factory = createFactory(builder.build());
@@ -168,9 +167,9 @@ public class WorkedOnPackageCMFTest {
 	public void testThatASecondNonMatchingPackageGetsDetectedIfItsInOtherSourceFolder()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/example/One.java",
+		builder.addAddedFile("project1/org/example/One.java",
 				"package org.example;\n\nclass One {}");
-		builder.addAddedFile("/project2/org/other/Two.java",
+		builder.addAddedFile("project2/org/other/Two.java",
 				"package org.example;\n\nclass Two {}");
 
 		WorkedOnPackageCMF factory = createFactory(builder.build());

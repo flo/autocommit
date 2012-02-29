@@ -19,15 +19,13 @@ import org.junit.Test;
 
 import de.fkoeberle.autocommit.message.FileContent;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.helper.CachingJavaFileContentParser;
-import de.fkoeberle.autocommit.message.java.helper.TypeUtil;
 
 public class TypeUtilTest {
 
 	private MethodDeclaration createMethodWithParameters(String paramStr)
 			throws IOException {
 		FileContent fileContent = new FileContent(String.format(
-				"class TestClass {\nvoid m(%s) {}\n}",
+				"class OuterClass {\nclass InnerClass{}\nvoid m(%s) {}\n}",
 				paramStr));
 		Session session = new Session();
 		CachingJavaFileContentParser parser = session
@@ -36,7 +34,7 @@ public class TypeUtilTest {
 		AbstractTypeDeclaration type = (AbstractTypeDeclaration) (compilationUnit
 				.types().get(0));
 		MethodDeclaration methodDeclaration = (MethodDeclaration) (type
-				.bodyDeclarations().get(0));
+				.bodyDeclarations().get(1));
 		return methodDeclaration;
 	}
 
@@ -128,9 +126,15 @@ public class TypeUtilTest {
 	}
 
 	@Test
-	public void testQualifiedName() throws IOException {
+	public void testTypeWithPackagePrefix() throws IOException {
 		MethodDeclaration method = createMethodWithParameters("java.lang.String s");
 		assertEquals("java.lang.String", TypeUtil.parameterTypesOf(method));
+	}
+
+	@Test
+	public void testQualifiedName() throws IOException {
+		MethodDeclaration method = createMethodWithParameters("OuterClass.InnerClass inner");
+		assertEquals("OuterClass.InnerClass", TypeUtil.parameterTypesOf(method));
 	}
 
 	@Test

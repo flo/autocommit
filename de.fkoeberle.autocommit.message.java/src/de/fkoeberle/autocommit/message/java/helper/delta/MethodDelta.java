@@ -19,13 +19,29 @@ import org.eclipse.jdt.core.dom.Type;
 import de.fkoeberle.autocommit.message.java.helper.ASTCompareUtil;
 import de.fkoeberle.autocommit.message.java.helper.TypeUtil;
 
+/**
+ * This class represents the result of comparison between an old and new version
+ * of a {@link MethodDeclaration}.
+ * 
+ * 
+ * When the method body got changed then the set returned by the method
+ * {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#METHOD_BODY}.
+ * 
+ * When the return type got changed then the set returned by the method
+ * {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#RETURN_TYPE}.
+ * 
+ * When the returned extra dimension got changed then the set returned by the
+ * method {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#METHOD_EXTRA_DIMENSIONS}.
+ * 
+ */
 public final class MethodDelta extends DeclarationDelta<MethodDeclaration> {
 
 	/**
 	 * Both method declarations must have the same name and parameter list.
 	 * 
-	 * @param oldMethodDeclaration
-	 * @param newMethodDeclaration
 	 */
 	MethodDelta(MethodDeclaration oldMethodDeclaration,
 			MethodDeclaration newMethodDeclaration) {

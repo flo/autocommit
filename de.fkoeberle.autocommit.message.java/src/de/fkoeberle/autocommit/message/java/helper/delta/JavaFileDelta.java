@@ -8,6 +8,10 @@
  */
 package de.fkoeberle.autocommit.message.java.helper.delta;
 
+import static de.fkoeberle.autocommit.message.java.helper.delta.BodyDeclarationChangeType.DECLARATION_LIST;
+import static de.fkoeberle.autocommit.message.java.helper.delta.BodyDeclarationChangeType.IMPORTS;
+import static de.fkoeberle.autocommit.message.java.helper.delta.BodyDeclarationChangeType.PACKAGE;
+
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.EnumSet;
@@ -21,6 +25,19 @@ import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.java.helper.ASTCompareUtil;
 import de.fkoeberle.autocommit.message.java.helper.CachingJavaFileContentParser;
 
+/**
+ * This class represents the result of comparison between an old and new version
+ * of an java file.
+ * 
+ * When the import list got changed then the set returned by the method
+ * {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#IMPORTS}. When the list of declared types
+ * got changed then {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#DECLARATION_LIST}. When package declaration
+ * got added, removed or changed then {@link #getChangeTypes()} will contain an
+ * instance of {@link BodyDeclarationChangeType#PACKAGE}.
+ * 
+ */
 public class JavaFileDelta implements IDelta {
 	private final ChangedFile changedFile;
 	private SoftReference<CompilationUnit> oldCompilationUnitRef;
@@ -50,16 +67,14 @@ public class JavaFileDelta implements IDelta {
 		EnumSet<BodyDeclarationChangeType> changesFound = EnumSet
 				.noneOf(BodyDeclarationChangeType.class);
 		if (containsImportChanges()) {
-			changesFound.add(BodyDeclarationChangeType.IMPORTS);
+			changesFound.add(IMPORTS);
 		}
 		if (containsPackageChanges()) {
-			changesFound.add(BodyDeclarationChangeType.PACKAGE);
+			changesFound.add(PACKAGE);
 		}
 		if (containsTypeDeclarationListChanges()) {
-			changesFound.add(BodyDeclarationChangeType.DECLARATION_LIST);
+			changesFound.add(DECLARATION_LIST);
 		}
-		// TODO initial comment changes
-		// TODO comment list changes
 		return changesFound;
 	}
 
@@ -151,8 +166,8 @@ public class JavaFileDelta implements IDelta {
 	public PackageDeclationDelta getPackageDelta() throws IOException {
 		if (packageDeclationDelta == null) {
 			packageDeclationDelta = new PackageDeclationDelta(
-					getOldDeclaration().getPackage(),
-					getNewDeclaration().getPackage());
+					getOldDeclaration().getPackage(), getNewDeclaration()
+							.getPackage());
 		}
 		return packageDeclationDelta;
 	}

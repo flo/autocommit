@@ -18,7 +18,6 @@ import org.junit.Test;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.helper.SingleChangedInnerBodyDeclarationView;
 import de.fkoeberle.autocommit.message.java.helper.delta.BodyDeclarationChangeType;
 import de.fkoeberle.autocommit.message.java.helper.delta.FieldDelta;
 import de.fkoeberle.autocommit.message.java.helper.delta.MethodDelta;
@@ -36,7 +35,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	@Test
 	public void noChangedMethod() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"class Test {int y;}");
 
 		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
@@ -47,7 +46,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	@Test
 	public void twoChangedMethods() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test {int x() {\nreturn 0;}\nint y(){return 0;}\n}",
 				"class Test {int x() {\nreturn 1;}\nint y(){return 1;}\n}");
 
@@ -59,7 +58,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	@Test
 	public void testChangedFirstMethod() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test {int x() {\nreturn 0;}\nint y(){return 0;}\n}",
 				"class Test {int x() {\nreturn 1;}\nint y(){return 0;}\n}");
 
@@ -71,7 +70,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	@Test
 	public void testChangedSecondMethod() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test {int x() {\nreturn 0;}\nint y(){return 0;}\n}",
 				"class Test {int x() {\nreturn 0;}\nint y(){return 1;}\n}");
 
@@ -83,7 +82,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	@Test
 	public void testReducedVisibility() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test {public int someMethod() {\nreturn 0;}\n}",
 				"class Test {int someMethod() {\nreturn 0;}\n}");
 
@@ -95,7 +94,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	@Test
 	public void testAddedMethod() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test {int x() {\nreturn 0;}\n}",
 				"class Test {int x() {\nreturn 0;}\nint y(){return 1;}\n}");
 
@@ -107,7 +106,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	@Test
 	public void testRemovedMethod() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test {int x() {\nreturn 0;}\nint y(){return 1;}\n}}",
 				"class Test {int x() {\nreturn 0;}\n");
 
@@ -119,7 +118,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	@Test
 	public void testChangedClassVisiblityToo() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test {int x() {\nreturn 0;}}}",
 				"public class Test {int x() {\nreturn 1;}\n");
 
@@ -131,7 +130,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	@Test
 	public void testChangedField() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"class Test {long x;");
 
 		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
@@ -144,7 +143,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	@Test
 	public void testAddedAndChangedMethod() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test {int x() {\nreturn 0;}\n}",
 				"class Test {int x() {\nreturn 1;}\nint y(){return 1;}\n}");
 
@@ -156,7 +155,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	@Test
 	public void testRemovedAndChangedMethod() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test {int x() {\nreturn 0;}\nint y(){return 1;}\n}\n}",
 				"class Test {int x() {\nreturn 1;}");
 
@@ -169,7 +168,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	public void testOverloadedMovedAndChangedMethod() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile(
-				"/Test.java",
+				"Test.java",
 				"class Test {int x(char c) {\nreturn 0;}\nint x(int i){return 1;}\n}\n}",
 				"class Test {int x(int i) {\nreturn 1;}\nint x(char c) {\nreturn 1;}");
 
@@ -183,7 +182,7 @@ public class SingleChangedInnerBodyDeclarationTest {
 	public void testOverloadedAndChangedMethod() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
 		builder.addChangedFile(
-				"/Test.java",
+				"Test.java",
 				"class Test {int x(int j) {\nreturn 1;}\nint x(char c){return 1;}\n}\n}",
 				"class Test {int x(int i) {\nreturn 1;}\nint x(char c) {\nreturn 1;}");
 
@@ -193,4 +192,37 @@ public class SingleChangedInnerBodyDeclarationTest {
 		assertEquals("int", methodDelta.getParameterTypes());
 	}
 
+	@Test
+	public void testAddedAnInitializerAndChangedMethod() throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile("Test.java",
+				"class Test {static int i;} int m() {return 0;}",
+				"class Test {static int i;  static {i = 1;} int m() {return 1;}");
+
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
+		assertEquals(null, view.getDelta());
+	}
+
+	@Test
+	public void testChangedTwoMethods() throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile("Test.java",
+				"class Test {int m1() {return 0;} int m2() {return 0;}}",
+				"class Test {int m1() {return 1;} int m2() {return 1;}} ");
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
+		assertEquals(null, view.getDelta());
+	}
+
+	@Test
+	public void testChangedTwoFiles() throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile("TestA.java",
+				"class Test {int m1() {return 0;}}",
+				"class Test {int m1() {return 1;}} ");
+		builder.addChangedFile("TestB.java",
+				"class Test {int m2() {return 0;}}",
+				"class Test {int m2() {return 1;}} ");
+		SingleChangedInnerBodyDeclarationView view = createView(builder.build());
+		assertEquals(null, view.getDelta());
+	}
 }

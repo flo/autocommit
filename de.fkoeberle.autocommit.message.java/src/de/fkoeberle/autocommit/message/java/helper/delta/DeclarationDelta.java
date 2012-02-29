@@ -17,7 +17,6 @@ import org.eclipse.jdt.core.dom.Javadoc;
 
 import de.fkoeberle.autocommit.message.java.helper.ASTCompareUtil;
 
-
 public abstract class DeclarationDelta<T extends BodyDeclaration> implements
 		IDelta {
 	protected final T oldDeclaration;

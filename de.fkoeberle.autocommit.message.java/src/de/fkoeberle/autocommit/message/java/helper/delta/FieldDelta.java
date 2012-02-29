@@ -8,12 +8,23 @@
  */
 package de.fkoeberle.autocommit.message.java.helper.delta;
 
+import static de.fkoeberle.autocommit.message.java.helper.delta.BodyDeclarationChangeType.FIELD_TYPE;
+
 import java.util.EnumSet;
 
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 
+/**
+ * This class represents the result of comparison between an old and new version
+ * of a {@link FieldDeclaration}.
+ * 
+ * When the field type has changed then the set returned by the method
+ * {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#FIELD_TYPE}.
+ * 
+ */
 public final class FieldDelta extends DeclarationDelta<FieldDeclaration> {
 
 	/**
@@ -35,7 +46,7 @@ public final class FieldDelta extends DeclarationDelta<FieldDeclaration> {
 		EnumSet<BodyDeclarationChangeType> result = EnumSet
 				.noneOf(BodyDeclarationChangeType.class);
 		if (containsTypeChange()) {
-			result.add(BodyDeclarationChangeType.FIELD_TYPE);
+			result.add(FIELD_TYPE);
 		}
 		return result;
 	}

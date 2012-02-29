@@ -18,7 +18,6 @@ import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.factories.DocumentedTypeCMF;
 
 public class DocumentatedTypeCMFTest {
 	private DocumentedTypeCMF createFactory(FileSetDelta delta) {
@@ -33,7 +32,7 @@ public class DocumentatedTypeCMFTest {
 	@Test
 	public void testAddedJavaDocToInnerClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {class Inner{}}",
 				"package org.example;\n\nclass Test {/** Hello World*/class Inner{}}");
 		DocumentedTypeCMF factory = createFactory(builder.build());
@@ -47,7 +46,7 @@ public class DocumentatedTypeCMFTest {
 	@Test
 	public void testAddedJavaDocToClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}",
 				"package org.example;\n\n/** Hello World*/class Test {}");
 		DocumentedTypeCMF factory = createFactory(builder.build());
@@ -61,7 +60,7 @@ public class DocumentatedTypeCMFTest {
 	@Test
 	public void testRemovedJavaDocToClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\n/** Hello World*/class Test {}",
 				"package org.example;\n\nclass Test {}");
 		DocumentedTypeCMF factory = createFactory(builder.build());
@@ -74,7 +73,7 @@ public class DocumentatedTypeCMFTest {
 	@Test
 	public void testAddedJavaDocAndFieldToClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}",
 				"package org.example;\n\n/** Hello World*/class Test {int x;}");
 		DocumentedTypeCMF factory = createFactory(builder.build());
@@ -218,6 +217,20 @@ public class DocumentatedTypeCMFTest {
 		String actualMessage = factory.createMessage();
 		String expectedMessage = factory.documentedEnumMessage
 				.createMessageWithArgs("Test.SmallNumber");
+		assertEquals(expectedMessage, actualMessage);
+	}
+
+	@Test
+	public void testAddedJavaDocToEnumConstantAndChangedIt() throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addChangedFile(
+				"/project1/org/example/Test.java",
+				"package org.example;\n\nclass Test {enum SmallNumber{ONE(1), TWO(42), THREE(3);private final int x; private SmallNumber(int x) {this.x = x;}}}",
+				"package org.example;\n\nclass Test {enum SmallNumber{ONE(1)/** one */, TWO(2), THREE(3);private final int x; private SmallNumber(int x) {this.x = x;}}}");
+		DocumentedTypeCMF factory = createFactory(builder.build());
+
+		String actualMessage = factory.createMessage();
+		String expectedMessage = null;
 		assertEquals(expectedMessage, actualMessage);
 	}
 

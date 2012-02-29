@@ -2,7 +2,9 @@
 <feature
       id="de.fkoeberle.autocommit.feature.tex"
       label="Auto Commit Feature For LaTeX Code"
-      version="0.0.1.alpha">
+      version="0.0.1.alpha"
+      license-feature="de.fkoeberle.autocommit.feature"
+      license-feature-version="0.0.1.alpha">
 
    <description>
       This feature allows more detailed automatically generated commit messages about LaTeX code.

@@ -19,7 +19,6 @@ import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.factories.FormattedJavaFileCMF;
 
 public class FormattedJavaFileCMFTest {
 
@@ -35,7 +34,7 @@ public class FormattedJavaFileCMFTest {
 	@Test
 	public void testAddedSpacesToInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		final String path = "/project1/org/example/MyInterface.java";
+		final String path = "project1/org/example/MyInterface.java";
 		builder.addChangedFile(path,
 				"package org.example;\n\ninterface MyInterface {int  m();}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
@@ -50,7 +49,7 @@ public class FormattedJavaFileCMFTest {
 	@Test
 	public void testAddedLineBreaksToClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		final String path = "/project1/org/example/MyClass.java";
+		final String path = "project1/org/example/MyClass.java";
 		builder.addChangedFile(path,
 				"package org.example;\n\nclass MyClass {\nint m(){}\n}",
 				"package org.example;\n\nclass MyClass {\nint m(){\n}\n}");
@@ -65,7 +64,7 @@ public class FormattedJavaFileCMFTest {
 	@Test
 	public void testAddedLineBreakAfterImport() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		final String path = "/project1/org/example/MyClass.java";
+		final String path = "project1/org/example/MyClass.java";
 		builder.addChangedFile(
 				path,
 				"package org.example;\nimport org.example.Test;\nclass MyClass {\nint m(){}\n}",
@@ -91,7 +90,7 @@ public class FormattedJavaFileCMFTest {
 	@Test
 	public void testAddedIfStatement() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		final String path = "/project1/org/example/MyClass.java";
+		final String path = "project1/org/example/MyClass.java";
 		builder.addChangedFile(
 				path,
 				"package org.example;\nimport org.example.Test;\n\nclass MyClass {\nString m(){return \"Hello\";}\n}",
@@ -106,7 +105,7 @@ public class FormattedJavaFileCMFTest {
 	@Test
 	public void testWhitespaceChangeInString() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		final String path = "/project1/org/example/MyClass.java";
+		final String path = "project1/org/example/MyClass.java";
 		builder.addChangedFile(
 				path,
 				"package org.example;\nimport org.example.Test;\n\nclass MyClass {\nString m(){return \"Hel lo\";}\n}",
@@ -121,7 +120,7 @@ public class FormattedJavaFileCMFTest {
 	@Test
 	public void testCompareOfFilesWithErrors() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		final String path = "/project1/org/example/MyClass.java";
+		final String path = "project1/org/example/MyClass.java";
 		builder.addChangedFile(
 				path,
 				"package org.example;\nimport org.example.Test;\n\nclass MyClass {\nString m(){return \"Hello\"}\n}",
@@ -136,7 +135,7 @@ public class FormattedJavaFileCMFTest {
 	@Test
 	public void testCompareOfFilesWithErrorInOld() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		final String path = "/project1/org/example/MyClass.java";
+		final String path = "project1/org/example/MyClass.java";
 		builder.addChangedFile(
 				path,
 				"package org.example;\nimport org.example.Test;\n\nclass MyClass {\nvoid m(){System.out.println(\"Hello\")}\n}",
@@ -151,7 +150,7 @@ public class FormattedJavaFileCMFTest {
 	@Test
 	public void testCompareOfFilesWithErrorInNew() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		final String path = "/project1/org/example/MyClass.java";
+		final String path = "project1/org/example/MyClass.java";
 		builder.addChangedFile(
 				path,
 				"package org.example;\nimport org.example.Test;\n\nclass MyClass {\nvoid m(){}\n}",
@@ -168,7 +167,7 @@ public class FormattedJavaFileCMFTest {
 	public void testCompareOfFilesWithErrorsWhichAreTheSameExceptWhitespace()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		final String path = "/project1/org/example/MyClass.java";
+		final String path = "project1/org/example/MyClass.java";
 		builder.addChangedFile(
 				path,
 				"package org.example;\nimport org.example.Test;\n\nclass MyClass {\nString m(){return \"Hello\"}\n}",

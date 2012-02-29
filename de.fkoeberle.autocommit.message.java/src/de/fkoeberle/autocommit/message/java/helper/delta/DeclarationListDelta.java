@@ -29,12 +29,14 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
+/**
+ * Represents the difference between two lists of {@link BodyDeclaration}
+ * 
+ */
 public class DeclarationListDelta {
 	private final List<BodyDeclaration> addedDeclarations;
 	private final List<BodyDeclaration> removedDeclarations;
 	private final List<DeclarationDelta<?>> changedDeclarations;
-
-
 
 	public DeclarationListDelta(AbstractTypeDeclaration oldType,
 			AbstractTypeDeclaration newType) {
@@ -161,7 +163,7 @@ public class DeclarationListDelta {
 	}
 
 	private static abstract class AbstractTypeDeclarationId extends
-	AbstractNameBasedDeclarationId {
+			AbstractNameBasedDeclarationId {
 		protected AbstractTypeDeclarationId(AbstractTypeDeclaration declaration) {
 			super(declaration.getName().getIdentifier());
 		}
@@ -303,11 +305,11 @@ public class DeclarationListDelta {
 			super(declaration.getName().getIdentifier());
 		}
 
-
 	}
 
 	private static final class InitializerId extends DeclarationId {
 		private final Initializer initializer;
+
 		public InitializerId(Initializer declaration) {
 			this.initializer = declaration;
 		}
@@ -372,14 +374,8 @@ public class DeclarationListDelta {
 		}
 
 		if (oldDeclaration instanceof Initializer) {
-			if (!(newDeclaration instanceof Initializer)) {
-				throw new IllegalArgumentException(
-						"One declaration is of type Initializer but not the other");
-			}
-			Initializer oldInitializer = (Initializer) oldDeclaration;
-			Initializer newInitializer = (Initializer) newDeclaration;
-
-			return new InitializerDelta(oldInitializer, newInitializer);
+			throw new IllegalArgumentException(
+					"Initializer can't be detected as modified: An changed initializer results in an detection of an added and removed initializer");
 		}
 
 		if (oldDeclaration instanceof EnumConstantDeclaration) {

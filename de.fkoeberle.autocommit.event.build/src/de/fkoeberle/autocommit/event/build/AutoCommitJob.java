@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -30,17 +31,32 @@ final class AutoCommitJob extends Job {
 		super("Auto Commit");
 	}
 
-	private boolean noUnsavedContentExists() {
-		for (IWorkbenchWindow window : PlatformUI.getWorkbench()
-				.getWorkbenchWindows()) {
-			for (IWorkbenchPage page : window.getPages()) {
-				IEditorPart[] dirtyEditors = page.getDirtyEditors();
-				if (dirtyEditors.length > 0) {
-					return false;
+	private static class CheckForUnsavedContentRunnable implements Runnable {
+		public volatile boolean noUnsavedContentExists;
+
+		@Override
+		public void run() {
+			noUnsavedContentExists = checkIfNoUnsavedContentExists();
+		}
+
+		private boolean checkIfNoUnsavedContentExists() {
+			for (IWorkbenchWindow window : PlatformUI.getWorkbench()
+					.getWorkbenchWindows()) {
+				for (IWorkbenchPage page : window.getPages()) {
+					IEditorPart[] dirtyEditors = page.getDirtyEditors();
+					if (dirtyEditors.length > 0) {
+						return false;
+					}
 				}
 			}
+			return true;
 		}
-		return true;
+	}
+
+	private boolean noUnsavedContentExists() {
+		CheckForUnsavedContentRunnable runnable = new CheckForUnsavedContentRunnable();
+		Display.getDefault().syncExec(runnable);
+		return runnable.noUnsavedContentExists;
 	}
 
 	private boolean noBuildErrorsExist() {

@@ -18,7 +18,6 @@ import de.fkoeberle.autocommit.message.DummyCommitMessageUtil;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.factories.AddedTypeCMF;
 
 public class AddedTypeCMFTest {
 
@@ -34,7 +33,7 @@ public class AddedTypeCMFTest {
 	@Test
 	public void testAddedStubClass() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/example/Test.java",
+		builder.addAddedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 		AddedTypeCMF factory = createFactory(builder.build());
 
@@ -61,7 +60,7 @@ public class AddedTypeCMFTest {
 	@Test
 	public void testAddedInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/example/MyInterface.java",
+		builder.addAddedFile("project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}");
 
 		AddedTypeCMF factory = createFactory(builder.build());
@@ -74,7 +73,7 @@ public class AddedTypeCMFTest {
 	@Test
 	public void testAddedEnum() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/example/MyEnum.java",
+		builder.addAddedFile("project1/org/example/MyEnum.java",
 				"package org.example;\n\npublic enum MyEnum {\n\n}\n");
 
 		AddedTypeCMF factory = createFactory(builder.build());
@@ -104,7 +103,7 @@ public class AddedTypeCMFTest {
 		builder.addAddedFile(
 				"/project1/org/example/AddedClass.java",
 				"package org.example;\n\nclass AddedClass { String test() { return \"real value\";}}");
-		builder.addAddedFile("/project1/org/example/MyInterface.java",
+		builder.addAddedFile("project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}");
 
 		AddedTypeCMF factory = createFactory(builder.build());
@@ -119,7 +118,7 @@ public class AddedTypeCMFTest {
 		builder.addAddedFile(
 				"/project1/org/example/AddedClass.java",
 				"package org.example;\n\nclass AddedClass { String test() { return \"real value\";}}");
-		builder.addRemovedFile("/project1/org/example/MyInterface.java",
+		builder.addRemovedFile("project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}");
 
 		AddedTypeCMF factory = createFactory(builder.build());
@@ -131,7 +130,7 @@ public class AddedTypeCMFTest {
 	@Test
 	public void testRemovedInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addRemovedFile("/project1/org/example/MyInterface.java",
+		builder.addRemovedFile("project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}");
 
 		AddedTypeCMF factory = createFactory(builder.build());
@@ -146,7 +145,7 @@ public class AddedTypeCMFTest {
 		builder.addAddedFile(
 				"/project1/org/example/AddedClass.java",
 				"package org.example;\n\nclass AddedClass { String test() { return \"real value\";}}");
-		builder.addChangedFile("/project1/org/example/MyInterface.java",
+		builder.addChangedFile("project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
 
@@ -159,7 +158,7 @@ public class AddedTypeCMFTest {
 	@Test
 	public void testModifiedInterface() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/MyInterface.java",
+		builder.addChangedFile("project1/org/example/MyInterface.java",
 				"package org.example;\n\ninterface MyInterface {}",
 				"package org.example;\n\ninterface MyInterface {int m();}");
 

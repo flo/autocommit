@@ -19,7 +19,6 @@ import org.junit.Test;
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.FileSetDelta;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.helper.SingleChangedTypeView;
 import de.fkoeberle.autocommit.message.java.helper.delta.TypeDelta;
 
 public class SingleChangedTypeViewTest {
@@ -36,7 +35,7 @@ public class SingleChangedTypeViewTest {
 	public void testChangedOnlyOneDeclarationOfTopLevelClass()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"class Test {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -49,7 +48,7 @@ public class SingleChangedTypeViewTest {
 	@Test
 	public void testAddedSuperClassAndChangedField() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"class Test extends Other {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -59,10 +58,9 @@ public class SingleChangedTypeViewTest {
 	}
 
 	@Test
-	public void testRemovedSuperClassAndChangedField()
-			throws IOException {
+	public void testRemovedSuperClassAndChangedField() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test  extends Other {int x;}", "class Test {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -74,7 +72,7 @@ public class SingleChangedTypeViewTest {
 	@Test
 	public void testChangedSuperClassAndChangedField() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test extends OldClass {int x;}",
 				"class Test extends NewClass {int y;}");
 
@@ -88,7 +86,7 @@ public class SingleChangedTypeViewTest {
 	public void testAddedImplementedInterfaceAndChangedField()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"class Test implements Other {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -101,7 +99,7 @@ public class SingleChangedTypeViewTest {
 	public void testRemovedImplementedInterfaceAndChangedField()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test implements Other {int x;}", "class Test {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -114,7 +112,7 @@ public class SingleChangedTypeViewTest {
 	public void testChangedImplementedInterfaceAndChangedField()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test implements OldInterface {int x;}",
 				"class Test implements NewInterface {int y;}");
 
@@ -128,7 +126,7 @@ public class SingleChangedTypeViewTest {
 	public void testChangedSecondImplementedInterfaceAndChangedField()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test implements First, OldInterface {int x;}",
 				"class Test implements First, NewInterface {int y;}");
 
@@ -141,7 +139,7 @@ public class SingleChangedTypeViewTest {
 	@Test
 	public void testMadeClassPublicAndChangedField() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"public class Test {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -153,7 +151,7 @@ public class SingleChangedTypeViewTest {
 	@Test
 	public void testAddedAnnotationAndChangedField() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"@NewClass class Test {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -165,7 +163,7 @@ public class SingleChangedTypeViewTest {
 	@Test
 	public void testRemovedAnnotationAndChangedField() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "@OldClass class Test {int x;}",
+		builder.addChangedFile("Test.java", "@OldClass class Test {int x;}",
 				"class Test {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -177,7 +175,7 @@ public class SingleChangedTypeViewTest {
 	@Test
 	public void testChangedAnnotationAndChangedField() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "@OldClass class Test {int x;}",
+		builder.addChangedFile("Test.java", "@OldClass class Test {int x;}",
 				"@NewClass class Test {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -189,7 +187,7 @@ public class SingleChangedTypeViewTest {
 	@Test
 	public void testMadeClassFinalAndChangedField() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "class Test {int x;}",
+		builder.addChangedFile("Test.java", "class Test {int x;}",
 				"final class Test {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -202,7 +200,7 @@ public class SingleChangedTypeViewTest {
 	public void testMadeClassWithAnnotationFinalAndChangedField()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java", "@First class Test {int x;}",
+		builder.addChangedFile("Test.java", "@First class Test {int x;}",
 				"@First final class Test {int y;}");
 
 		SingleChangedTypeView view = createView(builder.build());
@@ -214,7 +212,7 @@ public class SingleChangedTypeViewTest {
 	@Test
 	public void testChangedSecondAnnotationAndChangedField() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"@First @OldClass class Test {int x;}",
 				"@First @NewClass class Test {int y;}");
 
@@ -227,7 +225,8 @@ public class SingleChangedTypeViewTest {
 	@Test
 	public void testClassWithStuffButOnlyOneChangedField() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile(
+				"Test.java",
 				"@First @Second public final abstract class Test extends One implements IOne, ITwo {int x;}",
 				"@First @Second public final abstract class Test extends One implements IOne, ITwo {int y;}");
 
@@ -240,7 +239,7 @@ public class SingleChangedTypeViewTest {
 	@Test
 	public void testInnerClasses() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test {class It {class Now{int x;}}}",
 				"class Test {class It {class Now{int y;}}}");
 
@@ -254,7 +253,7 @@ public class SingleChangedTypeViewTest {
 	@Test
 	public void testInnerEnum() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/Test.java",
+		builder.addChangedFile("Test.java",
 				"class Test {static class It {enum Now{int x;}}}",
 				"class Test {static class It {enum Now{int y;}}}");
 

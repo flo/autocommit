@@ -2,7 +2,9 @@
 <feature
       id="de.fkoeberle.autocommit.feature.git"
       label="Git Auto Commit Support"
-      version="0.0.1.alpha">
+      version="0.0.1.alpha"
+      license-feature="de.fkoeberle.autocommit.feature"
+      license-feature-version="0.0.1.alpha">
 
    <description>
       This feature makes it possible to have EGit based projects commit

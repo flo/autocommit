@@ -44,6 +44,12 @@ public class ExtensionsOfAddedModifiedOrChangedFiles extends
 		return fileExtensions;
 	}
 
+	/**
+	 * 
+	 * @return a {@link Set} instance which contains all file extensions the
+	 *         changed, added and removed files have. It must not be modified.
+	 *         The file extensions don't contain a dot.
+	 */
 	public Set<String> getFileExtensions() throws IOException {
 		return getCachableValue();
 	}

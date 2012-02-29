@@ -17,7 +17,24 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import de.fkoeberle.autocommit.message.java.helper.ASTCompareUtil;
 
-
+/**
+ * This class represents the result of comparison between an old and new version
+ * of a {@link PackageDeclaration}.
+ * 
+ * 
+ * When the javadoc got changed then the set returned by the method
+ * {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#JAVADOC}.
+ * 
+ * When the annotation of the package got changed then the set returned by the
+ * method {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#PACKAGE_ANNOTATIONS}.
+ * 
+ * When the package name got changed then the set returned by the method
+ * {@link #getChangeTypes()} will contain an instance of
+ * {@link BodyDeclarationChangeType#PACKAGE_NAME}.
+ * 
+ */
 public class PackageDeclationDelta implements IDelta {
 	private final PackageDeclaration oldDeclaration;
 	private final PackageDeclaration newDeclaration;

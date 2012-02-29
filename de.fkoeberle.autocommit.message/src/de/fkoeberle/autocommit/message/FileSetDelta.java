@@ -29,14 +29,26 @@ public final class FileSetDelta {
 		this.removedFiles = new ArrayList<RemovedFile>(0);
 	}
 
+	/**
+	 * 
+	 * @return a list of all changed files.
+	 */
 	public List<ChangedFile> getChangedFiles() {
 		return changedFiles;
 	}
 
+	/**
+	 * 
+	 * @return a list of all added files.
+	 */
 	public List<AddedFile> getAddedFiles() {
 		return addedFiles;
 	}
 
+	/**
+	 * 
+	 * @return a list of all removed files.
+	 */
 	public List<RemovedFile> getRemovedFiles() {
 		return removedFiles;
 	}

@@ -32,6 +32,12 @@ public class SingleChangedTextFileView extends
 		return new ChangedTextFile(path, oldContent, newContent);
 	}
 
+	/**
+	 * 
+	 * @return a {@link ChangedTextFile} instance, if there was exactly one
+	 *         changed file and no other change. Otherwise this method returns
+	 *         <code>null</code>.
+	 */
 	public ChangedTextFile getChangedTextFile() throws IOException {
 		return getCachableValue();
 	}

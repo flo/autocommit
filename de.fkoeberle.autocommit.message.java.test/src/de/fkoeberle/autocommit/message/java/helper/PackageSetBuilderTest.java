@@ -21,14 +21,12 @@ import org.junit.Test;
 
 import de.fkoeberle.autocommit.message.FileDeltaBuilder;
 import de.fkoeberle.autocommit.message.Session;
-import de.fkoeberle.autocommit.message.java.helper.CachingJavaFileContentParser;
-import de.fkoeberle.autocommit.message.java.helper.PackageSetBuilder;
 
 public class PackageSetBuilderTest {
-	private PackageSetBuilder createBuilder()
-			throws IOException {
+	private PackageSetBuilder createBuilder() throws IOException {
 		Session session = new Session();
-		CachingJavaFileContentParser parser = session.getInstanceOf(CachingJavaFileContentParser.class);
+		CachingJavaFileContentParser parser = session
+				.getInstanceOf(CachingJavaFileContentParser.class);
 		PackageSetBuilder builder = new PackageSetBuilder(parser);
 		return builder;
 	}
@@ -36,7 +34,7 @@ public class PackageSetBuilderTest {
 	@Test
 	public void testSingleAddedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/example/Test.java",
+		builder.addAddedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 
 		PackageSetBuilder packageSetBuilder = createBuilder();
@@ -50,7 +48,7 @@ public class PackageSetBuilderTest {
 	@Test
 	public void testSingleRemovedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addRemovedFile("/project1/org/example/Test.java",
+		builder.addRemovedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 
 		PackageSetBuilder packageSetBuilder = createBuilder();
@@ -64,7 +62,7 @@ public class PackageSetBuilderTest {
 	@Test
 	public void testSingleModifiedFile() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/org/example/Test.java",
+		builder.addChangedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {int x;}",
 				"package org.example;\n\nclass Test {}");
 
@@ -79,9 +77,9 @@ public class PackageSetBuilderTest {
 	@Test
 	public void testAddedAndModifiedFileInSamePackage() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/example/AddedClass.java",
+		builder.addAddedFile("project1/org/example/AddedClass.java",
 				"package org.example;\n\nclass AddedClass {}");
-		builder.addChangedFile("/project1/org/example/Mod.java",
+		builder.addChangedFile("project1/org/example/Mod.java",
 				"package org.example;\n\nclass Mod {int x;}",
 				"package org.example;\n\nclass Mod {}");
 
@@ -96,9 +94,9 @@ public class PackageSetBuilderTest {
 	@Test
 	public void testMovedFileBetweenPackages() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addRemovedFile("/project1/org/example/oldpackage/Test.java",
+		builder.addRemovedFile("project1/org/example/oldpackage/Test.java",
 				"package org.example.oldpackage;\n\nclass Test {}");
-		builder.addAddedFile("/project1/org/example/newpackage/Test.java",
+		builder.addAddedFile("project1/org/example/newpackage/Test.java",
 				"package org.example.newpackage;\n\nclass Test {}");
 
 		PackageSetBuilder packageSetBuilder = createBuilder();
@@ -113,9 +111,9 @@ public class PackageSetBuilderTest {
 	@Test
 	public void testMoveToSamePackageInOtherFolder() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addRemovedFile("/project1/org/example/Test.java",
+		builder.addRemovedFile("project1/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
-		builder.addAddedFile("/project2/org/example/Test.java",
+		builder.addAddedFile("project2/org/example/Test.java",
 				"package org.example;\n\nclass Test {}");
 
 		PackageSetBuilder packageSetBuilder = createBuilder();
@@ -128,7 +126,20 @@ public class PackageSetBuilderTest {
 	@Test
 	public void testDefaultPackage() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/Test.java", "class Test {}");
+		builder.addAddedFile("project1/Test.java", "class Test {}");
+
+		PackageSetBuilder packageSetBuilder = createBuilder();
+		boolean success = packageSetBuilder.addPackagesOf(builder.build());
+		assertTrue(success);
+		Set<String> result = packageSetBuilder.getPackages();
+		Set<String> expected = new HashSet<String>(Arrays.asList(""));
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void testNoDirectory() throws IOException {
+		FileDeltaBuilder builder = new FileDeltaBuilder();
+		builder.addAddedFile("Test.java", "class Test {}");
 
 		PackageSetBuilder packageSetBuilder = createBuilder();
 		boolean success = packageSetBuilder.addPackagesOf(builder.build());
@@ -141,9 +152,9 @@ public class PackageSetBuilderTest {
 	@Test
 	public void testTwoTimesDefaultPackage() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addChangedFile("/project1/IClass.java", "class MyClass {}",
+		builder.addChangedFile("project1/IClass.java", "class MyClass {}",
 				"class MyClass {void m() {\n};}");
-		builder.addChangedFile("/project1/MyInterface.java",
+		builder.addChangedFile("project1/MyInterface.java",
 				"interface MyInterface {int  m();}",
 				"interface MyInterface {int m();}");
 
@@ -158,7 +169,7 @@ public class PackageSetBuilderTest {
 	@Test
 	public void testNonMatchingPath() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/other/Test.java",
+		builder.addAddedFile("project1/org/other/Test.java",
 				"package org.example;\n\nclass Test {}");
 
 		PackageSetBuilder packageSetBuilder = createBuilder();
@@ -177,9 +188,9 @@ public class PackageSetBuilderTest {
 	@Test
 	public void testThatPerformanceOptimizationGotUsed() throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/example/One.java",
+		builder.addAddedFile("project1/org/example/One.java",
 				"package org.example;\n\nclass One {}");
-		builder.addAddedFile("/project1/org/other/Two.java",
+		builder.addAddedFile("project1/org/other/Two.java",
 				"package org.example;\n\nclass Two {}");
 
 		PackageSetBuilder packageSetBuilder = createBuilder();
@@ -195,9 +206,9 @@ public class PackageSetBuilderTest {
 	public void testThatASecondNonMatchingPackageGetsDetectedIfItsInOtherSourceFolder()
 			throws IOException {
 		FileDeltaBuilder builder = new FileDeltaBuilder();
-		builder.addAddedFile("/project1/org/example/One.java",
+		builder.addAddedFile("project1/org/example/One.java",
 				"package org.example;\n\nclass One {}");
-		builder.addAddedFile("/project2/org/other/Two.java",
+		builder.addAddedFile("project2/org/other/Two.java",
 				"package org.example;\n\nclass Two {}");
 
 		PackageSetBuilder packageSetBuilder = createBuilder();

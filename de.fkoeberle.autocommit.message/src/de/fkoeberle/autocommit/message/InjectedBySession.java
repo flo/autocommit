@@ -13,6 +13,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Fields annotated with this annotation should not get initialized by the class
+ * defining the field. Instead objects with this fields should be initialized
+ * with an {@link Session} instance. The {@link Session} class provides a method
+ * {@link Session#injectSessionData(Object)} for that purpose.
+ * 
+ */
 @Target(value = { ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface InjectedBySession {
