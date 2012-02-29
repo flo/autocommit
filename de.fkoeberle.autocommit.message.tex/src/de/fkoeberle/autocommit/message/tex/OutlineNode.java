@@ -11,6 +11,10 @@ package de.fkoeberle.autocommit.message.tex;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents a headline and it's body of a LaTeX document.
+ * 
+ */
 public class OutlineNode {
 	private final OutlineNodeType type;
 	private final String caption;
